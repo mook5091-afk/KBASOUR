@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>대한변호사협회 사무국 기념품 신청</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f7f6f3;
+    --surface:#ffffff;
+    --ink:#15181d;
+    --ink-2:#3d434d;
+    --muted:#7b818c;
+    --faint:#a5aab3;
+    --line:#e5e3dd;
+    --line-2:#efedE8;
+    --navy:#16233a;
+    --navy-2:#22334f;
+    --accent:#1e3a5f;
+    --gold:#a8834a;
+    --ok:#1a6b46;
+    --warn:#8a6512;
+    --err:#a8322a;
+  }
+  *{ -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+  html,body{ background:var(--bg); }
+  body{
+    font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,"Segoe UI",sans-serif;
+    color:var(--ink); font-size:15px; line-height:1.6;
+  }
+  .serif{ font-family:'Nanum Myeongjo',Georgia,'Times New Roman',serif; }
+  .kr{ word-break:keep-all; }
+  ::selection{ background:#dbe4ef; }
+
+  /* 라벨 · 소제목 */
+  .eyebrow{
+    font-size:10.5px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--muted);
+  }
+  .label{
+    display:block; font-size:11px; font-weight:600; letter-spacing:.09em;
+    text-transform:uppercase; color:var(--muted); margin-bottom:.5rem;
+  }
+
+  /* 폼 */
+  .field{
+    width:100%; background:#fff; border:1px solid var(--line); border-radius:8px;
+    padding:.66rem .85rem; font-size:14.5px; color:var(--ink); font-family:inherit;
+    outline:none; transition:border-color .16s, box-shadow .16s;
+  }
+  .field:focus{ border-color:var(--accent); box-shadow:0 0 0 3px rgba(30,58,95,.10); }
+  .field::placeholder{ color:var(--faint); }
+  textarea.field{ line-height:1.6; }
+
+  input[type=checkbox]{
+    appearance:none; -webkit-appearance:none; width:16px; height:16px; flex:none;
+    border:1px solid #cfd3d9; border-radius:4px; background:#fff;
+    position:relative; cursor:pointer; transition:all .14s;
+  }
+  input[type=checkbox]:hover{ border-color:var(--accent); }
+  input[type=checkbox]:checked{ background:var(--accent); border-color:var(--accent); }
+  input[type=checkbox]:checked::after{
+    content:''; position:absolute; left:5px; top:1.5px; width:4px; height:9px;
+    border:solid #fff; border-width:0 2px 2px 0; transform:rotate(43deg);
+  }
+
+  /* 버튼 */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:.45rem;
+    border-radius:8px; font-weight:600; font-size:13.5px; line-height:1;
+    border:1px solid var(--line); background:#fff; color:var(--ink-2);
+    transition:all .16s; cursor:pointer; white-space:nowrap;
+  }
+  .btn:hover{ border-color:#cdd1d7; background:#fbfaf8; color:var(--ink); }
+  .btn:active{ transform:translateY(.5px); }
+  .btn-primary{
+    background:var(--navy); border:1px solid var(--navy); color:#fff;
+    box-shadow:0 1px 2px rgba(21,24,29,.14);
+  }
+  .btn-primary:hover{ background:var(--navy-2); border-color:var(--navy-2); color:#fff; }
+  .btn-danger{ color:var(--err); }
+  .btn-danger:hover{ background:#fdf3f2; border-color:#e8c9c6; color:var(--err); }
+  .btn[disabled]{ opacity:.45; cursor:not-allowed; }
+  .btn-quiet{
+    background:transparent; border-color:transparent; color:var(--muted);
+  }
+  .btn-quiet:hover{ background:#efedE8; color:var(--ink); border-color:transparent; }
+
+  /* 칩 */
+  .chip{
+    border:1px solid var(--line); background:#fff; color:var(--ink-2);
+    border-radius:999px; font-size:13px; font-weight:500; transition:all .16s; cursor:pointer;
+    white-space:nowrap;
+  }
+  .chip:hover{ border-color:#cdd1d7; background:#fbfaf8; }
+  .chip-on{ background:var(--navy); border-color:var(--navy); color:#fff; }
+  .chip-on:hover{ background:var(--navy-2); border-color:var(--navy-2); }
+
+  /* 카드 */
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    overflow:hidden; transition:box-shadow .22s, transform .22s, border-color .22s;
+  }
+  .card:hover{
+    border-color:#dcd9d2; transform:translateY(-2px);
+    box-shadow:0 10px 28px rgba(21,24,29,.07), 0 2px 6px rgba(21,24,29,.04);
+  }
+  .art{ display:block; width:100%; aspect-ratio:4/3; }
+  .art-out{ filter:grayscale(1) contrast(.9) brightness(1.06); opacity:.75; }
+
+  .panel{ background:var(--surface); border:1px solid var(--line); border-radius:14px; }
+
+  /* 상태 배지 */
+  .badge{
+    display:inline-block; border-radius:999px; padding:.2rem .6rem;
+    font-size:12px; font-weight:600; border:1px solid;
+  }
+  .b-wait{ color:var(--warn); border-color:#e8dcb8; background:#fdf9ee; }
+  .b-ok  { color:var(--ok);   border-color:#c4ddcf; background:#f1f8f4; }
+  .b-no  { color:var(--err);  border-color:#e8c9c6; background:#fdf3f2; }
+  .b-in  { color:var(--ok);   border-color:#c4ddcf; background:#f1f8f4; }
+  .b-out { color:var(--accent);border-color:#ccd8e5; background:#f2f6fb; }
+
+  /* 테이블 */
+  table.tbl{ width:100%; border-collapse:separate; border-spacing:0; }
+  table.tbl th{
+    position:sticky; top:0; z-index:1; background:#fbfaf8;
+    font-size:11px; font-weight:600; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--muted); padding:.85rem 1rem; border-bottom:1px solid var(--line);
+    white-space:nowrap;
+  }
+  table.tbl td{ padding:.9rem 1rem; border-bottom:1px solid var(--line-2); vertical-align:middle; }
+  table.tbl tbody tr:last-child td{ border-bottom:0; }
+  table.tbl tbody tr:hover{ background:#fbfaf8; }
+
+  /* 스크롤바 */
+  .scroll-y::-webkit-scrollbar{ width:10px; height:10px; }
+  .scroll-y::-webkit-scrollbar-track{ background:transparent; }
+  .scroll-y::-webkit-scrollbar-thumb{ background:#dcd9d2; border-radius:20px; border:3px solid #fff; }
+  .scroll-y::-webkit-scrollbar-thumb:hover{ background:#c9c5bc; }
+
+  /* 모션 */
+  .fade-up{ animation:fadeUp .45s cubic-bezier(.2,.7,.3,1) both; }
+  @keyframes fadeUp{ from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none} }
+  .pop{ animation:pop .22s cubic-bezier(.2,.8,.3,1.05) both; }
+  @keyframes pop{ from{opacity:0; transform:translateY(12px) scale(.99)} to{opacity:1; transform:none} }
+  .spin{ animation:spin .9s linear infinite; }
+  @keyframes spin{ to{ transform:rotate(360deg) } }
+
+  /* 내비 링크 */
+  .navlink{
+    position:relative; font-size:14px; font-weight:600; color:var(--muted);
+    padding:.4rem 0; transition:color .16s;
+  }
+  .navlink:hover{ color:var(--ink); }
+  .navlink-on{ color:var(--ink); }
+  .navlink-on::after{
+    content:''; position:absolute; left:0; right:0; bottom:-21px; height:2px; background:var(--navy);
+  }
+  .tabbtn{
+    position:relative; font-size:14.5px; font-weight:600; color:var(--muted);
+    padding:.75rem .25rem; margin-right:1.75rem; transition:color .16s;
+  }
+  .tabbtn:hover{ color:var(--ink); }
+  .tabbtn-on{ color:var(--ink); }
+  .tabbtn-on::after{
+    content:''; position:absolute; left:0; right:0; bottom:-1px; height:2px; background:var(--navy);
+  }
+</style>
+</head>
+<body class="overflow-x-hidden">
+
+<!-- ══════════════════════════ 접속 게이트 ══════════════════════════ -->
+<div id="gate" class="min-h-screen w-full grid lg:grid-cols-12">
+
+  <!-- 브랜드 패널 -->
+  <div class="lg:col-span-5 relative overflow-hidden flex flex-col justify-between px-8 sm:px-12 py-12 lg:py-14"
+       style="background:linear-gradient(160deg,#16233a 0%,#1d2f4a 55%,#22334f 100%)">
+    <svg class="absolute inset-0 w-full h-full opacity-[.07] pointer-events-none" aria-hidden="true">
+      <defs>
+        <pattern id="gridpat" width="34" height="34" patternUnits="userSpaceOnUse">
+          <path d="M34 0H0V34" fill="none" stroke="#fff" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#gridpat)"/>
+    </svg>
+    <div class="absolute -right-24 -top-24 w-[380px] h-[380px] rounded-full pointer-events-none"
+         style="background:radial-gradient(circle,rgba(168,131,74,.28) 0%,rgba(168,131,74,0) 68%)"></div>
+
+    <div class="relative">
+      <p class="text-[11px] font-bold tracking-[.22em] uppercase text-white/45">Korean Bar Association</p>
+      <p class="mt-3 text-white/85 text-[15px] font-semibold tracking-tight">대한변호사협회 사무국</p>
+    </div>
+
+    <div class="relative py-14 lg:py-0">
+      <h1 class="serif text-white text-[34px] sm:text-[42px] leading-[1.28] tracking-[-.01em] kr">
+        기념품 신청<br>시스템
+      </h1>
+      <div class="mt-7 w-12 h-px bg-[var(--gold)]"></div>
+      <p class="mt-7 text-white/55 text-[14.5px] leading-[1.75] kr max-w-[340px]">
+        협회 대내외 행사·예방·의전에 사용할 기념품을 신청하고, 재고를 한곳에서 관리합니다.
+      </p>
+    </div>
+
+    <p class="relative text-white/30 text-[11.5px] tracking-wide">© 대한변호사협회 사무국</p>
+  </div>
+
+  <!-- 로그인 폼 -->
+  <div class="lg:col-span-7 flex items-center justify-center px-6 py-16 lg:py-0 bg-[var(--bg)]">
+    <div class="w-full max-w-[360px] fade-up">
+      <p class="eyebrow">Access</p>
+      <h2 class="serif text-[26px] mt-2.5 tracking-[-.01em]">접속 암호를 입력하세요</h2>
+      <p class="text-[14px] text-[var(--muted)] mt-2.5 kr leading-relaxed">
+        사무국에서 안내받은 공용 암호를 입력하면 신청 화면으로 이동합니다.
+      </p>
+
+      <form id="gateForm" class="mt-9">
+        <label class="label" for="gatePw">접속 암호</label>
+        <input id="gatePw" type="password" placeholder="••••" autocomplete="current-password"
+               class="field text-center text-[22px] tracking-[.45em] py-3.5">
+        <p id="gateErr" class="text-[13px] text-[var(--err)] mt-2.5 h-5 kr"></p>
+        <button type="submit" id="gateBtn" class="btn btn-primary w-full py-3.5 mt-2">
+          확인
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
+      </form>
+
+      <p class="mt-8 text-[12.5px] text-[var(--faint)] kr leading-relaxed">
+        암호를 모르시면 사무국 총무팀으로 문의해 주세요.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ 본 화면 ══════════════════════════ -->
+<div id="app" class="hidden min-h-screen flex-col">
+
+  <!-- 헤더 -->
+  <header class="sticky top-0 z-40 bg-white/92 backdrop-blur-md border-b border-[var(--line)]">
+    <div class="max-w-[1200px] mx-auto px-5 sm:px-8 h-[64px] flex items-center justify-between gap-6">
+      <button id="brandBtn" class="flex items-center gap-3 min-w-0 text-left">
+        <span class="w-8 h-8 rounded-md flex items-center justify-center serif text-white text-[13px] flex-none"
+              style="background:var(--navy)">KBA</span>
+        <span class="min-w-0">
+          <span class="block text-[13.5px] font-semibold leading-tight truncate">기념품 신청 시스템</span>
+          <span class="block text-[11px] text-[var(--muted)] leading-tight truncate">대한변호사협회 사무국</span>
+        </span>
+      </button>
+
+      <nav class="flex items-center gap-5 sm:gap-7">
+        <button data-nav="catalog" class="navlink">기념품 신청</button>
+        <button data-nav="admin" class="navlink">관리자</button>
+        <span class="hidden sm:flex items-center gap-2 text-[11.5px] text-[var(--muted)] pl-1">
+          <span id="syncDot" class="w-1.5 h-1.5 rounded-full bg-[var(--ok)]"></span>
+          <span id="syncText">연동됨</span>
+        </span>
+        <button id="logoutBtn" class="btn btn-quiet px-2.5 py-1.5 text-[13px]">로그아웃</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ── 카탈로그 ── -->
+  <main id="viewCatalog" class="flex-1">
+    <section class="max-w-[1200px] mx-auto px-5 sm:px-8 pt-14 sm:pt-20">
+      <p class="eyebrow">Souvenir Catalogue</p>
+      <h1 class="serif text-[32px] sm:text-[44px] leading-[1.24] tracking-[-.015em] mt-3.5 kr max-w-[620px]">
+        협회 기념품을<br class="hidden sm:block"> 신청합니다
+      </h1>
+      <p class="mt-5 text-[15px] text-[var(--ink-2)] leading-[1.8] kr max-w-[560px]">
+        신청하면 즉시 재고에 반영되고, 사무국 검토 후 승인·반려됩니다.
+        수량이 넉넉하지 않은 품목은 용도를 구체적으로 적어 주세요.
+      </p>
+      <div id="stats" class="mt-12 sm:mt-14 grid grid-cols-2 md:grid-cols-4 border-t border-[var(--line)]"></div>
+    </section>
+
+    <section class="max-w-[1200px] mx-auto px-5 sm:px-8 pt-14 pb-24">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
+        <h2 class="serif text-[22px] tracking-[-.01em]">기념품 목록 <span id="countLabel" class="text-[var(--muted)] text-[15px] font-sans ml-1">0</span></h2>
+        <div class="flex flex-col sm:flex-row gap-3 sm:items-center">
+          <div class="relative">
+            <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--faint)]" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
+            <input id="search" class="field pl-10 sm:w-[270px]" placeholder="기념품명으로 검색">
+          </div>
+          <label class="flex items-center gap-2.5 text-[13.5px] text-[var(--ink-2)] cursor-pointer select-none whitespace-nowrap">
+            <input id="showSoldout" type="checkbox"> 품절 포함
+          </label>
+        </div>
+      </div>
+
+      <div id="cats" class="flex flex-wrap gap-2 mb-8"></div>
+      <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+      <div id="empty" class="hidden text-center py-28">
+        <p class="serif text-[19px] text-[var(--ink-2)] kr">일치하는 기념품이 없습니다</p>
+        <p class="text-[13.5px] text-[var(--muted)] mt-2 kr">검색어나 분류를 바꿔 보세요.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ── 관리자 ── -->
+  <main id="viewAdmin" class="hidden flex-1">
+    <section class="max-w-[1200px] mx-auto px-5 sm:px-8 pt-14">
+      <p class="eyebrow">Administration</p>
+      <h1 class="serif text-[30px] sm:text-[38px] tracking-[-.015em] mt-3 kr">관리자 콘솔</h1>
+      <div class="mt-9 flex flex-wrap border-b border-[var(--line)]">
+        <button data-tab="requests" class="tabbtn">신청내역</button>
+        <button data-tab="stock" class="tabbtn">재고현황</button>
+        <button data-tab="logs" class="tabbtn">재고로그</button>
+      </div>
+    </section>
+
+    <!-- 신청내역 -->
+    <section id="tabRequests" class="max-w-[1200px] mx-auto px-5 sm:px-8 pt-7 pb-24">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+        <div id="reqFilters" class="flex flex-wrap gap-2"></div>
+        <button id="exportReq" class="btn px-3.5 py-2">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 21h16"/></svg>
+          CSV 내보내기
+        </button>
+      </div>
+      <div class="panel overflow-hidden">
+        <div class="overflow-auto scroll-y max-h-[66vh]">
+          <table class="tbl text-[14px]">
+            <thead>
+              <tr>
+                <th class="text-left">신청일</th>
+                <th class="text-left">기념품</th>
+                <th class="text-left">신청자</th>
+                <th class="text-left">부서</th>
+                <th class="text-left min-w-[240px]">용도</th>
+                <th class="text-right">수량</th>
+                <th class="text-left">상태</th>
+                <th class="text-right">처리</th>
+              </tr>
+            </thead>
+            <tbody id="reqBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 재고현황 -->
+    <section id="tabStock" class="hidden max-w-[1200px] mx-auto px-5 sm:px-8 pt-7 pb-24">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+        <input id="stockSearch" class="field sm:w-[290px]" placeholder="품목 검색">
+        <div class="flex flex-wrap gap-2">
+          <button id="bulkBtn" class="btn px-3.5 py-2">대량 CSV 등록</button>
+          <button id="newItemBtn" class="btn btn-primary px-3.5 py-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            신규등록
+          </button>
+        </div>
+      </div>
+      <div class="panel overflow-hidden">
+        <div class="overflow-auto scroll-y max-h-[66vh]">
+          <table class="tbl text-[14px]">
+            <thead>
+              <tr>
+                <th class="text-left">품목</th>
+                <th class="text-left">구분</th>
+                <th class="text-right">재고</th>
+                <th class="text-left min-w-[220px]">설명</th>
+                <th class="text-left">비고</th>
+                <th class="text-right">처리</th>
+              </tr>
+            </thead>
+            <tbody id="stockBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 재고로그 -->
+    <section id="tabLogs" class="hidden max-w-[1200px] mx-auto px-5 sm:px-8 pt-7 pb-24">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+        <input id="logSearch" class="field sm:w-[290px]" placeholder="품목·비고 검색">
+        <p class="text-[13px] text-[var(--muted)]"><span id="logCount">0</span>건</p>
+      </div>
+      <div class="panel overflow-hidden">
+        <div class="overflow-auto scroll-y max-h-[66vh]">
+          <table class="tbl text-[14px]">
+            <thead>
+              <tr>
+                <th class="text-left">일시</th>
+                <th class="text-left">기념품</th>
+                <th class="text-left">구분</th>
+                <th class="text-right">변동</th>
+                <th class="text-right">이전 → 이후</th>
+                <th class="text-left min-w-[240px]">비고</th>
+              </tr>
+            </thead>
+            <tbody id="logBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-[var(--line)] bg-white mt-auto">
+    <div class="max-w-[1200px] mx-auto px-5 sm:px-8 py-9 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p class="text-[12.5px] text-[var(--muted)]">© 대한변호사협회 사무국</p>
+      <p class="text-[12.5px] text-[var(--muted)] kr">문의 · 사무국 총무팀</p>
+    </div>
+  </footer>
+</div>
+
+<!-- ══════════════════════════ 신청 모달 ══════════════════════════ -->
+<div id="reqModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-[#15181d]/45 backdrop-blur-[3px]">
+  <div class="pop w-full max-w-[520px] bg-white rounded-[16px] shadow-[0_30px_70px_rgba(21,24,29,.28)] max-h-[92vh] overflow-auto scroll-y">
+    <div class="flex items-start gap-4 p-6 border-b border-[var(--line)]">
+      <div id="rmArt" class="w-[84px] h-[63px] rounded-lg overflow-hidden flex-none border border-[var(--line)]"></div>
+      <div class="min-w-0 flex-1">
+        <p class="eyebrow">기념품 수령 신청</p>
+        <h3 class="serif text-[20px] mt-1.5 kr leading-snug" id="rmName">—</h3>
+        <p class="text-[13px] text-[var(--muted)] mt-1.5">잔여 재고 <span id="rmStock" class="text-[var(--ink)] font-semibold">0</span>개</p>
+      </div>
+      <button type="button" data-close="reqModal" class="btn btn-quiet w-8 h-8 p-0 flex-none">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <form id="reqForm" class="p-6 space-y-5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div>
+          <label class="label" for="fName">신청인 성함</label>
+          <input id="fName" class="field" placeholder="성함을 입력하세요" required>
+        </div>
+        <div>
+          <label class="label" for="fDept">소속 부서/팀</label>
+          <input id="fDept" class="field" placeholder="부서를 선택하거나 입력하세요" list="deptList" required>
+          <datalist id="deptList"></datalist>
+        </div>
+      </div>
+      <div>
+        <label class="label" for="fPurpose">상세 용도</label>
+        <textarea id="fPurpose" rows="3" class="field resize-none" placeholder="예) 국회 법사위 보좌진 예방 기념품" required></textarea>
+      </div>
+      <div>
+        <label class="label" for="fQty">신청 수량</label>
+        <div class="flex items-center gap-2.5">
+          <button type="button" data-qty="-1" class="btn w-10 h-10 p-0 text-[17px]">−</button>
+          <input id="fQty" type="number" min="1" value="1" class="field text-center font-semibold w-20">
+          <button type="button" data-qty="1" class="btn w-10 h-10 p-0 text-[17px]">+</button>
+          <span class="text-[13px] text-[var(--muted)] ml-1">최대 <span id="rmMax">0</span>개</span>
+        </div>
+      </div>
+      <p id="rmErr" class="text-[13px] text-[var(--err)] kr"></p>
+      <div class="flex gap-2.5 pt-1">
+        <button type="button" data-close="reqModal" class="btn flex-1 py-3">취소</button>
+        <button type="submit" id="rmSubmit" class="btn btn-primary flex-[2] py-3">신청서 제출</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ══════════════════════════ 관리자 인증 ══════════════════════════ -->
+<div id="adminModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-[#15181d]/45 backdrop-blur-[3px]">
+  <form id="adminForm" class="pop w-full max-w-[400px] bg-white rounded-[16px] p-7 shadow-[0_30px_70px_rgba(21,24,29,.28)]">
+    <p class="eyebrow">Administration</p>
+    <h3 class="serif text-[21px] mt-2">관리자 콘솔</h3>
+    <p class="text-[13.5px] text-[var(--muted)] mt-2 kr leading-relaxed">재고 관리를 위해 관리자 비밀번호를 입력해 주세요.</p>
+    <input id="adminPw" type="password" class="field mt-6 text-center text-[19px] tracking-[.4em] py-3" placeholder="••••">
+    <p id="adminErr" class="text-[13px] text-[var(--err)] h-5 mt-2 text-center"></p>
+    <div class="flex gap-2.5 mt-2">
+      <button type="button" data-close="adminModal" class="btn flex-1 py-3">취소</button>
+      <button type="submit" class="btn btn-primary flex-1 py-3">확인</button>
+    </div>
+  </form>
+</div>
+
+<!-- ══════════════════════════ 품목 편집 ══════════════════════════ -->
+<div id="itemModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-[#15181d]/45 backdrop-blur-[3px]">
+  <form id="itemForm" class="pop w-full max-w-[620px] bg-white rounded-[16px] shadow-[0_30px_70px_rgba(21,24,29,.28)] max-h-[92vh] overflow-auto scroll-y">
+    <div class="px-7 pt-7 pb-5 border-b border-[var(--line)]">
+      <h3 id="imTitle" class="serif text-[21px]">품목 등록</h3>
+      <p class="text-[13px] text-[var(--muted)] mt-1.5 kr">품목명을 입력하면 대표 이미지가 자동으로 만들어집니다.</p>
+    </div>
+    <div class="p-7 grid grid-cols-1 sm:grid-cols-[150px_1fr] gap-6">
+      <div>
+        <span class="label">대표 이미지</span>
+        <div id="iPreview" class="w-full rounded-xl overflow-hidden border border-[var(--line)]"></div>
+        <p class="text-[11.5px] text-[var(--muted)] mt-2 leading-relaxed kr">품목명에 따라 자동 생성됩니다.</p>
+      </div>
+      <div class="space-y-5">
+        <div>
+          <label class="label" for="iName">명칭</label>
+          <input id="iName" class="field" required placeholder="예) 자개 필통함">
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="label" for="iCat">구분</label>
+            <input id="iCat" class="field" list="catList" placeholder="예) 의전/VIP">
+            <datalist id="catList"></datalist>
+          </div>
+          <div>
+            <label class="label" for="iStock">재고량</label>
+            <input id="iStock" type="number" min="0" class="field" value="0" required>
+          </div>
+        </div>
+        <div>
+          <label class="label" for="iDesc">설명</label>
+          <textarea id="iDesc" rows="2" class="field resize-none" placeholder="품목 설명"></textarea>
+        </div>
+        <div>
+          <label class="label" for="iImg">실제 사진 URL <span class="normal-case tracking-normal font-normal text-[var(--faint)]">(선택 · 비우면 자동 이미지 사용)</span></label>
+          <input id="iImg" class="field" placeholder="https://…">
+        </div>
+        <div>
+          <label class="label" for="iNote">비고</label>
+          <input id="iNote" class="field" placeholder="예) 국제팀 전용">
+        </div>
+      </div>
+    </div>
+    <div class="px-7 pb-7 flex gap-2.5">
+      <button type="button" data-close="itemModal" class="btn flex-1 py-3">취소</button>
+      <button type="submit" class="btn btn-primary flex-[2] py-3">저장</button>
+    </div>
+  </form>
+</div>
+
+<!-- ══════════════════════════ CSV 대량등록 ══════════════════════════ -->
+<div id="bulkModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-[#15181d]/45 backdrop-blur-[3px]">
+  <form id="bulkForm" class="pop w-full max-w-[620px] bg-white rounded-[16px] p-7 shadow-[0_30px_70px_rgba(21,24,29,.28)]">
+    <h3 class="serif text-[21px]">대량 CSV 등록</h3>
+    <p class="text-[13.5px] text-[var(--muted)] mt-2 kr leading-relaxed">
+      한 줄에 한 품목씩 붙여넣으세요. 순서는 <b class="text-[var(--ink)]">명칭, 구분, 재고량, 설명, 사진URL, 비고</b> 이며
+      첫 줄이 머리글이면 자동으로 건너뜁니다. 기존과 같은 명칭이면 재고량이 갱신됩니다.
+    </p>
+    <textarea id="bulkText" rows="9" class="field mt-5 text-[13px] resize-none" style="font-family:ui-monospace,Menlo,Consolas,monospace" placeholder="자개 필통함,의전/VIP,20,자개 공예 필통함,,국제팀 전용&#10;라미 볼펜(블랙),문구,50,,,"></textarea>
+    <p id="bulkErr" class="text-[13px] text-[var(--err)] h-5 mt-2"></p>
+    <div class="flex gap-2.5 mt-2">
+      <button type="button" data-close="bulkModal" class="btn flex-1 py-3">취소</button>
+      <button type="submit" class="btn btn-primary flex-[2] py-3">등록</button>
+    </div>
+  </form>
+</div>
+
+<!-- 토스트 -->
+<div id="toasts" class="fixed bottom-6 right-6 z-[60] flex flex-col gap-2.5 items-end"></div>
+
+<!-- 로딩 -->
+<div id="loading" class="hidden fixed inset-0 z-[70] bg-[#f7f6f3]/70 backdrop-blur-[2px] items-center justify-center">
+  <div class="flex flex-col items-center gap-3.5">
+    <svg class="spin text-[var(--navy)]" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+    <p class="text-[12.5px] text-[var(--muted)] font-medium">처리 중…</p>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   ① 설정 — Apps Script 웹앱 URL. 비우면 브라우저 저장 «데모 모드».
+   ═══════════════════════════════════════════════════════════════ */
+const API_URL = 'https://script.google.com/macros/s/AKfycbyGbQccUmbOHtQXTuGTQgWOx4CT0IT4d07CgMHtOkAo1owOtEGtg3cMM7d9PbQ5jHi1/exec';
+
+/* ── 초기 품목 시드 (데모 모드 전용 / 서버 연동 시 미사용) ── */
+const SEED_ITEMS = [
+  ['수저세트(VIP)','의전/VIP',12,'VIP 증정용 수저 세트','최고위 예방용'],
+  ['자개필통함','의전/VIP',24,'자개 공예 필통함',''],
+  ['자개필통함(국제팀)','국제팀',10,'자개 공예 필통함','국제팀 전용'],
+  ['자개매듭 USB(국제팀)','국제팀',16,'자개 매듭 장식 USB','국제팀 전용'],
+  ['명함통','의전/VIP',18,'자개 명함통',''],
+  ['글랜캐런 글래스 2P 트윈세트','의전/VIP',6,'위스키 글래스 2P 세트','고가 품목'],
+  ['타이틀리스트 골프공 세트','의전/VIP',9,'타이틀리스트 골프공 세트',''],
+  ['갤럭시 핏(스마트 워치)','전자',4,'삼성 갤럭시 핏','고가 품목'],
+  ['삼성전자 보조배터리','전자',22,'삼성전자 휴대용 보조배터리',''],
+  ['블루투스키보드','전자',11,'휴대용 블루투스 키보드',''],
+  ['포터블 조명등','전자',15,'휴대용 LED 조명등',''],
+  ['핸드폰거치대','전자',30,'휴대폰 거치대',''],
+  ['손 선풍기','전자',28,'휴대용 손 선풍기',''],
+  ['라미 볼펜','문구',40,'LAMY 볼펜',''],
+  ['파버카스텔(블랙샌드)','문구',17,'파버카스텔 필기구',''],
+  ['텀블러','생활',35,'협회 로고 텀블러',''],
+  ['디퓨저','생활',16,'실내용 디퓨저',''],
+  ['동구밭 퍼퓸바(장미)','생활',25,'동구밭 퍼퓸바 장미향',''],
+  ['손톱깍이(블루)','생활',22,'휴대용 손톱깎이 세트',''],
+  ['3구비누(국제팀)','국제팀',14,'선물용 3구 비누 세트','국제팀 전용'],
+  ['수건(국제팀)','국제팀',20,'협회 로고 수건','국제팀 전용'],
+  ['멀티 어뎁터(국제팀)','국제팀',13,'해외용 멀티 어댑터','국제팀 전용'],
+  ['꿀(2026년동계연수)','행사',30,'2026년 동계연수 기념 꿀','연수팀 관리'],
+  ['파라체이스 장우산','우산/양산',27,'파라체이스 장우산',''],
+  ['넥타이_무궁화(2025년 변호사대회)','행사',15,'2025년 변호사대회 기념 넥타이',''],
+  ['스카프(2025년 변호사대회)','행사',20,'2025년 변호사대회 기념 스카프',''],
+  ['변호사대회용 유리컵_52대','행사',52,'제52회 변호사대회 기념 유리컵','']
+];
+const DEPTS = [
+  '윤리팀','재무팀','평가팀','회원팀','연수팀','정책팀','국제팀','나의 변호사 운영팀',
+  '전산팀','총무팀','법조신문팀','미소팀','인권팀','입법지원실','공보팀','사업팀',
+  '기획팀','법제팀','비서실'
+];
+
+/* ═══════════════════ 품목 이미지 자동 생성 ═══════════════════
+   품목명 → 아이콘 + 색상을 정해서 SVG를 그립니다.
+   같은 이름이면 항상 같은 그림이 나오고, 외부 요청이 없습니다.
+   실제 사진 URL(img)이 있으면 그 사진이 우선합니다.
+   ══════════════════════════════════════════════════════════ */
+const ICONS = {
+  umbrella:'<path d="M2.6 12a9.4 9.4 0 0 1 18.8 0Z"/><path d="M12 2.4V12"/><path d="M12 12v7.3a2.4 2.4 0 0 0 4.8 0"/>',
+  pen:'<path d="M16.6 3.4a2.1 2.1 0 0 1 3 3L7.2 18.8l-4 1.1 1.1-4Z"/><path d="m14.2 5.8 3 3"/>',
+  cup:'<path d="M4 8.2h13V15a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5Z"/><path d="M17 10.4h1.4a2.4 2.4 0 0 1 0 4.8H17"/><path d="M8 2.4v3.2M12 2.4v3.2"/>',
+  glass:'<path d="M5.4 3.2h13.2l-1.1 7.2A5.8 5.8 0 0 1 12 15.2a5.8 5.8 0 0 1-5.5-4.8Z"/><path d="M12 15.2v5.4"/><path d="M8.2 20.6h7.6"/>',
+  fan:'<path d="M3 7.4h8.6a2.7 2.7 0 1 0-2.7-2.7"/><path d="M3 12h11.4a2.7 2.7 0 1 1-2.7 2.7"/><path d="M3 16.6h6.6"/>',
+  battery:'<rect x="2.4" y="7" width="15.6" height="10" rx="2.2"/><path d="M21.6 10.6v2.8"/><path d="M6.2 10.8v2.4M9.6 10.8v2.4"/>',
+  keyboard:'<rect x="2.2" y="6" width="19.6" height="12" rx="2.2"/><path d="M6.2 10h.02M10 10h.02M13.8 10h.02M17.6 10h.02"/><path d="M8.2 14h7.6"/>',
+  clock:'<circle cx="12" cy="12" r="8.8"/><path d="M12 6.8v5.4l3.4 2"/>',
+  lamp:'<path d="M9 2.6h6l3.8 9.2H5.2Z"/><path d="M12 11.8v7.4"/><path d="M8.4 21.4h7.2"/>',
+  phone:'<rect x="6.2" y="2.2" width="11.6" height="19.6" rx="2.6"/><path d="M10.8 18.4h2.4"/>',
+  drive:'<path d="M5.4 5.6h13.2l3 6.6V18a2 2 0 0 1-2 2H4.4a2 2 0 0 1-2-2v-5.8Z"/><path d="M2.4 12.2h19.2"/><path d="M6 16.2h.02M9.4 16.2h.02"/>',
+  golf:'<path d="M11 19.4V3l7.6 4.2L11 11.4"/><circle cx="7.6" cy="19.4" r="2.4"/><path d="M4 22h13"/>',
+  tie:'<path d="M9.4 2.4h5.2l-1 3.8h-3.2Z"/><path d="M10.4 6.2 8.2 12.6 12 21.6l3.8-9-2.2-6.4"/>',
+  fabric:'<path d="M2.6 7.4c2.4-2.6 4.4-2.6 6.8 0s4.4 2.6 6.8 0 4.4-2.6 5.2-1.4"/><path d="M2.6 12.4c2.4-2.6 4.4-2.6 6.8 0s4.4 2.6 6.8 0 4.4-2.6 5.2-1.4"/><path d="M2.6 17.4c2.4-2.6 4.4-2.6 6.8 0s4.4 2.6 6.8 0 4.4-2.6 5.2-1.4"/>',
+  droplet:'<path d="M12 2.8 6.8 8.6a7.4 7.4 0 1 0 10.4 0Z"/><path d="M9.4 14.4a3.2 3.2 0 0 0 2.6 2.8"/>',
+  scissors:'<circle cx="6.2" cy="6.2" r="2.6"/><circle cx="6.2" cy="17.8" r="2.6"/><path d="M20.4 4 8.6 15.4"/><path d="M14.6 14.4 20.4 20"/><path d="M8.6 8.6 12 11.8"/>',
+  jar:'<path d="M8.4 2.6h7.2v2.6l2 3.2v10.4a2.6 2.6 0 0 1-2.6 2.6H9a2.6 2.6 0 0 1-2.6-2.6V8.4l2-3.2Z"/><path d="M6.4 11.6h11.2"/>',
+  box:'<path d="M3.2 8.6h17.6V19a2 2 0 0 1-2 2H5.2a2 2 0 0 1-2-2Z"/><rect x="2.2" y="3.4" width="19.6" height="5.2" rx="1.4"/><path d="M10 13h4"/>',
+  utensils:'<path d="M5 2.6v5a2.6 2.6 0 0 0 5.2 0v-5"/><path d="M7.6 7.6v13.8"/><path d="M16.2 2.6c-1.6 1.9-2.4 4.1-2.4 6.7v3.1h4.8V2.6Z"/><path d="M18.6 12.4v9"/>',
+  plug:'<path d="M9 2.6V8M15 2.6V8"/><path d="M6 8h12v3.8a6 6 0 1 1-12 0Z"/><path d="M12 17.8v3.6"/>',
+  soap:'<rect x="3" y="10.2" width="18" height="9.6" rx="3.2"/><path d="M8 10.2V8.4a4 4 0 0 1 8 0v1.8"/><path d="m18.6 2.6.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7Z"/>',
+  gift:'<path d="M4.2 11.2h15.6v8.6a2 2 0 0 1-2 2H6.2a2 2 0 0 1-2-2Z"/><rect x="2.6" y="6.6" width="18.8" height="4.6" rx="1.3"/><path d="M12 6.6v15.2"/><path d="M12 6.6H8.4a2.1 2.1 0 1 1 0-4.2c2.6 0 3.6 4.2 3.6 4.2Z"/><path d="M12 6.6h3.6a2.1 2.1 0 1 0 0-4.2c-2.6 0-3.6 4.2-3.6 4.2Z"/>'
+};
+
+/* 이름 → 아이콘 (위에서부터 먼저 맞는 것) */
+const ICON_RULES = [
+  [/우산|양산/, 'umbrella'],
+  [/글래스|글랜캐런|위스키|와인/, 'glass'],
+  [/텀블러|유리컵|머그|컵/, 'cup'],
+  [/볼펜|만년필|파버|라미|필기|연필/, 'pen'],
+  [/선풍기|서큘레이터/, 'fan'],
+  [/보조배터리|배터리|충전기/, 'battery'],
+  [/키보드|마우스/, 'keyboard'],
+  [/시계|워치|갤럭시\s*핏|밴드/, 'clock'],
+  [/조명|램프|스탠드|등$/, 'lamp'],
+  [/거치대|핸드폰|휴대폰|스마트폰/, 'phone'],
+  [/USB|usb|메모리|저장/, 'drive'],
+  [/골프/, 'golf'],
+  [/넥타이/, 'tie'],
+  [/스카프|수건|타월|손수건|머플러/, 'fabric'],
+  [/디퓨저|방향제|퍼퓸|샤쉐|향수|캔들/, 'droplet'],
+  [/비누/, 'soap'],
+  [/손톱|깍이|깎이|가위/, 'scissors'],
+  [/꿀|잼|차$|티백|병$/, 'jar'],
+  [/수저|스푼|젓가락|커트러리/, 'utensils'],
+  [/어[뎁댑]터|멀티탭|플러그/, 'plug'],
+  [/필통|명함통|케이스|파우치|함$|박스/, 'box']
+];
+
+/* 차분한 색 조합 — [배경 시작, 배경 끝, 원형 장식, 아이콘 선] */
+const PALETTES = [
+  ['#eef1ee','#dee6e0','#c5d4c8','#3d5546'],
+  ['#f3f0ea','#e7e0d2','#d8ccb7','#5a4c38'],
+  ['#edf0f4','#dce3ed','#c8d3e4','#38455e'],
+  ['#f3efee','#e9dddc','#dcc8c7','#5d3f3f'],
+  ['#eef0f2','#e0e4e8','#ccd3d9','#3b4650'],
+  ['#f0eef3','#e4dfe9','#d3cbdd','#4a4160'],
+  ['#edf2f1','#dce9e6','#c7dcd7','#32534d'],
+  ['#f3f2ea','#e9e5d6','#dbd4bd','#534d38'],
+  ['#f2efec','#e8dfda','#dacbc4','#59453f'],
+  ['#eaeef0','#d9e1e5','#c2d0d6','#344750']
+];
+
+function hashStr(s){
+  let h = 2166136261;
+  for(let i=0;i<s.length;i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+function pickIcon(name){
+  for(const [re, key] of ICON_RULES){ if(re.test(name)) return key; }
+  return 'gift';
+}
+/** 품목명으로 대표 이미지 SVG 문자열을 만듭니다. */
+function itemArt(name, uid){
+  const n = String(name || '기념품');
+  const h = hashStr(n);
+  const p = PALETTES[h % PALETTES.length];
+  const icon = ICONS[pickIcon(n)];
+  const gid = 'ig' + uid;
+  // 장식 원 위치·크기를 이름으로 결정해 품목마다 다른 구도를 만듭니다.
+  const cx1 = 60 + (h % 80), cy1 = 40 + ((h >> 3) % 60), r1 = 78 + ((h >> 6) % 46);
+  const cx2 = 300 - ((h >> 9) % 90), cy2 = 230 - ((h >> 12) % 70), r2 = 46 + ((h >> 15) % 40);
+  const rot = ((h >> 18) % 13) - 6;
+  return `<svg class="art" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escAttr(n)} 대표 이미지">
+    <defs><linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="${p[0]}"/><stop offset="1" stop-color="${p[1]}"/>
+    </linearGradient></defs>
+    <rect width="400" height="300" fill="url(#${gid})"/>
+    <circle cx="${cx1}" cy="${cy1}" r="${r1}" fill="${p[2]}" opacity=".5"/>
+    <circle cx="${cx2}" cy="${cy2}" r="${r2}" fill="${p[2]}" opacity=".35"/>
+    <g transform="translate(200 150) rotate(${rot}) scale(3.5) translate(-12 -12)"
+       fill="none" stroke="${p[3]}" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" opacity=".92">
+      ${icon}
+    </g>
+  </svg>`;
+}
+/** 사진 URL이 있으면 사진, 없으면 자동 생성 이미지 */
+function artFor(item, uid){
+  if(item.img) return `<img class="art object-cover" src="${escAttr(item.img)}" alt="${escAttr(item.name)}" loading="lazy">`;
+  return itemArt(item.name, uid);
+}
+
+/* ═══════════════════════════ 상태 ═══════════════════════════ */
+const state = {
+  pw:'', adminPw:'', demo:!API_URL,
+  items:[], requests:[], logs:[],
+  cat:'전체', q:'', soldout:false,
+  reqStatus:'전체', stockQ:'', logQ:'',
+  view:'catalog', tab:'requests',
+  editingId:null, targetId:null
+};
+
+/* ═══════════════════════════ 유틸 ═══════════════════════════ */
+const $  = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const escAttr = esc;
+const nf = n => Number(n||0).toLocaleString('ko-KR');
+const nowStr = () => new Date().toLocaleString('ko-KR');
+const uid = p => p + '-' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+
+function toast(msg, kind='ok'){
+  const bar = kind==='err' ? 'var(--err)' : kind==='warn' ? 'var(--warn)' : 'var(--ok)';
+  const el = document.createElement('div');
+  el.className = 'pop flex items-start gap-3 pl-4 pr-5 py-3.5 bg-white rounded-xl border border-[var(--line)] text-[13.5px] max-w-[340px] kr leading-relaxed';
+  el.style.boxShadow = '0 12px 34px rgba(21,24,29,.14)';
+  el.innerHTML = `<span style="width:3px;align-self:stretch;border-radius:3px;background:${bar};flex:none"></span><span>${esc(msg)}</span>`;
+  $('#toasts').appendChild(el);
+  setTimeout(()=>{ el.style.transition='opacity .3s,transform .3s'; el.style.opacity='0'; el.style.transform='translateY(6px)';
+    setTimeout(()=>el.remove(), 320); }, 3400);
+}
+function busy(on){
+  const el = $('#loading');
+  el.classList.toggle('hidden', !on);
+  el.classList.toggle('flex', on);
+}
+function sync(ok, text){
+  $('#syncDot').style.background = ok ? 'var(--ok)' : 'var(--err)';
+  $('#syncText').textContent = text;
+}
+
+/* ═══════════════════════ 통신 계층 ═══════════════════════ */
+async function api(action, payload={}){
+  const body = { action, pw:state.pw, adminPw:state.adminPw, ...payload };
+  if(state.demo) return demoApi(action, body);
+  const res = await fetch(API_URL, { method:'POST', body: JSON.stringify(body) });
+  if(!res.ok) throw new Error('서버 응답 오류 (' + res.status + ')');
+  const json = await res.json();
+  if(!json.ok) throw new Error(json.error || '알 수 없는 오류');
+  return json.data;
+}
+
+/* ── 데모 모드 (API_URL 이 비었을 때만) ── */
+const LS = 'kba_souvenir_demo_v1';
+function demoLoad(){
+  const raw = localStorage.getItem(LS);
+  if(raw){ try{ return JSON.parse(raw); }catch(e){} }
+  const items = SEED_ITEMS.map((r,i)=>({
+    id:'IT-'+String(i+1).padStart(3,'0'), name:r[0], category:r[1], stock:r[2], desc:r[3], note:r[4], img:''
+  }));
+  const db = { items, requests:[], logs:[], pw:'0000', adminPw:'1234' };
+  localStorage.setItem(LS, JSON.stringify(db));
+  return db;
+}
+function demoSave(db){ localStorage.setItem(LS, JSON.stringify(db)); }
+function pushLog(db, item, type, delta, before, after, note){
+  db.logs.unshift({ id:uid('LG'), ts:nowStr(), itemId:item.id, itemName:item.name,
+                    type, delta, before, after, note });
+}
+async function demoApi(action, p){
+  await new Promise(r=>setTimeout(r, 140));
+  const db = demoLoad();
+  const findItem = id => db.items.find(i=>i.id===id);
+
+  if(action==='auth'){
+    if(p.pw !== db.pw) throw new Error('접속 암호가 올바르지 않습니다.');
+    return { ok:true };
+  }
+  if(action==='adminAuth'){
+    if(p.adminPw !== db.adminPw) throw new Error('관리자 비밀번호가 올바르지 않습니다.');
+    return { ok:true };
+  }
+  if(action==='bootstrap'){
+    if(p.pw !== db.pw) throw new Error('접속 암호가 올바르지 않습니다.');
+    return { items:db.items, requests:db.requests, logs:db.logs };
+  }
+  if(action==='submitRequest'){
+    const it = findItem(p.itemId);
+    if(!it) throw new Error('품목을 찾을 수 없습니다.');
+    const qty = Number(p.qty);
+    if(!(qty>0)) throw new Error('수량을 확인해 주세요.');
+    if(qty > it.stock) throw new Error('잔여 재고(' + it.stock + '개)를 초과했습니다.');
+    const before = it.stock; it.stock -= qty;
+    db.requests.unshift({ id:uid('RQ'), ts:nowStr(), itemId:it.id, itemName:it.name,
+      applicant:p.applicant, dept:p.dept, purpose:p.purpose, qty, status:'대기' });
+    pushLog(db, it, '출고(신청)', -qty, before, it.stock, p.applicant + '님 신청');
+    demoSave(db); return { items:db.items, requests:db.requests, logs:db.logs };
+  }
+  if(action==='approve' || action==='reject' || action==='deleteRequest'){
+    if(p.adminPw !== db.adminPw) throw new Error('관리자 인증이 필요합니다.');
+    const idx = db.requests.findIndex(r=>r.id===p.id);
+    if(idx<0) throw new Error('신청 건을 찾을 수 없습니다.');
+    const rq = db.requests[idx], it = findItem(rq.itemId);
+    if(action==='approve'){
+      if(rq.status==='반려' && it){
+        if(rq.qty > it.stock) throw new Error('잔여 재고('+it.stock+'개)가 부족해 승인할 수 없습니다.');
+        const b=it.stock; it.stock-=rq.qty;
+        pushLog(db,it,'출고(승인)',-rq.qty,b,it.stock,'반려 철회 후 승인: '+rq.applicant+'님 건');
+      }
+      rq.status='승인';
+    }
+    if(action==='reject'){
+      if(rq.status!=='반려' && it){ const b=it.stock; it.stock+=rq.qty; pushLog(db,it,'입고(반려)',rq.qty,b,it.stock,'반려: '+rq.applicant+'님 건'); }
+      rq.status='반려';
+    }
+    if(action==='deleteRequest'){
+      if(rq.status!=='반려' && it){ const b=it.stock; it.stock+=rq.qty; pushLog(db,it,'입고(신청삭제)',rq.qty,b,it.stock,'관리자 삭제: '+rq.applicant+'님의 신청 내역 삭제 및 재고 복구'); }
+      db.requests.splice(idx,1);
+    }
+    demoSave(db); return { items:db.items, requests:db.requests, logs:db.logs };
+  }
+  if(action==='saveItem'){
+    if(p.adminPw !== db.adminPw) throw new Error('관리자 인증이 필요합니다.');
+    const stock = Number(p.stock)||0;
+    if(p.id){
+      const it = findItem(p.id);
+      if(!it) throw new Error('품목을 찾을 수 없습니다.');
+      const before = it.stock;
+      Object.assign(it,{ name:p.name, category:p.category, desc:p.desc, img:p.img, note:p.note, stock });
+      if(before!==stock){
+        const d = stock-before;
+        pushLog(db, it, d>0?'입고(조정)':'출고(조정)', d, before, stock, '관리자 수정: '+before+' -> '+stock);
+      } else {
+        pushLog(db, it, '정보수정', 0, before, stock, '관리자 품목 정보 수정');
+      }
+    } else {
+      const n = db.items.length+1;
+      const it = { id:'IT-'+String(n).padStart(3,'0'), name:p.name, category:p.category,
+                   desc:p.desc, img:p.img, note:p.note, stock };
+      db.items.push(it);
+      pushLog(db, it, '신규등록', stock, 0, stock, '관리자 신규 등록');
+    }
+    demoSave(db); return { items:db.items, requests:db.requests, logs:db.logs };
+  }
+  if(action==='deleteItem'){
+    if(p.adminPw !== db.adminPw) throw new Error('관리자 인증이 필요합니다.');
+    const it = findItem(p.id);
+    if(it){ pushLog(db, it, '품목삭제', -it.stock, it.stock, 0, '관리자 품목 삭제'); }
+    db.items = db.items.filter(i=>i.id!==p.id);
+    demoSave(db); return { items:db.items, requests:db.requests, logs:db.logs };
+  }
+  if(action==='bulkImport'){
+    if(p.adminPw !== db.adminPw) throw new Error('관리자 인증이 필요합니다.');
+    let added=0, updated=0;
+    p.rows.forEach(r=>{
+      const [name,category,stockRaw,desc,img,note] = r;
+      if(!name) return;
+      const stock = Number(stockRaw)||0;
+      const ex = db.items.find(i=>i.name===name);
+      if(ex){
+        const b = ex.stock;
+        Object.assign(ex,{ category:category||ex.category, desc:desc||ex.desc, img:img||ex.img, note:note||ex.note, stock });
+        if(b!==stock) pushLog(db, ex, stock>b?'입고(대량등록)':'출고(대량등록)', stock-b, b, stock, '대량 CSV 등록');
+        updated++;
+      } else {
+        const it = { id:'IT-'+String(db.items.length+1).padStart(3,'0'), name, category:category||'기타',
+                     desc:desc||'', img:img||'', note:note||'', stock };
+        db.items.push(it);
+        pushLog(db, it, '신규등록', stock, 0, stock, '대량 CSV 등록');
+        added++;
+      }
+    });
+    demoSave(db);
+    return { items:db.items, requests:db.requests, logs:db.logs, added, updated };
+  }
+  throw new Error('알 수 없는 요청: ' + action);
+}
+
+/* ═══════════════════════ 렌더링 ═══════════════════════ */
+function renderStats(){
+  const items = state.items;
+  const totalStock = items.reduce((a,i)=>a+Number(i.stock||0),0);
+  const soldout = items.filter(i=>Number(i.stock||0)<=0).length;
+  const pending = state.requests.filter(r=>r.status==='대기').length;
+  const cards = [
+    ['총 품목', nf(items.length), '개'],
+    ['총 재고', nf(totalStock), '개'],
+    ['품절 품목', nf(soldout), '개'],
+    ['검토 대기', nf(pending), '건']
+  ];
+  $('#stats').innerHTML = cards.map(([label,val,unit],i)=>`
+    <div class="py-7 pr-6 ${i<3?'md:border-r':''} border-[var(--line)] ${i%2===0?'md:pl-0':'pl-6 md:pl-6'} ${i>=2?'border-t md:border-t-0':''}">
+      <p class="text-[12.5px] text-[var(--muted)]">${label}</p>
+      <p class="serif text-[30px] leading-none mt-2.5 tracking-[-.02em]">${val}<span class="text-[14px] text-[var(--muted)] font-sans ml-1">${unit}</span></p>
+    </div>`).join('');
+}
+
+function renderCats(){
+  const cats = ['전체', ...new Set(state.items.map(i=>i.category||'기타'))];
+  $('#cats').innerHTML = cats.map(c=>`
+    <button data-cat="${escAttr(c)}" class="catbtn px-4 py-2 chip ${state.cat===c?'chip-on':''}">${esc(c)}</button>`).join('');
+}
+
+function visibleItems(){
+  const q = state.q.trim().toLowerCase();
+  return state.items.filter(i=>{
+    if(state.cat!=='전체' && (i.category||'기타')!==state.cat) return false;
+    if(!state.soldout && Number(i.stock||0)<=0) return false;
+    if(q && !(`${i.name} ${i.desc||''} ${i.note||''}`.toLowerCase().includes(q))) return false;
+    return true;
+  });
+}
+
+function renderGrid(){
+  const list = visibleItems();
+  $('#countLabel').textContent = nf(list.length);
+  $('#empty').classList.toggle('hidden', list.length>0);
+  $('#grid').innerHTML = list.map(i=>{
+    const stock = Number(i.stock||0), out = stock<=0;
+    return `
+    <article class="card flex flex-col">
+      <div class="relative ${out?'art-out':''}">
+        ${artFor(i, 'c'+i.id)}
+        ${i.note ? `<span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-sm text-[11px] font-semibold text-[var(--ink-2)] shadow-sm">${esc(i.note)}</span>`:''}
+        ${out ? `<span class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-[var(--ink)] text-white text-[11px] font-semibold">품절</span>`:''}
+      </div>
+      <div class="p-5 flex flex-col flex-1 border-t border-[var(--line-2)]">
+        <p class="eyebrow">${esc(i.category||'기타')}</p>
+        <h3 class="mt-2 text-[15px] font-semibold kr leading-snug">${esc(i.name)}</h3>
+        <p class="mt-1.5 text-[13px] text-[var(--muted)] kr leading-relaxed flex-1">${esc(i.desc||'')}</p>
+        <div class="mt-4 pt-4 border-t border-[var(--line-2)] flex items-center justify-between gap-3">
+          <p class="text-[13px] ${out?'text-[var(--faint)]':'text-[var(--ink-2)]'}">
+            잔여 <span class="font-semibold ${out?'':'text-[var(--ink)]'}">${nf(stock)}</span>개
+          </p>
+          <button data-req="${escAttr(i.id)}" ${out?'disabled':''} class="btn ${out?'':'btn-primary'} px-4 py-2">
+            ${out?'품절':'신청하기'}
+          </button>
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+}
+
+const STATUS_STYLE = { '대기':'b-wait', '승인':'b-ok', '반려':'b-no' };
+function renderRequests(){
+  const tabs = ['전체','대기','승인','반려'];
+  $('#reqFilters').innerHTML = tabs.map(t=>{
+    const n = t==='전체' ? state.requests.length : state.requests.filter(r=>r.status===t).length;
+    return `<button data-rf="${t}" class="rfbtn px-3.5 py-1.5 chip ${state.reqStatus===t?'chip-on':''}">${t} <span class="opacity-55 ml-0.5">${n}</span></button>`;
+  }).join('');
+
+  const rows = state.requests.filter(r=>state.reqStatus==='전체'||r.status===state.reqStatus);
+  $('#reqBody').innerHTML = rows.length ? rows.map(r=>`
+    <tr>
+      <td class="text-[13px] text-[var(--muted)] whitespace-nowrap">${esc(r.ts)}</td>
+      <td class="font-medium kr">${esc(r.itemName)}</td>
+      <td class="whitespace-nowrap">${esc(r.applicant)}</td>
+      <td class="text-[var(--muted)] whitespace-nowrap">${esc(r.dept)}</td>
+      <td class="text-[var(--ink-2)] kr">${esc(r.purpose)}</td>
+      <td class="text-right font-semibold">${nf(r.qty)}</td>
+      <td><span class="badge ${STATUS_STYLE[r.status]||''}">${esc(r.status)}</span></td>
+      <td class="text-right">
+        <div class="inline-flex gap-1.5">
+          ${r.status!=='승인'?`<button data-act="approve" data-id="${escAttr(r.id)}" class="btn px-2.5 py-1.5 text-[12.5px]">승인</button>`:''}
+          ${r.status!=='반려'?`<button data-act="reject" data-id="${escAttr(r.id)}" class="btn px-2.5 py-1.5 text-[12.5px]">반려</button>`:''}
+          <button data-act="deleteRequest" data-id="${escAttr(r.id)}" class="btn btn-danger px-2.5 py-1.5 text-[12.5px]">삭제</button>
+        </div>
+      </td>
+    </tr>`).join('')
+    : `<tr><td colspan="8" class="py-20 text-center text-[14px] text-[var(--muted)] kr">신청 내역이 없습니다</td></tr>`;
+}
+
+function renderStock(){
+  const q = state.stockQ.trim().toLowerCase();
+  const rows = state.items.filter(i=>!q || `${i.id} ${i.name} ${i.category||''} ${i.note||''}`.toLowerCase().includes(q));
+  $('#stockBody').innerHTML = rows.length ? rows.map(i=>`
+    <tr>
+      <td>
+        <div class="flex items-center gap-3 min-w-[220px]">
+          <div class="w-12 h-9 rounded-md overflow-hidden border border-[var(--line)] flex-none">${artFor(i,'s'+i.id)}</div>
+          <div class="min-w-0">
+            <p class="font-medium kr leading-snug">${esc(i.name)}</p>
+            <p class="text-[11.5px] text-[var(--faint)]">${esc(i.id)}</p>
+          </div>
+        </div>
+      </td>
+      <td class="text-[var(--muted)] whitespace-nowrap">${esc(i.category||'기타')}</td>
+      <td class="text-right font-semibold ${Number(i.stock)<=0?'text-[var(--err)]':''}">${nf(i.stock)}</td>
+      <td class="text-[var(--ink-2)] kr">${esc(i.desc||'')}</td>
+      <td class="text-[var(--muted)] whitespace-nowrap">${esc(i.note||'')}</td>
+      <td class="text-right">
+        <div class="inline-flex gap-1.5">
+          <button data-act="editItem" data-id="${escAttr(i.id)}" class="btn px-2.5 py-1.5 text-[12.5px]">수정</button>
+          <button data-act="deleteItem" data-id="${escAttr(i.id)}" class="btn btn-danger px-2.5 py-1.5 text-[12.5px]">삭제</button>
+        </div>
+      </td>
+    </tr>`).join('')
+    : `<tr><td colspan="6" class="py-20 text-center text-[14px] text-[var(--muted)] kr">품목이 없습니다</td></tr>`;
+}
+
+function renderLogs(){
+  const q = state.logQ.trim().toLowerCase();
+  const rows = state.logs.filter(l=>!q || `${l.itemName} ${l.note||''} ${l.type}`.toLowerCase().includes(q));
+  $('#logCount').textContent = nf(rows.length);
+  $('#logBody').innerHTML = rows.length ? rows.slice(0,500).map(l=>{
+    const inbound = String(l.type).startsWith('입고') || l.type==='신규등록';
+    return `
+    <tr>
+      <td class="text-[13px] text-[var(--muted)] whitespace-nowrap">${esc(l.ts)}</td>
+      <td class="font-medium kr">${esc(l.itemName)}</td>
+      <td><span class="badge ${inbound?'b-in':'b-out'}">${esc(l.type)}</span></td>
+      <td class="text-right font-semibold ${Number(l.delta)>0?'text-[var(--ok)]':Number(l.delta)<0?'text-[var(--err)]':'text-[var(--muted)]'}">${Number(l.delta)>0?'+':''}${nf(l.delta)}</td>
+      <td class="text-right text-[var(--muted)] whitespace-nowrap">${nf(l.before)} → <span class="text-[var(--ink)] font-semibold">${nf(l.after)}</span></td>
+      <td class="text-[var(--ink-2)] kr">${esc(l.note||'')}</td>
+    </tr>`;
+  }).join('')
+    : `<tr><td colspan="6" class="py-20 text-center text-[14px] text-[var(--muted)] kr">로그가 없습니다</td></tr>`;
+}
+
+function renderAll(){
+  renderStats(); renderCats(); renderGrid();
+  renderRequests(); renderStock(); renderLogs();
+  $('#deptList').innerHTML = DEPTS.map(d=>`<option value="${escAttr(d)}">`).join('');
+  $('#catList').innerHTML = [...new Set(state.items.map(i=>i.category||'기타'))].map(c=>`<option value="${escAttr(c)}">`).join('');
+}
+
+function applyData(d){
+  if(!d) return;
+  if(d.items) state.items = d.items;
+  if(d.requests) state.requests = d.requests;
+  if(d.logs) state.logs = d.logs;
+  renderAll();
+}
+
+/* ═══════════════════════ 화면 전환 ═══════════════════════ */
+function setView(v){
+  state.view = v;
+  $('#viewCatalog').classList.toggle('hidden', v!=='catalog');
+  $('#viewAdmin').classList.toggle('hidden', v!=='admin');
+  $$('.navlink').forEach(b=>{
+    b.classList.toggle('navlink-on', b.dataset.nav===v);
+  });
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+function setTab(t){
+  state.tab = t;
+  $('#tabRequests').classList.toggle('hidden', t!=='requests');
+  $('#tabStock').classList.toggle('hidden', t!=='stock');
+  $('#tabLogs').classList.toggle('hidden', t!=='logs');
+  $$('.tabbtn').forEach(b=> b.classList.toggle('tabbtn-on', b.dataset.tab===t));
+}
+const openModal  = id => { const m=$('#'+id); m.classList.remove('hidden'); m.classList.add('flex'); };
+const closeModal = id => { const m=$('#'+id); m.classList.add('hidden'); m.classList.remove('flex'); };
+
+function enterApp(){
+  $('#gate').classList.add('hidden');
+  $('#app').classList.remove('hidden');
+  $('#app').classList.add('flex');
+}
+function leaveApp(){
+  $('#app').classList.add('hidden');
+  $('#app').classList.remove('flex');
+  $('#gate').classList.remove('hidden');
+}
+
+/* ═══════════════════════ 이벤트 ═══════════════════════ */
+$('#gateForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const pw = $('#gatePw').value.trim();
+  $('#gateErr').textContent = '';
+  $('#gateBtn').disabled = true;
+  busy(true);
+  try{
+    state.pw = pw;
+    applyData(await api('bootstrap', { pw }));
+    sessionStorage.setItem('kba_pw', pw);
+    enterApp();
+    setView('catalog'); setTab('requests');
+    sync(true, state.demo ? '데모 모드' : '연동됨');
+    if(state.demo) toast('데모 모드입니다. 데이터는 이 브라우저에만 저장됩니다.', 'warn');
+  }catch(err){
+    state.pw = '';
+    $('#gateErr').textContent = err.message;
+    $('#gatePw').value = '';
+    $('#gatePw').focus();
+  }finally{ $('#gateBtn').disabled = false; busy(false); }
+});
+
+$('#logoutBtn').addEventListener('click', ()=>{
+  sessionStorage.removeItem('kba_pw');
+  state.pw=''; state.adminPw='';
+  leaveApp();
+  $('#gatePw').value='';
+});
+
+$('#brandBtn').addEventListener('click', ()=>setView('catalog'));
+
+$$('.navlink').forEach(b=>b.addEventListener('click', ()=>{
+  if(b.dataset.nav==='admin'){
+    if(state.adminPw){ setView('admin'); }
+    else { $('#adminErr').textContent=''; $('#adminPw').value=''; openModal('adminModal'); setTimeout(()=>$('#adminPw').focus(),60); }
+  } else setView('catalog');
+}));
+
+$('#adminForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const pw = $('#adminPw').value.trim();
+  try{
+    await api('adminAuth', { adminPw:pw });
+    state.adminPw = pw;
+    closeModal('adminModal'); setView('admin'); setTab(state.tab);
+    toast('관리자 모드로 전환했습니다.');
+  }catch(err){ $('#adminErr').textContent = err.message; }
+});
+
+$$('.tabbtn').forEach(b=>b.addEventListener('click', ()=>setTab(b.dataset.tab)));
+
+$('#search').addEventListener('input', e=>{ state.q = e.target.value; renderGrid(); });
+$('#showSoldout').addEventListener('change', e=>{ state.soldout = e.target.checked; renderGrid(); });
+$('#cats').addEventListener('click', e=>{
+  const b = e.target.closest('.catbtn'); if(!b) return;
+  state.cat = b.dataset.cat; renderCats(); renderGrid();
+});
+$('#stockSearch').addEventListener('input', e=>{ state.stockQ = e.target.value; renderStock(); });
+$('#logSearch').addEventListener('input', e=>{ state.logQ = e.target.value; renderLogs(); });
+$('#reqFilters').addEventListener('click', e=>{
+  const b = e.target.closest('.rfbtn'); if(!b) return;
+  state.reqStatus = b.dataset.rf; renderRequests();
+});
+
+// 신청 모달
+$('#grid').addEventListener('click', e=>{
+  const b = e.target.closest('[data-req]'); if(!b || b.disabled) return;
+  const it = state.items.find(i=>i.id===b.dataset.req); if(!it) return;
+  state.targetId = it.id;
+  $('#rmArt').innerHTML = artFor(it, 'm'+it.id);
+  $('#rmName').textContent = it.name;
+  $('#rmStock').textContent = nf(it.stock);
+  $('#rmMax').textContent = nf(it.stock);
+  $('#fQty').value = 1; $('#fQty').max = it.stock;
+  $('#rmErr').textContent = '';
+  const last = JSON.parse(localStorage.getItem('kba_last_applicant')||'{}');
+  $('#fName').value = last.name||''; $('#fDept').value = last.dept||''; $('#fPurpose').value = '';
+  openModal('reqModal');
+  setTimeout(()=>$('#fName').focus(), 60);
+});
+
+$$('[data-qty]').forEach(b=>b.addEventListener('click', ()=>{
+  const inp = $('#fQty');
+  const max = Number(inp.max)||9999;
+  inp.value = Math.min(max, Math.max(1, (Number(inp.value)||1) + Number(b.dataset.qty)));
+}));
+
+$('#reqForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const payload = {
+    itemId: state.targetId,
+    applicant: $('#fName').value.trim(),
+    dept: $('#fDept').value.trim(),
+    purpose: $('#fPurpose').value.trim(),
+    qty: Number($('#fQty').value)
+  };
+  if(!payload.applicant || !payload.dept || !payload.purpose){ $('#rmErr').textContent='모든 항목을 입력해 주세요.'; return; }
+  $('#rmSubmit').disabled = true; $('#rmSubmit').textContent = '처리 중…';
+  busy(true);
+  try{
+    applyData(await api('submitRequest', payload));
+    localStorage.setItem('kba_last_applicant', JSON.stringify({ name:payload.applicant, dept:payload.dept }));
+    closeModal('reqModal');
+    toast('신청서를 제출했습니다. 사무국 검토 후 처리됩니다.');
+  }catch(err){ $('#rmErr').textContent = err.message; }
+  finally{
+    busy(false);
+    $('#rmSubmit').disabled = false;
+    $('#rmSubmit').textContent = '신청서 제출';
+  }
+});
+
+// 관리자 액션
+document.addEventListener('click', async e=>{
+  const b = e.target.closest('[data-act]'); if(!b) return;
+  const { act, id } = b.dataset;
+
+  if(act==='editItem'){
+    const it = state.items.find(i=>i.id===id); if(!it) return;
+    state.editingId = it.id;
+    $('#imTitle').textContent = '품목 수정';
+    $('#iName').value=it.name; $('#iCat').value=it.category||''; $('#iStock').value=it.stock;
+    $('#iDesc').value=it.desc||''; $('#iImg').value=it.img||''; $('#iNote').value=it.note||'';
+    refreshPreview();
+    openModal('itemModal'); return;
+  }
+  if(act==='deleteItem'){
+    const it = state.items.find(i=>i.id===id);
+    if(!confirm(`「${it?it.name:id}」 품목을 삭제할까요? 되돌릴 수 없습니다.`)) return;
+    busy(true);
+    try{ applyData(await api('deleteItem',{ id })); toast('품목을 삭제했습니다.'); }
+    catch(err){ toast(err.message,'err'); } finally{ busy(false); }
+    return;
+  }
+  if(act==='deleteRequest'){
+    if(!confirm('신청 내역을 삭제할까요? 승인·대기 상태였다면 재고가 복구됩니다.')) return;
+  }
+  if(act==='approve'||act==='reject'||act==='deleteRequest'){
+    busy(true);
+    try{
+      applyData(await api(act,{ id }));
+      toast(act==='approve'?'신청을 승인했습니다.':act==='reject'?'신청을 반려했습니다.':'신청 내역을 삭제했습니다.');
+    }catch(err){ toast(err.message,'err'); } finally{ busy(false); }
+  }
+});
+
+// 품목 등록/수정 + 이미지 미리보기
+function refreshPreview(){
+  const name = $('#iName').value.trim();
+  const img  = $('#iImg').value.trim();
+  $('#iPreview').innerHTML = artFor({ name: name || '기념품', img }, 'p' + hashStr(name || 'x'));
+}
+$('#iName').addEventListener('input', refreshPreview);
+$('#iImg').addEventListener('input', refreshPreview);
+
+$('#newItemBtn').addEventListener('click', ()=>{
+  state.editingId = null;
+  $('#imTitle').textContent = '품목 등록';
+  $('#itemForm').reset(); $('#iStock').value = 0;
+  refreshPreview();
+  openModal('itemModal'); setTimeout(()=>$('#iName').focus(),60);
+});
+$('#itemForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const payload = {
+    id: state.editingId,
+    name: $('#iName').value.trim(),
+    category: $('#iCat').value.trim() || '기타',
+    stock: Number($('#iStock').value)||0,
+    desc: $('#iDesc').value.trim(),
+    img: $('#iImg').value.trim(),
+    note: $('#iNote').value.trim()
+  };
+  busy(true);
+  try{
+    applyData(await api('saveItem', payload));
+    closeModal('itemModal');
+    toast(state.editingId?'품목을 수정했습니다.':'품목을 등록했습니다.');
+  }catch(err){ toast(err.message,'err'); } finally{ busy(false); }
+});
+
+// CSV 대량등록
+$('#bulkBtn').addEventListener('click', ()=>{ $('#bulkText').value=''; $('#bulkErr').textContent=''; openModal('bulkModal'); });
+function parseCsv(text){
+  const rows=[]; let row=[], cell='', inQ=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(inQ){
+      if(c==='"'){ if(text[i+1]==='"'){ cell+='"'; i++; } else inQ=false; }
+      else cell+=c;
+    } else {
+      if(c==='"') inQ=true;
+      else if(c===','){ row.push(cell); cell=''; }
+      else if(c==='\n'){ row.push(cell); rows.push(row); row=[]; cell=''; }
+      else if(c!=='\r') cell+=c;
+    }
+  }
+  if(cell||row.length){ row.push(cell); rows.push(row); }
+  return rows.map(r=>r.map(c=>c.trim())).filter(r=>r.some(c=>c!==''));
+}
+$('#bulkForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  let rows = parseCsv($('#bulkText').value);
+  if(!rows.length){ $('#bulkErr').textContent='등록할 내용이 없습니다.'; return; }
+  if(/명칭|이름|품목/.test(rows[0][0]||'')) rows = rows.slice(1);
+  if(!rows.length){ $('#bulkErr').textContent='머리글 외 데이터가 없습니다.'; return; }
+  busy(true);
+  try{
+    const d = await api('bulkImport',{ rows });
+    applyData(d);
+    closeModal('bulkModal');
+    toast(`대량 등록 완료 · 신규 ${d.added||0}건, 갱신 ${d.updated||0}건`);
+  }catch(err){ $('#bulkErr').textContent = err.message; } finally{ busy(false); }
+});
+
+// CSV 내보내기
+$('#exportReq').addEventListener('click', ()=>{
+  const head = ['신청일','기념품명','신청자','부서','용도','수량','상태'];
+  const q = v => `"${String(v??'').replace(/"/g,'""')}"`;
+  const csv = '﻿' + [head.join(','), ...state.requests.map(r=>
+    [r.ts,r.itemName,r.applicant,r.dept,r.purpose,r.qty,r.status].map(q).join(','))].join('\n');
+  const url = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  const a = document.createElement('a');
+  a.href=url; a.download=`기념품_신청내역_${new Date().toISOString().slice(0,10)}.csv`; a.click();
+  URL.revokeObjectURL(url);
+});
+
+// 모달 닫기
+$$('[data-close]').forEach(b=>b.addEventListener('click', ()=>closeModal(b.dataset.close)));
+$$('#reqModal,#adminModal,#itemModal,#bulkModal').forEach(m=>m.addEventListener('mousedown', e=>{
+  if(e.target===m) closeModal(m.id);
+}));
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape') ['reqModal','adminModal','itemModal','bulkModal'].forEach(closeModal);
+});
+
+/* ═══════════════════════ 부팅 ═══════════════════════ */
+(async function boot(){
+  const saved = sessionStorage.getItem('kba_pw');
+  if(saved){
+    try{
+      state.pw = saved;
+      applyData(await api('bootstrap', { pw:saved }));
+      enterApp();
+      setView('catalog'); setTab('requests');
+      sync(true, state.demo ? '데모 모드' : '연동됨');
+    }catch(err){
+      sessionStorage.removeItem('kba_pw'); state.pw='';
+      sync(false, '연결 오류');
+    }
+  }
+})();
+</script>
+</body>
+</html>
