@@ -138,6 +138,73 @@
   table.tbl tbody tr:last-child td{ border-bottom:0; }
   table.tbl tbody tr:hover{ background:#fbfaf8; }
 
+  /* ── 정렬 가능한 헤더 ── */
+  th.sortable{ padding:0 !important; }
+  th.sortable > button{
+    width:100%; display:flex; align-items:center; gap:.35rem;
+    padding:.85rem 1rem; font:inherit; color:inherit; letter-spacing:inherit;
+    text-transform:inherit; background:none; border:0; cursor:pointer;
+    transition:color .14s, background .14s;
+  }
+  th.sortable > button:hover{ color:var(--ink); background:#f4f2ee; }
+  th.sortable.num > button{ justify-content:flex-end; }
+  .sort-ind{ font-size:9px; line-height:1; opacity:0; transition:opacity .14s; }
+  th.sortable > button:hover .sort-ind{ opacity:.45; }
+  th.sorted > button{ color:var(--navy); }
+  th.sorted .sort-ind{ opacity:1; }
+
+  /* ── 차트 ── */
+  .viz{
+    --series-1:#2f5a87;
+    --grid:#eceae5;
+    --s0:#e3ebf3; --s1:#c0d3e5; --s2:#93b0cf; --s3:#6389b3; --s4:#3d6494; --s5:#22456f; --s6:#16233a;
+  }
+  .bar-row{ display:grid; grid-template-columns:var(--labw,150px) 1fr 62px; align-items:center; gap:.7rem; padding:.28rem 0; cursor:default; }
+  .bar-track{ position:relative; height:20px; background:var(--grid); border-radius:3px; overflow:hidden; }
+  .bar-fill{
+    position:absolute; inset:0 auto 0 0; background:var(--series-1);
+    border-radius:0 4px 4px 0; transition:width .5s cubic-bezier(.2,.7,.3,1), filter .14s;
+  }
+  .bar-row:hover .bar-fill{ filter:brightness(1.2); }
+  .bar-lab{ font-size:12.5px; color:var(--ink-2); text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .bar-val{ font-size:12.5px; font-variant-numeric:tabular-nums; color:var(--ink); font-weight:600; text-align:right; }
+
+  .col-chart{ display:flex; align-items:flex-end; gap:5px; height:160px; }
+  .col-wrap{ flex:1; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:7px; min-width:0; cursor:default; }
+  .col-fill{ width:100%; max-width:52px; background:var(--series-1); border-radius:4px 4px 0 0; min-height:2px; transition:filter .14s; }
+  .col-wrap:hover .col-fill{ filter:brightness(1.2); }
+  .col-lab{ font-size:10.5px; color:var(--muted); white-space:nowrap; }
+
+  table.heat{ border-collapse:separate; border-spacing:2px; }
+  table.heat th{ position:static; background:transparent; border:0; padding:.3rem .45rem; }
+  table.heat td{ border:0; padding:0; }
+  .heat-cell{ text-align:center; font-size:12px; font-variant-numeric:tabular-nums; padding:.5rem .35rem; border-radius:3px; min-width:42px; cursor:default; }
+  .heat-0{ background:#f6f5f2; color:#c9ccd2; }
+  .heat-1{ background:var(--s0); color:#2b3440; }
+  .heat-2{ background:var(--s1); color:#26313d; }
+  .heat-3{ background:var(--s2); color:#1c2833; }
+  .heat-4{ background:var(--s3); color:#fff; }
+  .heat-5{ background:var(--s4); color:#fff; }
+  .heat-6{ background:var(--s5); color:#fff; }
+  .heat-7{ background:var(--s6); color:#fff; }
+  .heat-rowh{ font-size:12.5px; color:var(--ink-2); white-space:nowrap; text-align:right; padding-right:.6rem !important; }
+  .heat-colh{
+    font-size:11px; color:var(--muted); white-space:nowrap;
+    writing-mode:vertical-rl; transform:rotate(180deg); height:96px; vertical-align:bottom;
+  }
+  .legend-step{ width:24px; height:9px; }
+
+  /* 툴팁 */
+  #vizTip{
+    position:fixed; z-index:80; pointer-events:none; opacity:0; transform:translateY(4px);
+    transition:opacity .12s, transform .12s;
+    background:#15181d; color:#fff; font-size:12px; line-height:1.6;
+    padding:.5rem .7rem; border-radius:8px;
+    box-shadow:0 10px 28px rgba(21,24,29,.32); white-space:nowrap;
+  }
+  #vizTip.on{ opacity:1; transform:none; }
+  #vizTip .dim{ color:#a8aeb8; }
+
   /* 스크롤바 */
   .scroll-y::-webkit-scrollbar{ width:10px; height:10px; }
   .scroll-y::-webkit-scrollbar-track{ background:transparent; }
@@ -310,6 +377,7 @@
         <button data-tab="requests" class="tabbtn">신청내역</button>
         <button data-tab="stock" class="tabbtn">재고현황</button>
         <button data-tab="logs" class="tabbtn">재고로그</button>
+        <button data-tab="stats" class="tabbtn">통계</button>
       </div>
     </section>
 
@@ -326,14 +394,14 @@
         <div class="overflow-auto scroll-y max-h-[66vh]">
           <table class="tbl text-[14px]">
             <thead>
-              <tr>
-                <th class="text-left">신청일</th>
-                <th class="text-left">기념품</th>
-                <th class="text-left">신청자</th>
-                <th class="text-left">부서</th>
-                <th class="text-left min-w-[240px]">용도</th>
-                <th class="text-right">수량</th>
-                <th class="text-left">상태</th>
+              <tr data-sorthead="requests">
+                <th class="sortable" data-key="ts"        data-type="ts"><button type="button">신청일<span class="sort-ind"></span></button></th>
+                <th class="sortable" data-key="itemName"  data-type="str"><button type="button">기념품<span class="sort-ind"></span></button></th>
+                <th class="sortable" data-key="applicant" data-type="str"><button type="button">신청자<span class="sort-ind"></span></button></th>
+                <th class="sortable" data-key="dept"      data-type="str"><button type="button">부서<span class="sort-ind"></span></button></th>
+                <th class="sortable min-w-[240px]" data-key="purpose" data-type="str"><button type="button">용도<span class="sort-ind"></span></button></th>
+                <th class="sortable num" data-key="qty"   data-type="num"><button type="button">수량<span class="sort-ind"></span></button></th>
+                <th class="sortable" data-key="status"    data-type="str"><button type="button">상태<span class="sort-ind"></span></button></th>
                 <th class="text-right">처리</th>
               </tr>
             </thead>
@@ -359,12 +427,12 @@
         <div class="overflow-auto scroll-y max-h-[66vh]">
           <table class="tbl text-[14px]">
             <thead>
-              <tr>
-                <th class="text-left">품목</th>
-                <th class="text-left">구분</th>
-                <th class="text-right">재고</th>
-                <th class="text-left min-w-[220px]">설명</th>
-                <th class="text-left">비고</th>
+              <tr data-sorthead="stock">
+                <th class="sortable" data-key="name"     data-type="str"><button type="button">품목<span class="sort-ind"></span></button></th>
+                <th class="sortable" data-key="category" data-type="str"><button type="button">구분<span class="sort-ind"></span></button></th>
+                <th class="sortable num" data-key="stock" data-type="num"><button type="button">재고<span class="sort-ind"></span></button></th>
+                <th class="sortable min-w-[220px]" data-key="desc" data-type="str"><button type="button">설명<span class="sort-ind"></span></button></th>
+                <th class="sortable" data-key="note"     data-type="str"><button type="button">비고<span class="sort-ind"></span></button></th>
                 <th class="text-right">처리</th>
               </tr>
             </thead>
@@ -384,13 +452,13 @@
         <div class="overflow-auto scroll-y max-h-[66vh]">
           <table class="tbl text-[14px]">
             <thead>
-              <tr>
-                <th class="text-left">일시</th>
-                <th class="text-left">기념품</th>
-                <th class="text-left">구분</th>
-                <th class="text-right">변동</th>
+              <tr data-sorthead="logs">
+                <th class="sortable" data-key="ts"       data-type="ts"><button type="button">일시<span class="sort-ind"></span></button></th>
+                <th class="sortable" data-key="itemName" data-type="str"><button type="button">기념품<span class="sort-ind"></span></button></th>
+                <th class="sortable" data-key="type"     data-type="str"><button type="button">구분<span class="sort-ind"></span></button></th>
+                <th class="sortable num" data-key="delta" data-type="num"><button type="button">변동<span class="sort-ind"></span></button></th>
                 <th class="text-right">이전 → 이후</th>
-                <th class="text-left min-w-[240px]">비고</th>
+                <th class="sortable min-w-[240px]" data-key="note" data-type="str"><button type="button">비고<span class="sort-ind"></span></button></th>
               </tr>
             </thead>
             <tbody id="logBody"></tbody>
@@ -399,6 +467,87 @@
       </div>
     </section>
   </main>
+
+    <!-- 통계 -->
+    <section id="tabStats" class="hidden viz max-w-[1200px] mx-auto px-5 sm:px-8 pt-7 pb-24">
+
+      <!-- 필터 -->
+      <div class="panel p-5 mb-6 flex flex-wrap items-end gap-x-7 gap-y-4">
+        <div>
+          <span class="label">기간</span>
+          <div id="stPeriod" class="flex flex-wrap gap-2"></div>
+        </div>
+        <div>
+          <span class="label">대상</span>
+          <div id="stStatus" class="flex flex-wrap gap-2"></div>
+        </div>
+        <label class="flex items-center gap-2.5 text-[13.5px] text-[var(--ink-2)] cursor-pointer select-none pb-1">
+          <input id="stDedup" type="checkbox" checked> 중복 의심 건 제외
+          <span class="text-[var(--faint)] text-[12px]">(부서 = ‘신청부서’)</span>
+        </label>
+        <button id="stExport" class="btn px-3.5 py-2 ml-auto">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 21h16"/></svg>
+          교차표 CSV
+        </button>
+      </div>
+
+      <!-- KPI -->
+      <div id="stKpi" class="grid grid-cols-2 lg:grid-cols-4 border-t border-[var(--line)] mb-10"></div>
+
+      <!-- 부서별 · 품목별 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+        <div class="panel p-6">
+          <h3 class="serif text-[18px]">부서별 수령 수량</h3>
+          <p class="text-[12.5px] text-[var(--muted)] mt-1 mb-5">막대 길이 = 수량 합계</p>
+          <div id="stDept"></div>
+        </div>
+        <div class="panel p-6">
+          <h3 class="serif text-[18px]">품목별 수령 수량 <span class="text-[13px] font-sans text-[var(--muted)]">상위 12</span></h3>
+          <p class="text-[12.5px] text-[var(--muted)] mt-1 mb-5">막대 길이 = 수량 합계</p>
+          <div id="stItem"></div>
+        </div>
+      </div>
+
+      <!-- 교차표 -->
+      <div class="panel p-6 mb-5">
+        <div class="flex flex-wrap items-start justify-between gap-3 mb-1">
+          <div>
+            <h3 class="serif text-[18px]">부서 × 품목 교차표</h3>
+            <p class="text-[12.5px] text-[var(--muted)] mt-1">어느 팀이 무슨 품목을 몇 개 가져갔는지. 색이 진할수록 많습니다.</p>
+          </div>
+          <div class="flex items-center gap-2 text-[11px] text-[var(--muted)]">
+            <span>적음</span>
+            <span class="legend-step" style="background:var(--s0)"></span>
+            <span class="legend-step" style="background:var(--s1)"></span>
+            <span class="legend-step" style="background:var(--s2)"></span>
+            <span class="legend-step" style="background:var(--s3)"></span>
+            <span class="legend-step" style="background:var(--s4)"></span>
+            <span class="legend-step" style="background:var(--s5)"></span>
+            <span class="legend-step" style="background:var(--s6)"></span>
+            <span>많음</span>
+          </div>
+        </div>
+        <div class="overflow-auto scroll-y max-h-[62vh] -mx-2 px-2 pt-4">
+          <table id="stHeat" class="heat"></table>
+        </div>
+      </div>
+
+      <!-- 월별 · 신청자 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div class="panel p-6">
+          <h3 class="serif text-[18px]">월별 수령 수량</h3>
+          <p class="text-[12.5px] text-[var(--muted)] mt-1 mb-6">막대 높이 = 그 달의 수량 합계</p>
+          <div id="stMonth" class="col-chart"></div>
+        </div>
+        <div class="panel p-6">
+          <h3 class="serif text-[18px]">신청자별 <span class="text-[13px] font-sans text-[var(--muted)]">상위 10</span></h3>
+          <p class="text-[12.5px] text-[var(--muted)] mt-1 mb-5">막대 길이 = 수량 합계</p>
+          <div id="stUser"></div>
+        </div>
+      </div>
+
+      <p class="text-[12px] text-[var(--faint)] mt-6 kr leading-relaxed" id="stNote"></p>
+    </section>
 
   <footer class="border-t border-[var(--line)] bg-white mt-auto">
     <div class="max-w-[1200px] mx-auto px-5 sm:px-8 py-9 flex flex-col sm:flex-row items-center justify-between gap-3">
@@ -537,6 +686,9 @@
     </div>
   </form>
 </div>
+
+<!-- 차트 툴팁 -->
+<div id="vizTip" role="status" aria-live="polite"></div>
 
 <!-- 토스트 -->
 <div id="toasts" class="fixed bottom-6 right-6 z-[60] flex flex-col gap-2.5 items-end"></div>
@@ -706,7 +858,9 @@ const state = {
   cat:'전체', q:'', soldout:false,
   reqStatus:'전체', stockQ:'', logQ:'',
   view:'catalog', tab:'requests',
-  editingId:null, targetId:null
+  editingId:null, targetId:null,
+  sort:{ requests:{key:'ts',dir:'desc'}, stock:{key:null,dir:'asc'}, logs:{key:'ts',dir:'desc'} },
+  stPeriod:'all', stStatus:'승인', stDedup:true
 };
 
 /* ═══════════════════════════ 유틸 ═══════════════════════════ */
@@ -717,6 +871,50 @@ const escAttr = esc;
 const nf = n => Number(n||0).toLocaleString('ko-KR');
 const nowStr = () => new Date().toLocaleString('ko-KR');
 const uid = p => p + '-' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+
+/** "2026. 1. 22. 오전 9:02:10" → epoch(ms). 못 읽으면 0. */
+function parseTs(s){
+  const m = String(s||'').match(/(\d{4})\s*\.\s*(\d{1,2})\s*\.\s*(\d{1,2})\s*\.?\s*(오전|오후)?\s*(\d{1,2}):(\d{2})(?::(\d{2}))?/);
+  if(!m) return 0;
+  let h = Number(m[5]);
+  if(m[4]==='오후' && h < 12) h += 12;
+  if(m[4]==='오전' && h === 12) h = 0;
+  return new Date(+m[1], +m[2]-1, +m[3], h, +m[6], +(m[7]||0)).getTime();
+}
+/** 품목 설명에 적힌 "단가: 42,000원" 을 숫자로. 없으면 0. */
+function priceOf(item){
+  const m = String(item && item.desc || '').match(/단가[:\s]*([\d,]+)\s*원/);
+  return m ? Number(m[1].replace(/,/g,'')) : 0;
+}
+/* 과거 시스템에서 넘어온 부서명 표기 흔들림을 하나로 모읍니다 */
+const DEPT_ALIAS = { '법조신문':'법조신문팀', '국제':'국제팀' };
+const normDept = d => DEPT_ALIAS[String(d||'').trim()] || String(d||'').trim() || '미지정';
+
+/** 정렬 — 타입별 비교 */
+function sortRows(rows, cfg){
+  if(!cfg || !cfg.key) return rows;
+  const mul = cfg.dir === 'asc' ? 1 : -1;
+  const k = cfg.key, t = cfg.type || 'str';
+  return rows.slice().sort((a,b)=>{
+    if(t === 'num') return ((Number(a[k])||0) - (Number(b[k])||0)) * mul;
+    if(t === 'ts')  return (parseTs(a[k]) - parseTs(b[k])) * mul;
+    return String(a[k] ?? '').localeCompare(String(b[k] ?? ''), 'ko') * mul;
+  });
+}
+/** 헤더의 정렬 표시 갱신 */
+function paintSortHead(which){
+  const head = document.querySelector(`[data-sorthead="${which}"]`);
+  if(!head) return;
+  const cfg = state.sort[which];
+  head.querySelectorAll('th.sortable').forEach(th=>{
+    const on = cfg.key === th.dataset.key;
+    th.classList.toggle('sorted', on);
+    const ind = th.querySelector('.sort-ind');
+    if(ind) ind.textContent = on ? (cfg.dir === 'asc' ? '▲' : '▼') : '▼';
+    const btn = th.querySelector('button');
+    if(btn) btn.setAttribute('aria-sort', on ? (cfg.dir === 'asc' ? 'ascending' : 'descending') : 'none');
+  });
+}
 
 function toast(msg, kind='ok'){
   const bar = kind==='err' ? 'var(--err)' : kind==='warn' ? 'var(--warn)' : 'var(--ok)';
@@ -948,7 +1146,10 @@ function renderRequests(){
     return `<button data-rf="${t}" class="rfbtn px-3.5 py-1.5 chip ${state.reqStatus===t?'chip-on':''}">${t} <span class="opacity-55 ml-0.5">${n}</span></button>`;
   }).join('');
 
-  const rows = state.requests.filter(r=>state.reqStatus==='전체'||r.status===state.reqStatus);
+  const rows = sortRows(
+    state.requests.filter(r=>state.reqStatus==='전체'||r.status===state.reqStatus),
+    state.sort.requests);
+  paintSortHead('requests');
   $('#reqBody').innerHTML = rows.length ? rows.map(r=>`
     <tr>
       <td class="text-[13px] text-[var(--muted)] whitespace-nowrap">${esc(r.ts)}</td>
@@ -971,7 +1172,10 @@ function renderRequests(){
 
 function renderStock(){
   const q = state.stockQ.trim().toLowerCase();
-  const rows = state.items.filter(i=>!q || `${i.id} ${i.name} ${i.category||''} ${i.note||''}`.toLowerCase().includes(q));
+  const rows = sortRows(
+    state.items.filter(i=>!q || `${i.id} ${i.name} ${i.category||''} ${i.note||''}`.toLowerCase().includes(q)),
+    state.sort.stock);
+  paintSortHead('stock');
   $('#stockBody').innerHTML = rows.length ? rows.map(i=>`
     <tr>
       <td>
@@ -999,7 +1203,10 @@ function renderStock(){
 
 function renderLogs(){
   const q = state.logQ.trim().toLowerCase();
-  const rows = state.logs.filter(l=>!q || `${l.itemName} ${l.note||''} ${l.type}`.toLowerCase().includes(q));
+  const rows = sortRows(
+    state.logs.filter(l=>!q || `${l.itemName} ${l.note||''} ${l.type}`.toLowerCase().includes(q)),
+    state.sort.logs);
+  paintSortHead('logs');
   $('#logCount').textContent = nf(rows.length);
   $('#logBody').innerHTML = rows.length ? rows.slice(0,500).map(l=>{
     const inbound = String(l.type).startsWith('입고') || l.type==='신규등록';
@@ -1016,9 +1223,204 @@ function renderLogs(){
     : `<tr><td colspan="6" class="py-20 text-center text-[14px] text-[var(--muted)] kr">로그가 없습니다</td></tr>`;
 }
 
+/* ═══════════════════════ 통계 ═══════════════════════ */
+const PERIODS = [
+  ['all','전체'], ['12m','최근 12개월'], ['6m','최근 6개월'], ['3m','최근 3개월'], ['ytd','올해']
+];
+const ST_STATUS = [['승인','승인 건만'], ['전체','승인+반려']];
+
+/** 필터를 적용한 신청 목록 + 파생값(단가·정규화 부서·시각) */
+function statRows(){
+  const now = Date.now(), DAY = 864e5;
+  let from = 0;
+  if(state.stPeriod === '12m') from = now - 365*DAY;
+  else if(state.stPeriod === '6m') from = now - 182*DAY;
+  else if(state.stPeriod === '3m') from = now - 91*DAY;
+  else if(state.stPeriod === 'ytd') from = new Date(new Date().getFullYear(), 0, 1).getTime();
+
+  const priceByName = {};
+  state.items.forEach(i => { priceByName[i.name] = priceOf(i); });
+
+  return state.requests.filter(r=>{
+    if(state.stStatus === '승인' && r.status !== '승인') return false;
+    if(state.stDedup && String(r.dept||'').trim() === '신청부서') return false;
+    if(from){ const t = parseTs(r.ts); if(!t || t < from) return false; }
+    return true;
+  }).map(r=>({
+    ...r,
+    _dept: normDept(r.dept),
+    _qty: Number(r.qty) || 0,
+    _t: parseTs(r.ts),
+    _amt: (Number(r.qty)||0) * (priceByName[r.itemName] || 0)
+  }));
+}
+
+/** key 별로 건수/수량/금액 합산 후 수량 내림차순 */
+function groupBy(rows, keyFn){
+  const m = new Map();
+  rows.forEach(r=>{
+    const k = keyFn(r);
+    const g = m.get(k) || { key:k, n:0, qty:0, amt:0 };
+    g.n++; g.qty += r._qty; g.amt += r._amt;
+    m.set(k, g);
+  });
+  return [...m.values()].sort((a,b)=> b.qty - a.qty);
+}
+
+const won = n => Number(n||0).toLocaleString('ko-KR') + '원';
+
+function barList(el, groups, opts={}){
+  const max = Math.max(1, ...groups.map(g=>g.qty));
+  const labw = opts.labw || 150;
+  el.innerHTML = groups.length ? groups.map(g=>`
+    <div class="bar-row" style="--labw:${labw}px"
+         data-tip="${escAttr(g.key)}&#10;수량 ${nf(g.qty)}개 · ${nf(g.n)}건&#10;${won(g.amt)}">
+      <span class="bar-lab" title="${escAttr(g.key)}">${esc(g.key)}</span>
+      <span class="bar-track"><span class="bar-fill" style="width:${(g.qty/max*100).toFixed(1)}%"></span></span>
+      <span class="bar-val">${nf(g.qty)}</span>
+    </div>`).join('')
+    : `<p class="text-[13px] text-[var(--muted)] py-6 text-center">해당 기간에 자료가 없습니다</p>`;
+}
+
+/** 값 → 히트맵 단계(0~7). 0은 '없음', 나머지는 최대값 기준 구간 */
+function heatStep(v, max){
+  if(!v) return 0;
+  const r = v / max;
+  return r > .75 ? 7 : r > .55 ? 6 : r > .40 ? 5 : r > .27 ? 4 : r > .16 ? 3 : r > .07 ? 2 : 1;
+}
+
+function renderStatsTab(){
+  const rows = statRows();
+
+  // 필터 칩
+  $('#stPeriod').innerHTML = PERIODS.map(([v,l])=>
+    `<button data-per="${v}" class="perbtn px-3.5 py-1.5 chip ${state.stPeriod===v?'chip-on':''}">${l}</button>`).join('');
+  $('#stStatus').innerHTML = ST_STATUS.map(([v,l])=>
+    `<button data-sts="${v}" class="stsbtn px-3.5 py-1.5 chip ${state.stStatus===v?'chip-on':''}">${l}</button>`).join('');
+
+  // KPI
+  const totQty = rows.reduce((a,r)=>a+r._qty,0);
+  const totAmt = rows.reduce((a,r)=>a+r._amt,0);
+  const depts  = new Set(rows.map(r=>r._dept));
+  const kpis = [
+    ['신청 건수', nf(rows.length), '건'],
+    ['수령 수량', nf(totQty), '개'],
+    ['추정 금액', Number(totAmt).toLocaleString('ko-KR'), '원'],
+    ['참여 부서', nf(depts.size), '곳']
+  ];
+  $('#stKpi').innerHTML = kpis.map(([l,v,u],i)=>`
+    <div class="py-7 pr-6 ${i<3?'md:border-r':''} border-[var(--line)] ${i%2===1?'pl-6 md:pl-6':''} ${i>=2?'border-t md:border-t-0':''}">
+      <p class="text-[12.5px] text-[var(--muted)]">${l}</p>
+      <p class="serif text-[30px] leading-none mt-2.5 tracking-[-.02em]">${v}<span class="text-[14px] text-[var(--muted)] font-sans ml-1">${u}</span></p>
+    </div>`).join('');
+
+  // 부서별 / 품목별 / 신청자별
+  const byDept = groupBy(rows, r=>r._dept);
+  const byItem = groupBy(rows, r=>r.itemName);
+  const byUser = groupBy(rows, r=>r.applicant || '미상');
+  barList($('#stDept'), byDept, {labw:110});
+  barList($('#stItem'), byItem.slice(0,12), {labw:170});
+  barList($('#stUser'), byUser.slice(0,10), {labw:80});
+
+  // 월별
+  const byMonth = new Map();
+  rows.forEach(r=>{
+    if(!r._t) return;
+    const d = new Date(r._t);
+    const k = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+    const g = byMonth.get(k) || { key:k, n:0, qty:0, amt:0 };
+    g.n++; g.qty += r._qty; g.amt += r._amt;
+    byMonth.set(k, g);
+  });
+  const months = [...byMonth.values()].sort((a,b)=> a.key.localeCompare(b.key));
+  const mMax = Math.max(1, ...months.map(m=>m.qty));
+  $('#stMonth').innerHTML = months.length ? months.map(m=>`
+    <div class="col-wrap" data-tip="${m.key.replace('-','년 ')}월&#10;수량 ${nf(m.qty)}개 · ${nf(m.n)}건&#10;${won(m.amt)}">
+      <span class="col-fill" style="height:${Math.max(2, m.qty/mMax*118)}px"></span>
+      <span class="col-lab">${Number(m.key.slice(5))}월</span>
+    </div>`).join('')
+    : `<p class="text-[13px] text-[var(--muted)] py-6 text-center w-full">해당 기간에 자료가 없습니다</p>`;
+
+  // 교차표 (부서 × 품목)
+  const topItems = byItem.slice(0, 14).map(g=>g.key);
+  const cell = new Map();                       // "부서||품목" → {qty,n,amt}
+  rows.forEach(r=>{
+    const k = r._dept + '||' + r.itemName;
+    const c = cell.get(k) || { qty:0, n:0, amt:0 };
+    c.qty += r._qty; c.n++; c.amt += r._amt;
+    cell.set(k, c);
+  });
+  const cellMax = Math.max(1, ...[...cell.values()].map(c=>c.qty));
+  const deptRows = byDept.map(g=>g.key);
+
+  $('#stHeat').innerHTML = deptRows.length ? `
+    <thead><tr>
+      <th></th>
+      ${topItems.map(n=>`<th class="heat-colh" title="${escAttr(n)}">${esc(n.length>16?n.slice(0,15)+'…':n)}</th>`).join('')}
+      <th class="heat-colh" style="color:var(--ink-2)">합계</th>
+    </tr></thead>
+    <tbody>
+      ${deptRows.map(d=>{
+        const tot = byDept.find(g=>g.key===d);
+        return `<tr>
+          <th class="heat-rowh">${esc(d)}</th>
+          ${topItems.map(n=>{
+            const c = cell.get(d+'||'+n);
+            const q = c ? c.qty : 0;
+            return `<td><div class="heat-cell heat-${heatStep(q, cellMax)}"
+              ${c?`data-tip="${escAttr(d)} · ${escAttr(n)}&#10;수량 ${nf(q)}개 · ${nf(c.n)}건&#10;${won(c.amt)}"`:''}
+              >${q ? nf(q) : '·'}</div></td>`;
+          }).join('')}
+          <td><div class="heat-cell" style="background:#f0eeea;color:var(--ink);font-weight:600">${nf(tot.qty)}</div></td>
+        </tr>`;
+      }).join('')}
+    </tbody>`
+    : `<tbody><tr><td class="py-14 text-center text-[13px] text-[var(--muted)]">해당 기간에 자료가 없습니다</td></tr></tbody>`;
+
+  // 각주
+  const dropped = state.requests.filter(r=>String(r.dept||'').trim()==='신청부서').length;
+  const aliased = state.requests.filter(r=>DEPT_ALIAS[String(r.dept||'').trim()]).length;
+  const noPrice = state.items.filter(i=>!priceOf(i)).length;
+  const notes = [];
+  if(state.stDedup && dropped) notes.push(`부서가 ‘신청부서’로 기록된 ${dropped}건은 과거 시스템의 중복 기록으로 보여 제외했습니다.`);
+  if(aliased) notes.push(`‘법조신문 → 법조신문팀’, ‘국제 → 국제팀’으로 표기를 통일했습니다(${aliased}건).`);
+  if(noPrice) notes.push(`단가가 없는 품목 ${noPrice}개는 금액 합계에서 0원으로 계산됩니다.`);
+  notes.push('교차표는 수량 상위 14개 품목만 열로 표시하며, 합계 열은 전체 품목 기준입니다.');
+  $('#stNote').innerHTML = notes.map(n=>'· '+esc(n)).join('<br>');
+
+  // 내보내기용 보관
+  state._pivot = { deptRows, topItems, cell, byDept };
+}
+
+/* 차트 툴팁 — data-tip 을 가진 요소에 위임 */
+(function(){
+  const tip = () => $('#vizTip');
+  document.addEventListener('mouseover', e=>{
+    const el = e.target.closest('[data-tip]'); if(!el) return;
+    const t = tip();
+    t.innerHTML = String(el.dataset.tip).split('\n')
+      .map((s,i)=> i===0 ? `<b>${esc(s)}</b>` : `<span class="dim">${esc(s)}</span>`).join('<br>');
+    t.classList.add('on');
+  });
+  document.addEventListener('mouseout', e=>{
+    if(e.target.closest('[data-tip]')) tip().classList.remove('on');
+  });
+  document.addEventListener('mousemove', e=>{
+    const t = tip();
+    if(!t.classList.contains('on')) return;
+    const r = t.getBoundingClientRect();
+    let x = e.clientX + 14, y = e.clientY + 16;
+    if(x + r.width  > innerWidth  - 8) x = e.clientX - r.width  - 14;
+    if(y + r.height > innerHeight - 8) y = e.clientY - r.height - 14;
+    t.style.left = Math.max(8,x) + 'px';
+    t.style.top  = Math.max(8,y) + 'px';
+  });
+})();
+
 function renderAll(){
   renderStats(); renderCats(); renderGrid();
   renderRequests(); renderStock(); renderLogs();
+  if(state.view === 'admin' && state.tab === 'stats') renderStatsTab();
   $('#deptList').innerHTML = DEPTS.map(d=>`<option value="${escAttr(d)}">`).join('');
   $('#catList').innerHTML = [...new Set(state.items.map(i=>i.category||'기타'))].map(c=>`<option value="${escAttr(c)}">`).join('');
 }
@@ -1046,7 +1448,9 @@ function setTab(t){
   $('#tabRequests').classList.toggle('hidden', t!=='requests');
   $('#tabStock').classList.toggle('hidden', t!=='stock');
   $('#tabLogs').classList.toggle('hidden', t!=='logs');
+  $('#tabStats').classList.toggle('hidden', t!=='stats');
   $$('.tabbtn').forEach(b=> b.classList.toggle('tabbtn-on', b.dataset.tab===t));
+  if(t === 'stats') renderStatsTab();
 }
 const openModal  = id => { const m=$('#'+id); m.classList.remove('hidden'); m.classList.add('flex'); };
 const closeModal = id => { const m=$('#'+id); m.classList.add('hidden'); m.classList.remove('flex'); };
@@ -1125,6 +1529,60 @@ $('#logSearch').addEventListener('input', e=>{ state.logQ = e.target.value; rend
 $('#reqFilters').addEventListener('click', e=>{
   const b = e.target.closest('.rfbtn'); if(!b) return;
   state.reqStatus = b.dataset.rf; renderRequests();
+});
+
+/* 헤더 클릭 정렬 — 같은 열을 다시 누르면 방향이 바뀝니다 */
+document.addEventListener('click', e=>{
+  const th = e.target.closest('th.sortable'); if(!th) return;
+  const head = th.closest('[data-sorthead]'); if(!head) return;
+  const which = head.dataset.sorthead;
+  const cfg = state.sort[which];
+  const key = th.dataset.key;
+  if(cfg.key === key){
+    cfg.dir = cfg.dir === 'asc' ? 'desc' : 'asc';
+  } else {
+    cfg.key = key;
+    cfg.type = th.dataset.type || 'str';
+    // 숫자·날짜는 큰 값부터, 글자는 가나다순이 자연스럽습니다
+    cfg.dir = (cfg.type === 'str') ? 'asc' : 'desc';
+  }
+  cfg.type = th.dataset.type || 'str';
+  ({ requests:renderRequests, stock:renderStock, logs:renderLogs })[which]();
+});
+
+/* 통계 필터 */
+$('#stPeriod').addEventListener('click', e=>{
+  const b = e.target.closest('.perbtn'); if(!b) return;
+  state.stPeriod = b.dataset.per; renderStatsTab();
+});
+$('#stStatus').addEventListener('click', e=>{
+  const b = e.target.closest('.stsbtn'); if(!b) return;
+  state.stStatus = b.dataset.sts; renderStatsTab();
+});
+$('#stDedup').addEventListener('change', e=>{
+  state.stDedup = e.target.checked; renderStatsTab();
+});
+
+/* 교차표 CSV 내보내기 */
+$('#stExport').addEventListener('click', ()=>{
+  const p = state._pivot;
+  if(!p || !p.deptRows.length){ toast('내보낼 자료가 없습니다.','warn'); return; }
+  const q = v => `"${String(v??'').replace(/"/g,'""')}"`;
+  const head = ['부서', ...p.topItems, '합계(전체 품목)'];
+  const lines = [head.map(q).join(',')];
+  p.deptRows.forEach(d=>{
+    const tot = p.byDept.find(g=>g.key===d);
+    lines.push([d, ...p.topItems.map(n=>{
+      const c = p.cell.get(d+'||'+n); return c ? c.qty : 0;
+    }), tot.qty].map(q).join(','));
+  });
+  const csv = '﻿' + lines.join('\n');
+  const url = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `기념품_부서별통계_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+  toast('교차표를 CSV로 내려받았습니다.');
 });
 
 // 신청 모달
