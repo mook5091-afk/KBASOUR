@@ -353,6 +353,16 @@
 <!-- ══════════════════════════ 본 화면 ══════════════════════════ -->
 <div id="app" class="hidden min-h-screen flex-col">
 
+  <!-- 정합성 경보 띠 -->
+  <div id="auditBanner" class="hidden" style="background:var(--err); border-bottom:3px solid var(--ink)">
+    <div class="max-w-[1200px] mx-auto px-5 sm:px-8 py-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+      <span class="text-[13px] font-bold kr" style="color:#fdf8ee">
+        ⚠ 재고현황과 재고로그가 어긋납니다 — <span id="auditBannerCount">0</span>건
+      </span>
+      <button id="auditBannerBtn" class="btn px-3 py-1.5 text-[12px] ml-auto">자세히 보기</button>
+    </div>
+  </div>
+
   <!-- 헤더 -->
   <header class="sticky top-0 z-40" style="background:var(--surface); border-bottom:3px solid var(--ink)">
     <div class="max-w-[1200px] mx-auto px-5 sm:px-8 h-[64px] flex items-center justify-between gap-6">
@@ -521,9 +531,18 @@
 
     <!-- 재고로그 -->
     <section id="tabLogs" class="hidden max-w-[1200px] mx-auto px-5 sm:px-8 pt-7 pb-24">
+      <!-- 정합성 검사 -->
+      <div id="auditPanel" class="panel p-5 mb-5"></div>
+
       <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
         <input id="logSearch" class="field sm:w-[290px]" placeholder="품목·비고 검색">
-        <p class="text-[13px] text-[var(--muted)]"><span id="logCount">0</span>건</p>
+        <div class="flex items-center gap-3">
+          <p class="text-[13px] text-[var(--muted)]"><span id="logCount">0</span>건</p>
+          <button id="exportLogs" class="btn px-3.5 py-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 21h16"/></svg>
+            CSV 내보내기
+          </button>
+        </div>
       </div>
       <div class="panel overflow-hidden">
         <div class="overflow-auto scroll-y max-h-[66vh]">
@@ -795,7 +814,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbyGbQccUmbOHtQXTuGTQgWO
 
 /* 화면 버전 — 붙여넣기가 제대로 됐는지 화면 맨 아래에서 확인할 수 있습니다.
    기능을 고칠 때마다 이 값을 올립니다. */
-const BUILD = '0729-b';
+const BUILD = '0729-d';
 
 /* ── 초기 품목 시드 (데모 모드 전용 / 서버 연동 시 미사용) ── */
 const SEED_ITEMS = [
@@ -968,8 +987,9 @@ const state = {
   view:'catalog', tab:'requests',
   editingId:null, targetId:null,
   catView:'card',
-  sort:{ requests:{key:'ts',dir:'desc'}, stock:{key:null,dir:'asc'}, logs:{key:'ts',dir:'desc'},
-         catalog:{key:'stock',dir:'desc',type:'num'} },
+  /* type 을 반드시 함께 지정해야 합니다 — 없으면 날짜가 글자순으로 정렬됩니다 */
+  sort:{ requests:{key:'ts',dir:'desc',type:'ts'}, stock:{key:null,dir:'asc',type:'str'},
+         logs:{key:'ts',dir:'desc',type:'ts'}, catalog:{key:'stock',dir:'desc',type:'num'} },
   stPeriod:'all', stStatus:'승인', stDedup:true
 };
 
@@ -1572,12 +1592,168 @@ function renderAll(){
   $('#catList').innerHTML = [...new Set(state.items.map(i=>i.category||'기타'))].map(c=>`<option value="${escAttr(c)}">`).join('');
 }
 
+/* ═══════════════════ 재고 정합성 감시 ═══════════════════
+   재고현황(Items)과 재고로그(Logs)가 서로 맞는지 확인합니다.
+   자료가 바뀔 때마다 자동으로 돌고, 어긋나면 띠와 메일로 알립니다.
+   ══════════════════════════════════════════════════════ */
+const numOrNull = v => (v==='' || v==null || isNaN(Number(v))) ? null : Number(v);
+
+function auditStock(){
+  const alerts = [], notes = [];
+  const byName = {};
+  state.items.forEach(i => { byName[i.name] = i; });
+
+  // ① 재고가 음수
+  state.items.forEach(i=>{
+    if(Number(i.stock) < 0)
+      alerts.push({ kind:'음수 재고', item:i.name, detail:`현재 재고가 ${nf(i.stock)}개입니다` });
+  });
+
+  // 품목별 로그 묶기
+  const g = new Map();
+  state.logs.forEach(l=>{
+    if(!g.has(l.itemName)) g.set(l.itemName, []);
+    g.get(l.itemName).push(l);
+  });
+
+  let 확인가능 = 0, 확인불가 = 0;
+
+  g.forEach((list, name)=>{
+    const it = byName[name];
+    if(!it){
+      notes.push(`${name} — 로그 ${nf(list.length)}건이 있으나 지금 품목 목록에 없습니다 (이름 변경 또는 삭제)`);
+      return;
+    }
+    const s = list.slice().sort((a,b)=> parseTs(a.ts) - parseTs(b.ts));
+
+    // ② 로그의 마지막 잔량과 현재 재고 대조
+    const last = [...s].reverse().find(l => numOrNull(l.after) !== null);
+    if(last){
+      확인가능++;
+      const expect = numOrNull(last.after), actual = Number(it.stock);
+      if(expect !== actual){
+        alerts.push({ kind:'재고 불일치', item:name,
+          detail:`로그 마지막 잔량 ${nf(expect)}개 ≠ 현재 재고 ${nf(actual)}개 (차이 ${actual-expect>0?'+':''}${nf(actual-expect)})`,
+          ts:last.ts });
+      }
+    } else 확인불가++;
+
+    // ③ 로그 사슬이 끊겼는지 (앞의 이후값 ≠ 뒤의 이전값)
+    for(let k=1;k<s.length;k++){
+      const pa = numOrNull(s[k-1].after), cb = numOrNull(s[k].before);
+      if(pa === null || cb === null) continue;
+      if(pa !== cb){
+        alerts.push({ kind:'로그 끊김', item:name,
+          detail:`${s[k-1].ts} 이후 ${nf(pa)}개였는데 ${s[k].ts} 기록은 ${nf(cb)}개에서 시작합니다`,
+          ts:s[k].ts });
+      }
+    }
+  });
+
+  // ④ 신청은 있는데 출고 로그가 없는 건
+  const outSet = new Set(state.logs.filter(l=>String(l.type).startsWith('출고')).map(l=> l.ts+'|'+l.itemName));
+  state.requests.forEach(r=>{
+    if(r.status === '반려') return;
+    if(!outSet.has(r.ts+'|'+r.itemName)){
+      alerts.push({ kind:'출고 기록 없음', item:r.itemName,
+        detail:`${r.ts} ${r.applicant}님 신청 ${nf(r.qty)}개에 해당하는 출고 로그가 없습니다`, ts:r.ts });
+    }
+  });
+
+  if(확인불가) notes.push(`로그 ${nf(확인불가)}개 품목은 이전·이후 잔량이 비어 있어 대조할 수 없습니다 (옛 시스템에서 옮겨온 기록)`);
+
+  return { alerts, notes, checked:확인가능, unchecked:확인불가 };
+}
+
+function auditText(a){
+  const lines = ['[기념품 재고 점검]', ''];
+  if(a.alerts.length){
+    lines.push(`※ 확인이 필요한 항목 ${a.alerts.length}건`, '');
+    a.alerts.forEach((x,i)=> lines.push(`${i+1}. [${x.kind}] ${x.item}`, `   ${x.detail}`));
+  } else lines.push('확인이 필요한 항목이 없습니다.');
+  if(a.notes.length){
+    lines.push('', '--- 참고 ---');
+    a.notes.forEach(n=> lines.push('· ' + n));
+  }
+  lines.push('', `점검 시각: ${nowStr()}`, '본 메일은 기념품 관리 시스템에서 자동 발송되었습니다.');
+  return lines.join('\n');
+}
+
+function renderAudit(a){
+  const ok = a.alerts.length === 0;
+
+  $('#auditBanner').classList.toggle('hidden', ok);
+  $('#auditBannerCount').textContent = nf(a.alerts.length);
+
+  const panel = $('#auditPanel');
+  if(!panel) return;
+  panel.innerHTML = `
+    <div class="flex flex-wrap items-start justify-between gap-3">
+      <div class="flex items-start gap-3">
+        <span class="badge ${ok?'b-ok':'b-no'} mt-0.5">${ok?'이상 없음':'점검 필요'}</span>
+        <div>
+          <p class="text-[14px] font-bold kr">재고현황 ↔ 재고로그 정합성</p>
+          <p class="text-[12.5px] text-[var(--muted)] kr mt-1">
+            ${ok
+              ? `대조 가능한 ${nf(a.checked)}개 품목이 모두 일치합니다. 자료가 바뀔 때마다 자동으로 다시 확인합니다.`
+              : `${nf(a.alerts.length)}건이 어긋납니다. 아래 내용을 확인해 주세요.`}
+          </p>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <button id="auditRecheck" class="btn px-3 py-1.5 text-[12px]">다시 검사</button>
+        ${a.alerts.length?`<button id="auditMail" class="btn btn-primary px-3 py-1.5 text-[12px]">메일로 보내기</button>`:''}
+      </div>
+    </div>
+    ${a.alerts.length?`
+      <div class="mt-4 pt-4" style="border-top:2px solid var(--ink)">
+        <ul class="space-y-2.5">
+          ${a.alerts.map(x=>`
+            <li class="flex gap-2.5 items-start text-[13px] kr">
+              <span class="badge b-no flex-none" style="font-size:10.5px">${esc(x.kind)}</span>
+              <span><b>${esc(x.item)}</b> — <span class="text-[var(--ink-2)]">${esc(x.detail)}</span></span>
+            </li>`).join('')}
+        </ul>
+      </div>`:''}
+    ${a.notes.length?`
+      <details class="mt-4 pt-4" style="border-top:1px solid var(--line)">
+        <summary class="text-[12.5px] text-[var(--muted)] cursor-pointer">참고 사항 ${a.notes.length}건 — 경보는 아닙니다</summary>
+        <ul class="mt-2.5 space-y-1.5">
+          ${a.notes.map(n=>`<li class="text-[12.5px] text-[var(--muted)] kr">· ${esc(n)}</li>`).join('')}
+        </ul>
+      </details>`:''}
+  `;
+
+  const rc = $('#auditRecheck');
+  if(rc) rc.addEventListener('click', ()=>{ runAudit(true); toast('다시 검사했습니다.'); });
+  const mb = $('#auditMail');
+  if(mb) mb.addEventListener('click', ()=> sendAuditMail(a, true));
+}
+
+async function sendAuditMail(a, manual){
+  if(!a.alerts.length) return;
+  const sig = a.alerts.map(x=> x.kind+'|'+x.item+'|'+x.detail).join('\n');
+  try{
+    const r = await api('alertAudit', { signature:sig, count:a.alerts.length, body:auditText(a) });
+    if(manual) toast(r.sent ? '점검 결과를 메일로 보냈습니다.' : ('보내지 않았습니다 — ' + (r.reason||'')), r.sent?'ok':'warn');
+  }catch(err){ if(manual) toast(err.message, 'err'); }
+}
+
+function runAudit(manual){
+  const a = auditStock();
+  state._audit = a;
+  renderAudit(a);
+  if(a.alerts.length && !manual) sendAuditMail(a, false);   // 서버가 24시간 중복을 걸러 냅니다
+  return a;
+}
+
 function applyData(d){
   if(!d) return;
   if(d.items) state.items = d.items;
   if(d.requests) state.requests = d.requests;
   if(d.logs) state.logs = d.logs;
   renderAll();
+  runAudit(false);
 }
 
 /* ═══════════════════════ 화면 전환 ═══════════════════════ */
@@ -1908,6 +2084,35 @@ $('#exportReq').addEventListener('click', ()=>{
   const a = document.createElement('a');
   a.href=url; a.download=`기념품_신청내역_${new Date().toISOString().slice(0,10)}.csv`; a.click();
   URL.revokeObjectURL(url);
+});
+
+// 재고로그 CSV 내보내기 — 화면에 보이는 정렬·검색 결과 그대로
+$('#exportLogs').addEventListener('click', ()=>{
+  const q = state.logQ.trim().toLowerCase();
+  const rows = sortRows(
+    state.logs.filter(l=>!q || `${l.itemName} ${l.note||''} ${l.type}`.toLowerCase().includes(q)),
+    state.sort.logs);
+  if(!rows.length){ toast('내보낼 로그가 없습니다.','warn'); return; }
+  const head = ['일시','품목ID','기념품명','구분','변동','이전','이후','비고'];
+  const q2 = v => `"${String(v??'').replace(/"/g,'""')}"`;
+  const csv = '﻿' + [head.join(','), ...rows.map(l=>
+    [l.ts,l.itemId,l.itemName,l.type,l.delta,l.before,l.after,l.note].map(q2).join(','))].join('\n');
+  const url = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  const a = document.createElement('a');
+  a.href=url; a.download=`기념품_재고로그_${new Date().toISOString().slice(0,10)}.csv`; a.click();
+  URL.revokeObjectURL(url);
+  toast(`재고로그 ${nf(rows.length)}건을 내려받았습니다.`);
+});
+
+// 경보 띠 → 재고로그 탭의 점검 결과로 이동
+$('#auditBannerBtn').addEventListener('click', ()=>{
+  if(!state.adminPw){
+    $('#adminErr').textContent=''; $('#adminPw').value='';
+    openModal('adminModal'); setTimeout(()=>$('#adminPw').focus(),60);
+    return;
+  }
+  setView('admin'); setTab('logs');
+  setTimeout(()=>{ const el=$('#auditPanel'); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); }, 220);
 });
 
 // 모달 닫기
