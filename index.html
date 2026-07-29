@@ -775,6 +775,46 @@
   </form>
 </div>
 
+<!-- ══════════════════════════ 신청 수량 변경 ══════════════════════════ -->
+<div id="qtyModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-[#15181d]/45 backdrop-blur-[3px]">
+  <form id="qtyForm" class="pop w-full max-w-[460px] bg-[var(--surface)] p-7"
+        style="border:2px solid var(--ink); box-shadow:var(--shadow-lg)">
+    <p class="eyebrow">Adjust</p>
+    <h3 class="serif text-[22px] mt-2">신청 수량 변경</h3>
+    <p class="text-[13px] text-[var(--ink-2)] mt-2 kr leading-relaxed">
+      일부를 돌려받았을 때 쓰세요. 줄이면 그만큼 <b>재고가 돌아오고</b>, 늘리면 그만큼 더 나갑니다.
+      변동은 재고로그에 남습니다.
+    </p>
+
+    <div class="mt-5 p-4" style="background:var(--surface-2); border:2px solid var(--ink)">
+      <p class="text-[14px] font-bold kr" id="qtyItem">—</p>
+      <p class="text-[12.5px] text-[var(--muted)] mt-1" id="qtyWho">—</p>
+      <p class="text-[12.5px] text-[var(--muted)] mt-1">현재 잔여 재고 <b class="text-[var(--ink)]" id="qtyStock">0</b>개</p>
+    </div>
+
+    <div class="mt-5">
+      <label class="label" for="qtyNew">변경할 수량 <span class="normal-case tracking-normal font-normal text-[var(--muted)]">(기존 <span id="qtyPrev">0</span>개)</span></label>
+      <div class="flex items-center gap-2.5">
+        <button type="button" data-qadj="-1" class="btn w-10 h-10 p-0 text-[17px]">−</button>
+        <input id="qtyNew" type="number" min="1" class="field text-center font-bold w-24" style="font-family:'IBM Plex Mono',monospace">
+        <button type="button" data-qadj="1" class="btn w-10 h-10 p-0 text-[17px]">+</button>
+        <span class="text-[13px] kr ml-1" id="qtyDelta"></span>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <label class="label" for="qtyReason">사유 <span class="normal-case tracking-normal font-normal text-[var(--muted)]">(선택)</span></label>
+      <input id="qtyReason" class="field" placeholder="예) 행사 취소로 2개 반납">
+    </div>
+
+    <p id="qtyErr" class="text-[13px] text-[var(--err)] mt-3 h-5 kr font-semibold"></p>
+    <div class="flex gap-2.5 mt-1">
+      <button type="button" data-close="qtyModal" class="btn flex-1 py-3">취소</button>
+      <button type="submit" id="qtySubmit" class="btn btn-primary flex-[2] py-3">변경 저장</button>
+    </div>
+  </form>
+</div>
+
 <!-- ══════════════════════════ CSV 대량등록 ══════════════════════════ -->
 <div id="bulkModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-[#15181d]/45 backdrop-blur-[3px]">
   <form id="bulkForm" class="pop w-full max-w-[620px] bg-white rounded-[16px] p-7 shadow-[0_30px_70px_rgba(21,24,29,.28)]">
@@ -814,7 +854,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbyGbQccUmbOHtQXTuGTQgWO
 
 /* 화면 버전 — 붙여넣기가 제대로 됐는지 화면 맨 아래에서 확인할 수 있습니다.
    기능을 고칠 때마다 이 값을 올립니다. */
-const BUILD = '0729-d';
+const BUILD = '0729-e';
 
 /* ── 초기 품목 시드 (데모 모드 전용 / 서버 연동 시 미사용) ── */
 const SEED_ITEMS = [
@@ -1328,6 +1368,7 @@ function renderRequests(){
       <td><span class="badge ${STATUS_STYLE[r.status]||''}">${esc(r.status)}</span></td>
       <td class="text-right">
         <div class="inline-flex gap-1.5">
+          <button data-act="editQty" data-id="${escAttr(r.id)}" class="btn px-2.5 py-1.5 text-[12.5px]">수량</button>
           ${r.status!=='승인'?`<button data-act="approve" data-id="${escAttr(r.id)}" class="btn px-2.5 py-1.5 text-[12.5px]">승인</button>`:''}
           ${r.status!=='반려'?`<button data-act="reject" data-id="${escAttr(r.id)}" class="btn px-2.5 py-1.5 text-[12.5px]">반려</button>`:''}
           <button data-act="deleteRequest" data-id="${escAttr(r.id)}" class="btn btn-danger px-2.5 py-1.5 text-[12.5px]">삭제</button>
@@ -1986,6 +2027,23 @@ document.addEventListener('click', async e=>{
     catch(err){ toast(err.message,'err'); } finally{ busy(false); }
     return;
   }
+  if(act==='editQty'){
+    const rq = state.requests.find(r=>r.id===id); if(!rq) return;
+    const it = state.items.find(x=>x.id===rq.itemId) || state.items.find(x=>x.name===rq.itemName);
+    state.qtyTarget = { id:rq.id, prev:Number(rq.qty)||0, stock:it?Number(it.stock)||0:0, status:rq.status };
+    $('#qtyItem').textContent = rq.itemName;
+    $('#qtyWho').textContent  = `${rq.applicant} · ${rq.dept} · ${rq.ts} · ${rq.status}`;
+    $('#qtyStock').textContent = nf(state.qtyTarget.stock);
+    $('#qtyPrev').textContent  = nf(state.qtyTarget.prev);
+    $('#qtyNew').value = state.qtyTarget.prev;
+    $('#qtyNew').max = rq.status==='반려' ? 99999 : state.qtyTarget.prev + state.qtyTarget.stock;
+    $('#qtyReason').value = '';
+    $('#qtyErr').textContent = '';
+    paintQtyDelta();
+    openModal('qtyModal');
+    setTimeout(()=>{ $('#qtyNew').focus(); $('#qtyNew').select(); }, 60);
+    return;
+  }
   if(act==='deleteRequest'){
     if(!confirm('신청 내역을 삭제할까요? 승인·대기 상태였다면 재고가 복구됩니다.')) return;
   }
@@ -2038,6 +2096,48 @@ $('#itemForm').addEventListener('submit', async e=>{
     closeModal('itemModal');
     toast(state.editingId?'품목을 수정했습니다.':'품목을 등록했습니다.');
   }catch(err){ toast(err.message,'err'); } finally{ busy(false); }
+});
+
+/* 신청 수량 변경 */
+function paintQtyDelta(){
+  const t = state.qtyTarget; if(!t) return;
+  const next = Number($('#qtyNew').value) || 0;
+  const d = next - t.prev;
+  const el = $('#qtyDelta');
+  if(!d){ el.textContent = ''; return; }
+  if(t.status === '반려'){
+    el.innerHTML = `<span class="text-[var(--muted)]">반려 건이라 재고는 그대로입니다</span>`;
+    return;
+  }
+  el.innerHTML = d < 0
+    ? `<span style="color:var(--ok)">반납 ${nf(-d)}개 · 재고 ${nf(t.stock)} → ${nf(t.stock - d)}</span>`
+    : `<span style="color:var(--err)">추가 ${nf(d)}개 · 재고 ${nf(t.stock)} → ${nf(t.stock - d)}</span>`;
+}
+$('#qtyNew').addEventListener('input', paintQtyDelta);
+$$('[data-qadj]').forEach(b=>b.addEventListener('click', ()=>{
+  const inp = $('#qtyNew');
+  const max = Number(inp.max) || 99999;
+  inp.value = Math.min(max, Math.max(1, (Number(inp.value)||1) + Number(b.dataset.qadj)));
+  paintQtyDelta();
+}));
+$('#qtyForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const t = state.qtyTarget; if(!t) return;
+  const next = Number($('#qtyNew').value) || 0;
+  if(next <= 0){ $('#qtyErr').textContent = '수량은 1개 이상이어야 합니다. 전부 반납이면 반려나 삭제를 쓰세요.'; return; }
+  if(next === t.prev){ $('#qtyErr').textContent = '수량이 이전과 같습니다.'; return; }
+  $('#qtySubmit').disabled = true; $('#qtySubmit').textContent = '처리 중…';
+  busy(true);
+  try{
+    const d = await api('updateQty', { id:t.id, qty:next, reason:$('#qtyReason').value.trim() });
+    applyData(d);
+    closeModal('qtyModal');
+    const diff = next - t.prev;
+    toast(diff < 0
+      ? `반납 ${nf(-diff)}개를 반영했습니다. 재고가 돌아왔습니다.`
+      : `추가 ${nf(diff)}개를 반영했습니다.`);
+  }catch(err){ $('#qtyErr').textContent = err.message; }
+  finally{ busy(false); $('#qtySubmit').disabled = false; $('#qtySubmit').textContent = '변경 저장'; }
 });
 
 // CSV 대량등록
@@ -2117,11 +2217,11 @@ $('#auditBannerBtn').addEventListener('click', ()=>{
 
 // 모달 닫기
 $$('[data-close]').forEach(b=>b.addEventListener('click', ()=>closeModal(b.dataset.close)));
-$$('#reqModal,#adminModal,#itemModal,#bulkModal').forEach(m=>m.addEventListener('mousedown', e=>{
+$$('#reqModal,#adminModal,#itemModal,#bulkModal,#qtyModal').forEach(m=>m.addEventListener('mousedown', e=>{
   if(e.target===m) closeModal(m.id);
 }));
 document.addEventListener('keydown', e=>{
-  if(e.key==='Escape') ['reqModal','adminModal','itemModal','bulkModal'].forEach(closeModal);
+  if(e.key==='Escape') ['reqModal','adminModal','itemModal','bulkModal','qtyModal'].forEach(closeModal);
 });
 
 /* ═══════════════════════ 부팅 ═══════════════════════ */
