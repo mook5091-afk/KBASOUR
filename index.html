@@ -629,7 +629,12 @@
   <footer class="border-t border-[var(--line)] bg-white mt-auto">
     <div class="max-w-[1200px] mx-auto px-5 sm:px-8 py-9 flex flex-col sm:flex-row items-center justify-between gap-3">
       <p class="text-[12.5px] text-[var(--muted)]">© 대한변호사협회 사무국</p>
-      <p class="text-[12.5px] text-[var(--muted)] kr">문의 · 사무국 총무팀</p>
+      <p class="text-[12.5px] text-[var(--muted)] kr">
+        문의 · 사무국 총무팀
+        <span class="ml-3 px-2 py-0.5" style="font-family:'IBM Plex Mono',monospace; font-size:11px; border:1px solid var(--line); color:var(--muted)">
+          화면 <span id="buildTag">—</span>
+        </span>
+      </p>
     </div>
   </footer>
 </div>
@@ -731,8 +736,12 @@
           <textarea id="iDesc" rows="2" class="field resize-none" placeholder="품목 설명"></textarea>
         </div>
         <div>
-          <label class="label" for="iImg">실제 사진 URL <span class="normal-case tracking-normal font-normal text-[var(--faint)]">(선택 · 비우면 자동 이미지 사용)</span></label>
-          <input id="iImg" class="field" placeholder="https://…">
+          <label class="label" for="iImg">실제 사진 <span class="normal-case tracking-normal font-normal text-[var(--muted)]">(선택 · 비우면 자동 이미지)</span></label>
+          <input id="iImg" class="field" placeholder="https://lh3.googleusercontent.com/d/파일ID">
+          <p class="text-[11.5px] text-[var(--muted)] mt-1.5 kr leading-relaxed">
+            구글 드라이브 사진을 <b class="text-[var(--ink-2)]">「링크가 있는 모든 사용자」</b>로 공유한 뒤
+            공유 링크를 그대로 붙여넣으세요. 주소는 자동으로 변환됩니다.
+          </p>
         </div>
         <div>
           <label class="label" for="iNote">비고</label>
@@ -783,6 +792,10 @@
    ① 설정 — Apps Script 웹앱 URL. 비우면 브라우저 저장 «데모 모드».
    ═══════════════════════════════════════════════════════════════ */
 const API_URL = 'https://script.google.com/macros/s/AKfycbyGbQccUmbOHtQXTuGTQgWOx4CT0IT4d07CgMHtOkAo1owOtEGtg3cMM7d9PbQ5jHi1/exec';
+
+/* 화면 버전 — 붙여넣기가 제대로 됐는지 화면 맨 아래에서 확인할 수 있습니다.
+   기능을 고칠 때마다 이 값을 올립니다. */
+const BUILD = '0729-b';
 
 /* ── 초기 품목 시드 (데모 모드 전용 / 서버 연동 시 미사용) ── */
 const SEED_ITEMS = [
@@ -922,6 +935,24 @@ function itemArt(name, uid){
     </g>
   </svg>`;
 }
+/* 구글 드라이브 사진의 표준 주소 — 품목 등록 칸의 기본값으로 들어갑니다 */
+const DRIVE_PREFIX = 'https://lh3.googleusercontent.com/d/';
+
+/**
+ * 붙여넣은 주소를 카드에 바로 쓸 수 있는 형태로 바꿉니다.
+ * 드라이브 공유 링크, 파일 ID, 이미 변환된 주소를 모두 받아들입니다.
+ */
+function normalizeImgUrl(raw){
+  const s = String(raw || '').trim();
+  if(!s || s === DRIVE_PREFIX) return '';
+  const m = s.match(/\/file\/d\/([A-Za-z0-9_-]{10,})/)        // .../file/d/ID/view
+         || s.match(/[?&]id=([A-Za-z0-9_-]{10,})/)            // ...?id=ID
+         || s.match(/googleusercontent\.com\/d\/([A-Za-z0-9_-]{10,})/);
+  if(m) return DRIVE_PREFIX + m[1];
+  if(/^[A-Za-z0-9_-]{20,}$/.test(s)) return DRIVE_PREFIX + s;  // 파일 ID만 넣은 경우
+  return s;                                                    // 그 밖의 주소는 그대로
+}
+
 /** 사진 URL이 있으면 사진, 없으면 자동 생성 이미지 */
 function artFor(item, uid){
   if(item.img) return `<img class="art object-cover" src="${escAttr(item.img)}" alt="${escAttr(item.name)}" loading="lazy">`;
@@ -1034,7 +1065,7 @@ function demoLoad(){
   const items = SEED_ITEMS.map((r,i)=>({
     id:'IT-'+String(i+1).padStart(3,'0'), name:r[0], category:r[1], stock:r[2], desc:r[3], note:r[4], img:''
   }));
-  const db = { items, requests:[], logs:[], pw:'0000', adminPw:'0407' };
+  const db = { items, requests:[], logs:[], pw:'0000', adminPw:'1234' };
   localStorage.setItem(LS, JSON.stringify(db));
   return db;
 }
@@ -1767,7 +1798,7 @@ document.addEventListener('click', async e=>{
     state.editingId = it.id;
     $('#imTitle').textContent = '품목 수정';
     $('#iName').value=it.name; $('#iCat').value=it.category||''; $('#iStock').value=it.stock;
-    $('#iDesc').value=it.desc||''; $('#iImg').value=it.img||''; $('#iNote').value=it.note||'';
+    $('#iDesc').value=it.desc||''; $('#iImg').value=it.img||DRIVE_PREFIX; $('#iNote').value=it.note||'';
     refreshPreview();
     openModal('itemModal'); return;
   }
@@ -1794,16 +1825,23 @@ document.addEventListener('click', async e=>{
 // 품목 등록/수정 + 이미지 미리보기
 function refreshPreview(){
   const name = $('#iName').value.trim();
-  const img  = $('#iImg').value.trim();
+  const img  = normalizeImgUrl($('#iImg').value);
   $('#iPreview').innerHTML = artFor({ name: name || '기념품', img }, 'p' + hashStr(name || 'x'));
 }
 $('#iName').addEventListener('input', refreshPreview);
 $('#iImg').addEventListener('input', refreshPreview);
+// 칸을 벗어나면 붙여넣은 주소를 정리해 보여 줍니다
+$('#iImg').addEventListener('change', ()=>{
+  const v = normalizeImgUrl($('#iImg').value);
+  $('#iImg').value = v || DRIVE_PREFIX;
+  refreshPreview();
+});
 
 $('#newItemBtn').addEventListener('click', ()=>{
   state.editingId = null;
   $('#imTitle').textContent = '품목 등록';
   $('#itemForm').reset(); $('#iStock').value = 0;
+  $('#iImg').value = DRIVE_PREFIX;          // 뒤에 파일 ID만 붙이면 됩니다
   refreshPreview();
   openModal('itemModal'); setTimeout(()=>$('#iName').focus(),60);
 });
@@ -1815,7 +1853,7 @@ $('#itemForm').addEventListener('submit', async e=>{
     category: $('#iCat').value.trim() || '기타',
     stock: Number($('#iStock').value)||0,
     desc: $('#iDesc').value.trim(),
-    img: $('#iImg').value.trim(),
+    img: normalizeImgUrl($('#iImg').value),
     note: $('#iNote').value.trim()
   };
   busy(true);
@@ -1883,6 +1921,7 @@ document.addEventListener('keydown', e=>{
 
 /* ═══════════════════════ 부팅 ═══════════════════════ */
 (async function boot(){
+  $('#buildTag').textContent = BUILD;
   const saved = sessionStorage.getItem('kba_pw');
   if(saved){
     try{
