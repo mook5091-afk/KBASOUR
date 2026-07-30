@@ -125,7 +125,31 @@
     transition:transform .16s, box-shadow .16s;
   }
   .card:hover{ transform:translate(-2px,-2px); box-shadow:var(--shadow-lg); }
-  .art{ display:block; width:100%; aspect-ratio:4/3; }
+  /* 자동 생성 이미지(SVG) — 상자를 꽉 채웁니다 */
+  .art{ display:block; width:100%; height:100%; }
+
+  /* 올린 사진 — 원본 비율을 지키며 상자 안에 «맞춰» 넣습니다 (잘리지 않음).
+     남는 여백은 인쇄물 대지처럼 보이도록 점무늬 크림색으로 깔았습니다. */
+  .art-box{
+    position:relative; width:100%; height:100%;
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden; padding:8px; box-sizing:border-box;
+    background-color:var(--surface-2);
+    background-image:radial-gradient(var(--line) .6px, transparent .6px);
+    background-size:11px 11px;
+  }
+  .art-box img{
+    display:block; max-width:100%; max-height:100%;
+    width:auto; height:auto; object-fit:contain;
+  }
+  /* 표 안의 작은 썸네일은 여백과 무늬를 줄입니다 */
+  .art-box.sm{ padding:3px; background-image:none; }
+  /* 사진을 못 불러왔을 때 */
+  .art-box.art-fail::after{
+    content:'사진 없음'; font-size:10.5px; color:var(--muted); letter-spacing:.02em;
+  }
+  .art-box.sm.art-fail::after{ content:'—'; }
+
   .art-out{ filter:grayscale(.85) contrast(.92) brightness(1.04); opacity:.7; }
 
   .panel{
@@ -662,7 +686,7 @@
 <div id="reqModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-[#15181d]/45 backdrop-blur-[3px]">
   <div class="pop w-full max-w-[520px] bg-white rounded-[16px] shadow-[0_30px_70px_rgba(21,24,29,.28)] max-h-[92vh] overflow-auto scroll-y">
     <div class="flex items-start gap-4 p-6 border-b border-[var(--line)]">
-      <div id="rmArt" class="w-[84px] h-[63px] rounded-lg overflow-hidden flex-none border border-[var(--line)]"></div>
+      <div id="rmArt" class="w-[84px] h-[63px] overflow-hidden flex-none" style="border:2px solid var(--ink)"></div>
       <div class="min-w-0 flex-1">
         <p class="eyebrow">기념품 수령 신청</p>
         <h3 class="serif text-[20px] mt-1.5 kr leading-snug" id="rmName">—</h3>
@@ -731,7 +755,7 @@
     <div class="p-7 grid grid-cols-1 sm:grid-cols-[150px_1fr] gap-6">
       <div>
         <span class="label">대표 이미지</span>
-        <div id="iPreview" class="w-full rounded-xl overflow-hidden border border-[var(--line)]"></div>
+        <div id="iPreview" class="w-full overflow-hidden" style="aspect-ratio:4/3; border:2px solid var(--ink)"></div>
         <p class="text-[11.5px] text-[var(--muted)] mt-2 leading-relaxed kr">품목명에 따라 자동 생성됩니다.</p>
       </div>
       <div class="space-y-5">
@@ -854,7 +878,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbyGbQccUmbOHtQXTuGTQgWO
 
 /* 화면 버전 — 붙여넣기가 제대로 됐는지 화면 맨 아래에서 확인할 수 있습니다.
    기능을 고칠 때마다 이 값을 올립니다. */
-const BUILD = '0729-f';
+const BUILD = '0729-g';
 
 /* ── 초기 품목 시드 (데모 모드 전용 / 서버 연동 시 미사용) ── */
 const SEED_ITEMS = [
@@ -1012,9 +1036,17 @@ function normalizeImgUrl(raw){
   return s;                                                    // 그 밖의 주소는 그대로
 }
 
-/** 사진 URL이 있으면 사진, 없으면 자동 생성 이미지 */
-function artFor(item, uid){
-  if(item.img) return `<img class="art object-cover" src="${escAttr(item.img)}" alt="${escAttr(item.name)}" loading="lazy">`;
+/**
+ * 사진 URL이 있으면 그 사진, 없으면 자동 생성 이미지.
+ * 사진은 잘리지 않게 상자 안에 맞춰 넣고, 못 불러오면 «사진 없음»으로 바뀝니다.
+ * opts.sm : 표 안의 작은 썸네일용 (여백·무늬 축소)
+ */
+function artFor(item, uid, opts){
+  if(item.img){
+    return `<div class="art-box${opts && opts.sm ? ' sm' : ''}">` +
+           `<img src="${escAttr(item.img)}" alt="${escAttr(item.name)}" loading="lazy"` +
+           ` onerror="this.style.display='none';this.parentElement.classList.add('art-fail')"></div>`;
+  }
   return itemArt(item.name, uid);
 }
 
@@ -1287,7 +1319,7 @@ function renderCatTable(list){
     <tr>
       <td>
         <div class="flex items-center gap-3 min-w-[240px]">
-          <div class="w-14 h-11 overflow-hidden flex-none ${out?'art-out':''}" style="border:2px solid var(--ink)">${artFor(i,'t'+i.id)}</div>
+          <div class="w-14 h-11 overflow-hidden flex-none ${out?'art-out':''}" style="border:2px solid var(--ink)">${artFor(i,'t'+i.id,{sm:true})}</div>
           <div class="min-w-0">
             <p class="font-semibold kr leading-snug">${esc(i.name)}</p>
             <p class="text-[12px] text-[var(--muted)] kr leading-snug">${esc(i.desc||'')}</p>
@@ -1323,7 +1355,7 @@ function renderGrid(){
     const stock = Number(i.stock||0), out = stock<=0;
     return `
     <article class="card flex flex-col">
-      <div class="relative ${out?'art-out':''}">
+      <div class="relative ${out?'art-out':''}" style="aspect-ratio:4/3">
         ${artFor(i, 'c'+i.id)}
         ${i.note ? `<span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-sm text-[11px] font-semibold text-[var(--ink-2)] shadow-sm">${esc(i.note)}</span>`:''}
         ${out ? `<span class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-[var(--ink)] text-white text-[11px] font-semibold">품절</span>`:''}
@@ -1388,7 +1420,7 @@ function renderStock(){
     <tr>
       <td>
         <div class="flex items-center gap-3 min-w-[220px]">
-          <div class="w-12 h-9 rounded-md overflow-hidden border border-[var(--line)] flex-none">${artFor(i,'s'+i.id)}</div>
+          <div class="w-12 h-9 overflow-hidden flex-none" style="border:2px solid var(--ink)">${artFor(i,'s'+i.id,{sm:true})}</div>
           <div class="min-w-0">
             <p class="font-medium kr leading-snug">${esc(i.name)}</p>
             <p class="text-[11.5px] text-[var(--faint)]">${esc(i.id)}</p>
