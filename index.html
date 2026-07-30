@@ -881,7 +881,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbyGbQccUmbOHtQXTuGTQgWO
 
 /* 화면 버전 — 붙여넣기가 제대로 됐는지 화면 맨 아래에서 확인할 수 있습니다.
    기능을 고칠 때마다 이 값을 올립니다. */
-const BUILD = '0729-i';
+const BUILD = '0730-a';
 
 /* ── 초기 품목 시드 (데모 모드 전용 / 서버 연동 시 미사용) ── */
 const SEED_ITEMS = [
@@ -1763,15 +1763,59 @@ function auditStock(){
     }
   });
 
-  // ⑦ 품목별 «미결 신청 수량 합계» ↔ «신청 관련 로그 순변동» (세 표 교차 대조)
-  //    옛 시스템 기록은 잔량이 없어 대조가 불가능하므로,
-  //    잔량이 남기 시작한 시점부터만 계산합니다. (기준 시각은 자료에서 자동으로 잡힙니다)
-  const 잔량시각 = state.logs
+  // ⑦ 건별 대조 — 신청 한 건의 수량 ↔ 그 건의 출고 로그 (+ 그 건에 달린 반납·추가)
+  //    시트에서 수량만 몰래 고치면 여기서 걸립니다. 기간 제한 없이 전부 봅니다.
+  const outByKey = new Map();
+  state.logs.forEach(l=>{
+    if(l.type !== '출고(신청)') return;
+    outByKey.set(parseTs(l.ts) + '|' + l.itemName, Math.abs(Number(l.delta)||0));
+  });
+  // 수량 변경 로그는 비고의 «[신청건 …]» 으로 원래 신청에 연결합니다
+  const adjByReq = new Map();
+  state.logs.forEach(l=>{
+    if(l.type !== '출고(추가)' && l.type !== '입고(반납)') return;
+    const m = String(l.note||'').match(/\[신청건\s*(.+?)\]\s*$/);
+    if(!m) return;
+    const k = parseTs(m[1]) + '|' + l.itemName;
+    adjByReq.set(k, (adjByReq.get(k)||0) + (-(Number(l.delta)||0)));  // 출고는 +, 반납은 −
+  });
+  // 새 체계가 시작된 시점 — 잔량이 기록되기 시작한 첫 로그
+  const 잔량시각0 = state.logs
     .filter(l => numOrNull(l.before)!==null && numOrNull(l.after)!==null)
     .map(l => parseTs(l.ts)).filter(Boolean);
+  const NEW_FROM = 잔량시각0.length ? Math.min(...잔량시각0) : Infinity;
+
+  let perChecked = 0;
+  const 과거차이 = [];
+  state.requests.forEach(r=>{
+    if(r.status === '반려') return;
+    const k = parseTs(r.ts) + '|' + r.itemName;
+    if(!outByKey.has(k)) return;                       // ④에서 이미 다룸
+    const expect = outByKey.get(k) + (adjByReq.get(k)||0);
+    const actual = Number(r.qty)||0;
+    perChecked++;
+    if(expect === actual) return;
+    const line = `${r.ts} ${r.applicant}님 · ${r.itemName} — 신청서 ${nf(actual)}개 / 로그 기준 ${nf(expect)}개 (차이 ${actual-expect>0?'+':''}${nf(actual-expect)})`;
+    if(parseTs(r.ts) >= NEW_FROM){
+      // 새 체계 이후 건은 반드시 맞아야 합니다 → 경보
+      alerts.push({ kind:'건별 수량 불일치', item:r.itemName,
+        detail:`${r.ts} ${r.applicant}님 건 — 신청서 ${nf(actual)}개인데 로그 기준 ${nf(expect)}개입니다 (차이 ${actual-expect>0?'+':''}${nf(actual-expect)})`,
+        ts:r.ts });
+    } else {
+      과거차이.push(line);                              // 옛 시스템 기록 → 참고
+    }
+  });
+  if(과거차이.length){
+    notes.push(`아래 ${nf(과거차이.length)}건은 새 체계 시작(${new Date(NEW_FROM).toLocaleString('ko-KR')}) 전의 기록으로, 옛 시스템에서 관리자가 수량을 고친 흔적입니다. 지금 시트를 고친 것이 아니라면 그대로 두셔도 됩니다.`);
+    과거차이.forEach(l=> notes.push(l));
+  }
+
+  // ⑧ 품목별 «미결 신청 수량 합계» ↔ «신청 관련 로그 순변동» (세 표 교차 대조)
+  //    옛 시스템 기록은 잔량이 없어 대조가 불가능하므로,
+  //    잔량이 남기 시작한 시점부터만 계산합니다. (기준 시각은 자료에서 자동으로 잡힙니다)
   let sumChecked = 0;
-  if(잔량시각.length){
-    const cut = Math.min(...잔량시각);
+  if(NEW_FROM !== Infinity){
+    const cut = NEW_FROM;
     const 신청합 = {}, 로그합 = {};
     state.requests.forEach(r=>{
       if((r.status==='대기'||r.status==='승인') && parseTs(r.ts) >= cut)
@@ -1795,7 +1839,7 @@ function auditStock(){
 
   if(확인불가) notes.push(`로그 ${nf(확인불가)}개 품목은 이전·이후 잔량이 비어 있어 잔량 대조를 할 수 없습니다 (옛 시스템에서 옮겨온 기록)`);
 
-  return { alerts, notes, checked:확인가능, unchecked:확인불가, sumChecked };
+  return { alerts, notes, checked:확인가능, unchecked:확인불가, sumChecked, perChecked };
 }
 
 function auditText(a){
@@ -1828,7 +1872,7 @@ function renderAudit(a){
           <p class="text-[14px] font-bold kr">신청내역 ↔ 재고현황 ↔ 재고로그 정합성</p>
           <p class="text-[12.5px] text-[var(--muted)] kr mt-1">
             ${ok
-              ? `잔량 대조 ${nf(a.checked)}개 품목, 수량 합계 대조 ${nf(a.sumChecked||0)}개 품목이 모두 일치합니다. 자료가 바뀔 때마다 자동으로 다시 확인합니다.`
+              ? `건별 대조 ${nf(a.perChecked||0)}건, 잔량 대조 ${nf(a.checked)}개 품목, 수량 합계 대조 ${nf(a.sumChecked||0)}개 품목이 모두 일치합니다. 자료가 바뀔 때마다 자동으로 다시 확인합니다.`
               : `${nf(a.alerts.length)}건이 어긋납니다. 아래 내용을 확인해 주세요.`}
           </p>
         </div>
