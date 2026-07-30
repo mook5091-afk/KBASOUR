@@ -854,7 +854,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbyGbQccUmbOHtQXTuGTQgWO
 
 /* 화면 버전 — 붙여넣기가 제대로 됐는지 화면 맨 아래에서 확인할 수 있습니다.
    기능을 고칠 때마다 이 값을 올립니다. */
-const BUILD = '0729-e';
+const BUILD = '0729-f';
 
 /* ── 초기 품목 시드 (데모 모드 전용 / 서버 연동 시 미사용) ── */
 const SEED_ITEMS = [
@@ -1692,10 +1692,13 @@ function auditStock(){
   });
 
   // ④ 신청은 있는데 출고 로그가 없는 건
-  const outSet = new Set(state.logs.filter(l=>String(l.type).startsWith('출고')).map(l=> l.ts+'|'+l.itemName));
+  //    날짜 표기가 «7. 2.» / «7. 02.» 로 갈릴 수 있어 글자 대신 시각으로 맞춥니다.
+  const outSet = new Set(
+    state.logs.filter(l=>String(l.type).startsWith('출고'))
+              .map(l=> parseTs(l.ts) + '|' + l.itemName));
   state.requests.forEach(r=>{
     if(r.status === '반려') return;
-    if(!outSet.has(r.ts+'|'+r.itemName)){
+    if(!outSet.has(parseTs(r.ts) + '|' + r.itemName)){
       alerts.push({ kind:'출고 기록 없음', item:r.itemName,
         detail:`${r.ts} ${r.applicant}님 신청 ${nf(r.qty)}개에 해당하는 출고 로그가 없습니다`, ts:r.ts });
     }
