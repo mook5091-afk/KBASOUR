@@ -956,7 +956,8 @@
 <div id="loading" class="hidden fixed inset-0 z-[70] bg-[#f7f6f3]/70 backdrop-blur-[2px] items-center justify-center">
   <div class="flex flex-col items-center gap-3.5">
     <svg class="spin text-[var(--navy)]" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-    <p class="text-[12.5px] text-[var(--muted)] font-medium">처리 중…</p>
+    <p class="text-[12.5px] text-[var(--muted)] font-medium">처리 중… <span id="busySec" style="font-family:'IBM Plex Mono',monospace"></span></p>
+    <p id="busyHint" class="text-[11.5px] text-[var(--faint)] kr text-center max-w-[260px] leading-relaxed"></p>
   </div>
 </div>
 
@@ -968,7 +969,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbyGbQccUmbOHtQXTuGTQgWO
 
 /* 화면 버전 — 붙여넣기가 제대로 됐는지 화면 맨 아래에서 확인할 수 있습니다.
    기능을 고칠 때마다 이 값을 올립니다. */
-const BUILD = '0730-c';
+const BUILD = '0730-d';
 
 /* ── 초기 품목 시드 (데모 모드 전용 / 서버 연동 시 미사용) ── */
 const SEED_ITEMS = [
@@ -1218,10 +1219,25 @@ function toast(msg, kind='ok'){
   setTimeout(()=>{ el.style.transition='opacity .3s,transform .3s'; el.style.opacity='0'; el.style.transform='translateY(6px)';
     setTimeout(()=>el.remove(), 320); }, 3400);
 }
+let busyTimer = null;
 function busy(on){
   const el = $('#loading');
   el.classList.toggle('hidden', !on);
   el.classList.toggle('flex', on);
+
+  clearInterval(busyTimer);
+  const sec = $('#busySec'), hint = $('#busyHint');
+  if(!on){ if(sec) sec.textContent=''; if(hint) hint.textContent=''; return; }
+
+  // 구글 서버 왕복이 몇 초 걸립니다. 멈춘 것처럼 보이지 않도록 경과 시간을 보여 줍니다.
+  const t0 = Date.now();
+  busyTimer = setInterval(()=>{
+    const s = Math.floor((Date.now()-t0)/1000);
+    if(sec) sec.textContent = s + '초';
+    if(hint) hint.textContent = s >= 6
+      ? '구글 서버 응답이 늦습니다. 창을 닫지 마세요 — 처리는 진행 중입니다.'
+      : (s >= 3 ? '구글 스프레드시트에 기록하는 중입니다.' : '');
+  }, 250);
 }
 function sync(ok, text){
   $('#syncDot').style.background = ok ? 'var(--ok)' : 'var(--err)';
@@ -2028,15 +2044,41 @@ function runAudit(manual){
   const a = auditStock();
   state._audit = a;
   renderAudit(a);
-  if(a.alerts.length && !manual) sendAuditMail(a, false);   // 서버가 24시간 중복을 걸러 냅니다
+  // 메일은 «메일로 보내기» 를 누를 때만 나갑니다 (자동 발송하지 않습니다)
   return a;
 }
 
+/**
+ * 서버 응답을 화면에 반영합니다.
+ * 전체 자료(bootstrap)와 «바뀐 것만»(light) 두 형태를 모두 받습니다.
+ * 자료가 쌓일수록 전체 전송이 느려져, 신청·승인 같은 작업은 바뀐 줄만 주고받습니다.
+ */
 function applyData(d){
   if(!d) return;
-  if(d.items) state.items = d.items;
-  if(d.requests) state.requests = d.requests;
-  if(d.logs) state.logs = d.logs;
+
+  if(d.light){
+    if(d.items) state.items = d.items;                 // 품목표는 항상 최신으로
+
+    (d.reqUpsert||[]).forEach(r=>{
+      const i = state.requests.findIndex(x=>x.id===r.id);
+      if(i >= 0) state.requests[i] = r;
+      else state.requests.unshift(r);
+    });
+    if(d.reqRemove && d.reqRemove.length){
+      const rm = new Set(d.reqRemove);
+      state.requests = state.requests.filter(r=>!rm.has(r.id));
+    }
+    (d.logs||[]).forEach(l=> state.logs.unshift(l));
+    if(d.logRemove && d.logRemove.length){
+      const rm = new Set(d.logRemove);
+      state.logs = state.logs.filter(l=>!rm.has(l.id));
+    }
+  } else {
+    if(d.items) state.items = d.items;
+    if(d.requests) state.requests = d.requests;
+    if(d.logs) state.logs = d.logs;
+  }
+
   renderAll();
   runAudit(false);
 }
