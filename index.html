@@ -968,7 +968,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbyGbQccUmbOHtQXTuGTQgWO
 
 /* 화면 버전 — 붙여넣기가 제대로 됐는지 화면 맨 아래에서 확인할 수 있습니다.
    기능을 고칠 때마다 이 값을 올립니다. */
-const BUILD = '0730-b';
+const BUILD = '0730-c';
 
 /* ── 초기 품목 시드 (데모 모드 전용 / 서버 연동 시 미사용) ── */
 const SEED_ITEMS = [
@@ -1367,7 +1367,8 @@ async function demoApi(action, p){
 
 /* ═══════════════════════ 렌더링 ═══════════════════════ */
 function renderStats(){
-  const items = state.items;
+  // 신청 화면의 숫자는 «신청 가능한 품목» 기준이라야 목록과 맞습니다
+  const items = state.items.filter(i=>!isHiddenItem(i));
   const totalStock = items.reduce((a,i)=>a+Number(i.stock||0),0);
   const soldout = items.filter(i=>Number(i.stock||0)<=0).length;
   const pending = state.requests.filter(r=>r.status==='대기').length;
@@ -1385,14 +1386,23 @@ function renderStats(){
 }
 
 function renderCats(){
-  const cats = ['전체', ...new Set(state.items.map(i=>i.category||'기타'))];
+  const cats = ['전체', ...new Set(state.items.filter(i=>!isHiddenItem(i)).map(i=>i.category||'기타'))];
   $('#cats').innerHTML = cats.map(c=>`
     <button data-cat="${escAttr(c)}" class="catbtn px-4 py-2 chip ${state.cat===c?'chip-on':''}">${esc(c)}</button>`).join('');
+}
+
+/** 신청 차단된 품목 — 빈 값은 «허용» */
+function isHiddenItem(i){
+  const v = i && i.hidden;
+  if(v === true) return true;
+  const s = String(v == null ? '' : v).trim().toLowerCase();
+  return s==='true' || s==='1' || s==='y' || s==='yes' || s==='숨김';
 }
 
 function visibleItems(){
   const q = state.q.trim().toLowerCase();
   return state.items.filter(i=>{
+    if(isHiddenItem(i)) return false;            // 신청 차단 품목은 목록에서 제외
     if(state.cat!=='전체' && (i.category||'기타')!==state.cat) return false;
     if(!state.soldout && Number(i.stock||0)<=0) return false;
     if(q && !(`${i.name} ${i.desc||''} ${i.note||''}`.toLowerCase().includes(q))) return false;
@@ -1506,13 +1516,16 @@ function renderStock(){
     state.items.filter(i=>!q || `${i.id} ${i.name} ${i.category||''} ${i.note||''}`.toLowerCase().includes(q)),
     state.sort.stock);
   paintSortHead('stock');
-  $('#stockBody').innerHTML = rows.length ? rows.map(i=>`
-    <tr>
+  $('#stockBody').innerHTML = rows.length ? rows.map(i=>{
+    const hid = isHiddenItem(i);
+    return `
+    <tr ${hid?'style="opacity:.62"':''}>
       <td>
         <div class="flex items-center gap-3 min-w-[220px]">
           <div class="w-12 h-9 overflow-hidden flex-none" style="border:2px solid var(--ink)">${artFor(i,'s'+i.id,{fill:true})}</div>
           <div class="min-w-0">
-            <p class="font-medium kr leading-snug">${esc(i.name)}</p>
+            <p class="font-medium kr leading-snug">${esc(i.name)}
+              ${hid?'<span class="badge b-no ml-1" style="font-size:10px">신청 차단</span>':''}</p>
             <p class="text-[11.5px] text-[var(--faint)]">${esc(i.id)}</p>
           </div>
         </div>
@@ -1523,12 +1536,16 @@ function renderStock(){
       <td class="text-[var(--muted)] whitespace-nowrap">${esc(i.note||'')}</td>
       <td class="text-right">
         <div class="inline-flex gap-1.5">
+          <button data-act="toggleHidden" data-id="${escAttr(i.id)}" class="btn px-2.5 py-1.5 text-[12.5px]" title="${hid?'신청 화면에 다시 표시합니다':'신청 화면에서 숨겨 신청을 막습니다'}">
+            ${hid?'신청 허용':'신청 차단'}
+          </button>
           <button data-act="history" data-id="${escAttr(i.id)}" class="btn px-2.5 py-1.5 text-[12.5px]">이력·실사</button>
           <button data-act="editItem" data-id="${escAttr(i.id)}" class="btn px-2.5 py-1.5 text-[12.5px]">수정</button>
           <button data-act="deleteItem" data-id="${escAttr(i.id)}" class="btn btn-danger px-2.5 py-1.5 text-[12.5px]">삭제</button>
         </div>
       </td>
-    </tr>`).join('')
+    </tr>`;
+  }).join('')
     : `<tr><td colspan="6" class="py-20 text-center text-[14px] text-[var(--muted)] kr">품목이 없습니다</td></tr>`;
 }
 
@@ -2264,6 +2281,17 @@ document.addEventListener('click', async e=>{
     return;
   }
   if(act==='history'){ openHistory(id); return; }
+  if(act==='toggleHidden'){
+    const it = state.items.find(x=>x.id===id); if(!it) return;
+    const willHide = !isHiddenItem(it);
+    if(willHide && !confirm(`「${it.name}」의 신청을 막을까요?\n\n신청 화면 목록에서 사라지고, 새 신청도 거부됩니다.\n재고와 지난 기록은 그대로 남습니다.`)) return;
+    busy(true);
+    try{
+      applyData(await api('toggleHidden',{ id, hidden:willHide }));
+      toast(willHide ? `「${it.name}」 신청을 막았습니다.` : `「${it.name}」 신청을 다시 받습니다.`);
+    }catch(err){ toast(err.message,'err'); } finally{ busy(false); }
+    return;
+  }
   if(act==='deleteLog'){
     const l = state.logs.find(x=>x.id===id);
     if(!confirm(`이 로그를 지울까요?\n\n${l?l.ts+' · '+l.itemName+' · '+l.type:''}\n\n재고 숫자는 바뀌지 않고 이력만 지워집니다.\n잔량 사슬이 끊겨 정합성 경보가 뜰 수 있습니다.`)) return;
