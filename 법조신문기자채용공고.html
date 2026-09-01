@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>법조신문 기자 공개채용 | 대한변호사협회</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#142a52;
+    --navy-2:#0f1f3d;
+    --gold:#cf9f52;
+    --gold-2:#e0bd7c;
+    --bg:#f6f5f2;
+    --border:#e4e1d8;
+    --ink:#1c1c1c;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;
+    word-break:keep-all;
+  }
+  .wrap{ max-width:900px; margin:0 auto; padding:28px 16px 60px; }
+  .sheet{ background:var(--bg); border-radius:14px; overflow:hidden; box-shadow:0 30px 60px -20px rgba(20,42,82,.25); }
+
+  /* Hero */
+  .hero{
+    position:relative; padding:56px 44px 44px;
+    background:
+      radial-gradient(1100px 320px at 90% -10%, rgba(207,159,82,.25), transparent 60%),
+      linear-gradient(120deg, var(--navy-2), var(--navy) 55%, #1c3568);
+    color:#fff; overflow:hidden;
+  }
+  .hero::before{
+    content:'⚖️'; position:absolute; right:-10px; bottom:-40px; font-size:190px;
+    opacity:.10; transform:rotate(-8deg); filter:grayscale(1) brightness(2);
+  }
+  .hero .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    color:var(--gold); font-weight:700; font-size:15px; letter-spacing:.3px;
+    background:rgba(207,159,82,.12); border:1px solid rgba(207,159,82,.4);
+    padding:6px 14px; border-radius:999px; margin-bottom:18px;
+  }
+  .hero h1{
+    margin:0; font-size:34px; font-weight:900; line-height:1.32; letter-spacing:-.5px;
+    position:relative; z-index:1;
+  }
+  .hero .sub{ margin-top:14px; font-size:14px; color:#cfd7e6; position:relative; z-index:1; }
+
+  /* Deadline strip */
+  .deadline{
+    background:var(--navy-2); padding:16px 20px; display:flex; align-items:center; justify-content:center;
+    gap:12px; flex-wrap:wrap; text-align:center; border-top:1px solid rgba(255,255,255,.08);
+  }
+  .pill-gold{
+    background:var(--gold); color:var(--ink); font-size:12px; font-weight:700;
+    padding:5px 12px; border-radius:999px; letter-spacing:.3px; white-space:nowrap;
+  }
+  .deadline .txt{ color:#fff; font-size:17px; font-weight:700; }
+
+  .section{ padding:34px 44px 0; }
+  .section:last-of-type{ padding-bottom:36px; }
+  .card-title{
+    display:flex; align-items:center; gap:10px; font-size:18px; font-weight:900; color:var(--navy);
+    margin-bottom:16px;
+  }
+  .card-title .ico{ font-size:22px; }
+
+  /* Job table */
+  table.job{ width:100%; border-collapse:collapse; font-size:13.5px; border-radius:10px; overflow:hidden;
+    box-shadow:0 14px 28px -10px rgba(20,42,82,.28); }
+  table.job thead th{ background:var(--navy); color:#fff; font-weight:700; padding:14px; border:1px solid var(--navy); }
+  table.job tbody td{ border:1px solid var(--border); padding:20px 18px; background:#fff; line-height:1.85; vertical-align:top; }
+  table.job td.center{ text-align:center; }
+  .req-h{ font-weight:700; color:var(--navy); margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+
+  /* Process banner */
+  .procbox{
+    margin-top:24px; background:var(--navy); border-radius:12px; padding:26px 30px; color:#fff;
+    display:flex; align-items:center; gap:32px; flex-wrap:wrap;
+    box-shadow:0 16px 32px -12px rgba(20,42,82,.4);
+  }
+  .procbox .count{ text-align:center; min-width:100px; }
+  .procbox .count .lbl{ font-size:13px; font-weight:700; opacity:.85; }
+  .procbox .count .num{ font-size:32px; font-weight:900; color:var(--gold); margin-top:4px; }
+  .divider-v{ width:1px; height:56px; background:rgba(255,255,255,.18); }
+  .flow{ flex:1; min-width:260px; }
+  .flow .lbl{ font-size:13px; font-weight:700; opacity:.85; margin-bottom:12px; display:flex; align-items:center; gap:6px; }
+  .flow-steps{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .step{
+    flex:1; min-width:110px; text-align:center; padding:12px 8px; border-radius:8px; font-size:13.5px; font-weight:700;
+    background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.25);
+    box-shadow:0 6px 14px -4px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.15);
+  }
+  .step.final{ background:var(--gold); color:var(--ink); box-shadow:0 8px 18px -4px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.4); }
+  .arrow{ color:var(--gold); font-size:18px; }
+  .proc-note{ font-size:11.5px; opacity:.75; margin-top:10px; }
+
+  /* Card grid */
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:22px; }
+  @media (max-width:640px){ .grid2{ grid-template-columns:1fr; } }
+  .card{
+    background:#fff; border:1px solid var(--border); border-radius:12px; padding:22px;
+    box-shadow:0 12px 24px -8px rgba(20,42,82,.22), 0 2px 6px rgba(20,42,82,.1), inset 0 1px 0 rgba(255,255,255,.6);
+  }
+  .card .card-title{ border-bottom:2px solid var(--gold); padding-bottom:10px; font-size:16.5px; }
+  .kv{ display:flex; gap:8px; font-size:13px; line-height:1.7; margin-bottom:6px; }
+  .kv b{ color:var(--navy); min-width:96px; flex:none; }
+
+  /* Benefits */
+  .benefits{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+  @media (max-width:480px){ .benefits{ grid-template-columns:1fr 1fr; } }
+  .chip{
+    text-align:center; padding:10px 6px; background:var(--bg); border-radius:6px; font-size:11.5px; font-weight:700;
+    color:#333; line-height:1.4; display:flex; flex-direction:column; align-items:center; gap:4px;
+  }
+  .chip .emoji{ font-size:16px; }
+
+  .doclist div{ display:flex; gap:8px; font-size:12.5px; line-height:1.6; margin-bottom:9px; }
+  .doclist b{ color:var(--gold); flex:none; }
+  .note{ font-size:11.5px; color:#777; line-height:1.65; margin-top:12px; }
+  .info-row{ display:flex; align-items:baseline; gap:6px; font-size:13.5px; margin-bottom:8px; }
+  .info-row b{ color:var(--navy); }
+  .etc-title{ font-size:13.5px; font-weight:700; color:var(--navy); margin:14px 0 6px; }
+  .etc{ font-size:11.5px; line-height:1.8; color:#444; }
+
+  /* Apply banner */
+  .apply{
+    margin-top:26px; background:var(--navy); border-radius:12px; padding:26px 30px; color:#fff;
+    box-shadow:0 16px 32px -12px rgba(20,42,82,.4), inset 0 1px 0 rgba(255,255,255,.08);
+  }
+  .apply .title{ font-size:17px; font-weight:900; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .apply .mail{ font-size:21px; font-weight:900; color:var(--gold); margin-bottom:8px; }
+  .apply .small{ font-size:12.5px; line-height:1.85; opacity:.92; }
+
+  .footer{
+    margin-top:0; background:#eeece5; padding:28px 0; text-align:center;
+  }
+  .footer .name{ font-size:20px; font-weight:900; color:#333; letter-spacing:.5px; }
+  .footer .en{ font-size:12px; font-weight:700; color:#666; letter-spacing:1.5px; margin-top:2px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="sheet">
+
+    <div class="hero">
+      <div class="eyebrow">📰 2026년 대한변호사협회</div>
+      <h1>법조신문 신규 기자<br>공개채용</h1>
+      <div class="sub">국회 · 법조계를 취재할 새로운 동료를 찾습니다</div>
+    </div>
+
+    <div class="deadline">
+      <span class="pill-gold">🗓️ 접수기간</span>
+      <span class="txt">2026. 9. 2.(수) ~ 9. 11.(금) 18:00까지</span>
+    </div>
+
+    <div class="section">
+      <div class="card-title"><span class="ico">🏢</span>모집 부문</div>
+      <table class="job">
+        <thead>
+          <tr>
+            <th style="width:100px">부서</th>
+            <th style="width:150px">담당업무</th>
+            <th>자격요건 및 우대사항</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="center" style="font-weight:700;font-size:15px">법조신문</td>
+            <td class="center">국회, 법조계<br>취재 및 편집</td>
+            <td>
+              <div class="req-h">✅ 자격요건</div>
+              <div style="margin-bottom:14px">
+                - 신입 및 경력(기자 경력 5년 이하)<br>
+                - 4년제 대학 졸업자 및 졸업예정자<br>
+                - 공무원임용규정상 결격사유가 없는 자
+              </div>
+              <div class="req-h">⭐ 우대사항</div>
+              <div>
+                - 해당직무 유경험자<br>
+                - 컴퓨터 활용(검색, 문서작성 등) 능력 우수자<br>
+                - 기사작성 유경험자<br>
+                - 신문편집프로그램 활용 능통자
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="procbox">
+        <div class="count">
+          <div class="lbl">👥 채용인원</div>
+          <div class="num">0명</div>
+        </div>
+        <div class="divider-v"></div>
+        <div class="flow">
+          <div class="lbl">🚩 전형절차</div>
+          <div class="flow-steps">
+            <div class="step">📄 서류전형(1차)</div>
+            <div class="arrow">➜</div>
+            <div class="step">🗣️ 면접(2차)</div>
+            <div class="arrow">➜</div>
+            <div class="step final">🏆 최종합격</div>
+          </div>
+          <div class="proc-note">※ 2차는 1차 합격자에 한함 · 일부 전형이 추가될 수 있음</div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title"><span class="ico">🕒</span>근무 조건</div>
+          <div class="kv"><b>근무형태</b><span>계약직 1년 (정규직 전환 심사)</span></div>
+          <div class="kv"><b>근무요일/시간</b><span>주 5일(월~금) 오전 9시 ~ 오후 6시</span></div>
+          <div class="kv"><b>근무지역</b><span>서울 서초구 서초동 (2호선 서초역 또는 2·3호선 교대역 인근)</span></div>
+          <div class="kv"><b>연봉</b><span>협회 내규에 따름</span></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="ico">🎁</span>복리 후생</div>
+          <div class="benefits">
+            <div class="chip"><span class="emoji">🍱</span>중식대</div>
+            <div class="chip"><span class="emoji">🚌</span>교통통신비</div>
+            <div class="chip"><span class="emoji">🎂</span>생일축하휴가 및 축하금</div>
+            <div class="chip"><span class="emoji">🎊</span>명절상여금</div>
+            <div class="chip"><span class="emoji">🏖️</span>휴가비</div>
+            <div class="chip"><span class="emoji">📸</span>취재비</div>
+            <div class="chip"><span class="emoji">🩺</span>건강검진(2년차~격년)</div>
+            <div class="chip"><span class="emoji">💪</span>체력단련휴가</div>
+            <div class="chip"><span class="emoji">⏰</span>시간외 근무수당</div>
+            <div class="chip"><span class="emoji">📆</span>장기근속수당</div>
+            <div class="chip"><span class="emoji">🏅</span>우수사원포상</div>
+            <div class="chip"><span class="emoji">👨‍👩‍👧</span>가족수당/자녀수당</div>
+            <div class="chip"><span class="emoji">☕</span>사내 커피머신</div>
+            <div class="chip"><span class="emoji">💳</span>복지포인트(2년차부터)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title"><span class="ico">📄</span>제출 서류</div>
+          <div class="doclist">
+            <div><b>1.</b> 입사지원서 및 경력기술서(첨부양식, 경력기술서는 해당자에 한함) 1부</div>
+            <div><b>2.</b> 최종학교 졸업증명서 1부</div>
+            <div><b>3.</b> 최종학교 성적증명서 1부</div>
+            <div><b>4.</b> 주민등록초본(남자의 경우, 병역사항 포함) 1부</div>
+            <div><b>5.</b> 개인정보 수집 및 이용 동의서(첨부양식) 1부</div>
+          </div>
+          <div class="note">
+            ※ 최종학교가 대학원인 경우, 대학교 졸업증명서 및 성적증명서도 추가 제출<br>
+            ※ 위 서류 미첨부시 서류전형 탈락 · 최종 합격자는 신원보증보험증권 등 추가 제출
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="ico">📮</span>채용 안내</div>
+          <div class="info-row">✔️ <b>면접일시</b><span>&nbsp;추후 공지</span></div>
+          <div class="info-row">✔️ <b>접수 방법</b><span>&nbsp;온라인 접수(이메일)</span></div>
+          <div class="etc-title">기타 안내</div>
+          <div class="etc">
+            가. 제출된 서류에 허위사실이 발견되었을 경우 채용을 취소할 수 있음.<br>
+            나. 최종합격하지 못한 지원자의 제출서류는 개인정보보호법에 따라 채용종료 후 폐기함.<br>
+            다. 채용 이후 협회 인력 운영 및 개인의 업무수행능력, 적성 등을 고려하여 채용직무와 다른 부서로 전보될 수 있음.
+          </div>
+        </div>
+      </div>
+
+      <div class="apply">
+        <div class="title">✉️ 지원 방법</div>
+        <div class="mail">mook@koreanbar.or.kr</div>
+        <div class="small">
+          ※ 이메일 접수만 가능 (메일제목 : 응시부서_본인 성명 [예시] 법조신문_홍길동)<br>
+          🗓️ 접수기간 : 2026. 9. 2.(수) ~ 9. 11.(금) 18:00까지<br>
+          ☎️ 문의 : 대한변호사협회 총무팀 (02-2087-7711)
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="name">대한변호사협회</div>
+      <div class="en">KOREAN BAR ASSOCIATION</div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
