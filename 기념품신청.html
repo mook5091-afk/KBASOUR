@@ -3,174 +3,302 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>대한변호사협회 사무국 기념품 신청</title>
+<title>KBA톡 — 기념품 신청</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500;700;800;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#f7f6f3;
-    --surface:#ffffff;
-    --ink:#15181d;
-    --ink-2:#3d434d;
-    --muted:#7b818c;
-    --faint:#a5aab3;
-    --line:#e5e3dd;
-    --line-2:#efedE8;
-    --navy:#16233a;
-    --navy-2:#22334f;
-    --accent:#1e3a5f;
-    --gold:#a8834a;
-    --ok:#1a6b46;
-    --warn:#8a6512;
-    --err:#a8322a;
+    /* 카카오 톤 — 따뜻한 화이트 표면 */
+    --bg:#F5F5F5;            /* 페이지 */
+    --surface:#FFFFFF;       /* 카드 */
+    --surface-2:#FAF8F2;     /* 살짝 옐로 톤이 도는 상승면 — 헤더/표 헤더/호버 */
+    --ink:#191919;           /* 본문 글자 */
+    --ink-2:#555555;         /* 보조 글자 */
+    --muted:#888888;         /* 옅은 글자 */
+    --faint:#A0A0A0;         /* 아주 옅은 글자(캡션) */
+    --line:#F0F0F0;          /* 가는 테두리 */
+    --line-2:#D9D9D9;        /* 조금 진한 테두리 */
+
+    /* 브랜드 — Kakao Yellow. 노란 배경엔 항상 검정 글자만 씁니다. */
+    --navy:#FEE500;          /* 강조 · 기본 CTA */
+    --navy-2:#FEE52B;        /* 강조 hover(더 밝게 — 카카오 버튼 규칙) */
+    --accent:#FEE500;
+    --gold:#FFF6D6;          /* 은은한 hover 표면(옐로 워시) */
+    --gold-ink:#8C7E00;
+    --teal:#4A2D17;          /* 로고 브라운 — 차트 시리즈색으로 사용 */
+
+    --ok:#0F7A3D;
+    --warn:#B8A500;
+    --err:#D93636;
+
+    --shadow-sm:0 1px 2px rgba(25,25,25,.05);
+    --shadow:0 1px 2px rgba(25,25,25,.04), 0 8px 20px -8px rgba(25,25,25,.12);
+    --shadow-lg:0 2px 4px rgba(25,25,25,.05), 0 16px 32px -8px rgba(25,25,25,.18);
+    --shadow-glow:0 8px 22px -4px rgba(254,229,0,.55);   /* 기본 CTA 전용 옐로 글로우 */
   }
   *{ -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
   html,body{ background:var(--bg); }
   body{
-    font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,"Segoe UI",sans-serif;
-    color:var(--ink); font-size:15px; line-height:1.6;
+    font-family:'Noto Sans KR',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    color:var(--ink); font-size:15px; font-weight:500; line-height:1.65;
+    letter-spacing:-.01em;
   }
-  .serif{ font-family:'Nanum Myeongjo',Georgia,'Times New Roman',serif; }
+  /* 표제 */
+  .serif{ font-family:inherit; font-weight:800; letter-spacing:-.03em; line-height:1.25; }
   .kr{ word-break:keep-all; }
-  ::selection{ background:#dbe4ef; }
+  ::selection{ background:var(--navy); color:#191919; }
 
-  /* 라벨 · 소제목 */
   .eyebrow{
-    font-size:10.5px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
-    color:var(--muted);
+    font-size:10.5px; font-weight:800; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--gold-ink);
   }
   .label{
-    display:block; font-size:11px; font-weight:600; letter-spacing:.09em;
-    text-transform:uppercase; color:var(--muted); margin-bottom:.5rem;
+    display:block; font-size:11px; font-weight:700; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--ink-2); margin-bottom:.5rem;
   }
 
-  /* 폼 */
+  /* ── 폼 — 카카오 인풋은 테두리 대신 채움 배경을 씁니다 ── */
   .field{
-    width:100%; background:#fff; border:1px solid var(--line); border-radius:8px;
-    padding:.66rem .85rem; font-size:14.5px; color:var(--ink); font-family:inherit;
-    outline:none; transition:border-color .16s, box-shadow .16s;
+    width:100%; background:var(--bg); border:1px solid transparent; border-radius:12px;
+    padding:.66rem .85rem; font-size:14.5px; font-weight:500; color:var(--ink); font-family:inherit;
+    outline:none; transition:box-shadow .2s, background .2s, border-color .2s;
   }
-  .field:focus{ border-color:var(--accent); box-shadow:0 0 0 3px rgba(30,58,95,.10); }
+  .field:focus{ background:#fff; border-color:var(--line-2); box-shadow:0 0 0 2px var(--navy); }
   .field::placeholder{ color:var(--faint); }
-  textarea.field{ line-height:1.6; }
+  textarea.field{ line-height:1.65; }
 
   input[type=checkbox]{
-    appearance:none; -webkit-appearance:none; width:16px; height:16px; flex:none;
-    border:1px solid #cfd3d9; border-radius:4px; background:#fff;
-    position:relative; cursor:pointer; transition:all .14s;
+    appearance:none; -webkit-appearance:none; width:18px; height:18px; flex:none;
+    border:1.5px solid var(--line-2); border-radius:6px; background:#fff;
+    position:relative; cursor:pointer; transition:background .2s, border-color .2s;
   }
-  input[type=checkbox]:hover{ border-color:var(--accent); }
-  input[type=checkbox]:checked{ background:var(--accent); border-color:var(--accent); }
+  input[type=checkbox]:hover{ border-color:var(--gold-ink); }
+  input[type=checkbox]:checked{ background:var(--navy); border-color:var(--navy); }
   input[type=checkbox]:checked::after{
     content:''; position:absolute; left:5px; top:1.5px; width:4px; height:9px;
-    border:solid #fff; border-width:0 2px 2px 0; transform:rotate(43deg);
+    border:solid #191919; border-width:0 2.5px 2.5px 0; transform:rotate(43deg);
   }
 
-  /* 버튼 */
+  /* ── 버튼 ── */
   .btn{
     display:inline-flex; align-items:center; justify-content:center; gap:.45rem;
-    border-radius:8px; font-weight:600; font-size:13.5px; line-height:1;
-    border:1px solid var(--line); background:#fff; color:var(--ink-2);
-    transition:all .16s; cursor:pointer; white-space:nowrap;
+    border-radius:12px; font-weight:700; font-size:13px; line-height:1;
+    border:1px solid var(--line-2); background:#fff; color:var(--ink);
+    cursor:pointer; white-space:nowrap;
+    transition:all .2s;
+    letter-spacing:-.005em;
   }
-  .btn:hover{ border-color:#cdd1d7; background:#fbfaf8; color:var(--ink); }
-  .btn:active{ transform:translateY(.5px); }
-  .btn-primary{
-    background:var(--navy); border:1px solid var(--navy); color:#fff;
-    box-shadow:0 1px 2px rgba(21,24,29,.14);
-  }
-  .btn-primary:hover{ background:var(--navy-2); border-color:var(--navy-2); color:#fff; }
+  .btn:hover{ background:var(--gold); border-color:#F0DE8A; }
+  .btn:active{ transform:scale(.98); }
+  .btn-primary{ background:var(--navy); border-color:var(--navy); color:#191919; box-shadow:var(--shadow-glow); }
+  .btn-primary:hover{ background:var(--navy-2); border-color:var(--navy-2); color:#191919; box-shadow:0 10px 26px -4px rgba(254,229,0,.7); }
   .btn-danger{ color:var(--err); }
-  .btn-danger:hover{ background:#fdf3f2; border-color:#e8c9c6; color:var(--err); }
-  .btn[disabled]{ opacity:.45; cursor:not-allowed; }
-  .btn-quiet{
-    background:transparent; border-color:transparent; color:var(--muted);
-  }
-  .btn-quiet:hover{ background:#efedE8; color:var(--ink); border-color:transparent; }
+  .btn-danger:hover{ background:#FFE5E5; border-color:#F7BABA; color:var(--err); }
+  .btn[disabled]{ opacity:.4; cursor:not-allowed; }
+  .btn[disabled]:active{ transform:none; }
+  .btn-quiet{ background:transparent; border-color:transparent; color:var(--ink-2); }
+  .btn-quiet:hover{ background:var(--gold); border-color:transparent; color:var(--ink); }
+  .btn-quiet:active{ transform:none; }
 
-  /* 칩 */
+  /* ── 칩 ── */
   .chip{
-    border:1px solid var(--line); background:#fff; color:var(--ink-2);
-    border-radius:999px; font-size:13px; font-weight:500; transition:all .16s; cursor:pointer;
-    white-space:nowrap;
+    border:1px solid var(--line-2); background:#fff; color:var(--ink-2);
+    border-radius:999px; font-size:12.5px; font-weight:700; cursor:pointer; white-space:nowrap;
+    transition:all .2s;
   }
-  .chip:hover{ border-color:#cdd1d7; background:#fbfaf8; }
-  .chip-on{ background:var(--navy); border-color:var(--navy); color:#fff; }
-  .chip-on:hover{ background:var(--navy-2); border-color:var(--navy-2); }
+  .chip:hover{ background:var(--gold); color:var(--ink); border-color:#F0DE8A; }
+  .chip:active{ transform:scale(.98); }
+  .chip-on{ background:var(--navy); border-color:var(--navy); color:#191919; }
+  .chip-on:hover{ background:var(--navy-2); border-color:var(--navy-2); color:#191919; }
 
-  /* 카드 */
+  /* ── 카드 · 패널 ── */
   .card{
-    background:var(--surface); border:1px solid var(--line); border-radius:14px;
-    overflow:hidden; transition:box-shadow .22s, transform .22s, border-color .22s;
+    background:#fff; border:1px solid var(--line); border-radius:18px;
+    overflow:hidden; box-shadow:var(--shadow);
+    transition:transform .2s, box-shadow .2s, border-color .2s;
   }
-  .card:hover{
-    border-color:#dcd9d2; transform:translateY(-2px);
-    box-shadow:0 10px 28px rgba(21,24,29,.07), 0 2px 6px rgba(21,24,29,.04);
+  .card:hover{ transform:translateY(-3px); box-shadow:var(--shadow-lg); border-color:var(--line-2); }
+  /* ── 기념품 이미지 자리 ───────────────────────────────
+     상자가 4:3 을 «고정»하고, 내용물(SVG·사진)은 절대배치로 그 안에 갇힙니다.
+     이렇게 해야 세로로 긴 사진이 들어와도 상자가 늘어나지 않습니다. */
+  .art-wrap{
+    position:relative; width:100%; aspect-ratio:4/3;
+    overflow:hidden; background-color:var(--surface-2);
+    display:flex; align-items:center; justify-content:center;
   }
-  .art{ display:block; width:100%; aspect-ratio:4/3; }
-  .art-out{ filter:grayscale(1) contrast(.9) brightness(1.06); opacity:.75; }
+  /* 부모가 이미 크기를 정해 둔 자리(표 썸네일·모달)에서는 부모를 꽉 채웁니다 */
+  .art-wrap.fill{ aspect-ratio:auto; height:100%; }
 
-  .panel{ background:var(--surface); border:1px solid var(--line); border-radius:14px; }
+  /* 자동 생성 이미지(SVG) — 상자를 꽉 채움 */
+  .art{ position:absolute; inset:0; display:block; width:100%; height:100%; }
 
-  /* 상태 배지 */
+  /* 올린 사진 — 원본 비율을 지키며 상자 안에 맞춤 (잘리지 않음, 가운데 정렬) */
+  .art-photo{
+    position:absolute; inset:10px;
+    width:calc(100% - 20px); height:calc(100% - 20px);
+    object-fit:contain; object-position:center;
+  }
+  .art-wrap.fill .art-photo{ inset:2px; width:calc(100% - 4px); height:calc(100% - 4px); }
+
+  /* 사진을 못 불러왔을 때 */
+  .art-wrap.art-fail::after{
+    content:'사진 없음'; font-size:10.5px; color:var(--muted); letter-spacing:.02em;
+  }
+  .art-wrap.fill.art-fail::after{ content:'—'; }
+
+  .art-out{ filter:grayscale(.55) contrast(.95) brightness(1.02); opacity:.7; }
+
+  .panel{
+    background:#fff; border:1px solid var(--line); border-radius:18px;
+    box-shadow:var(--shadow);
+  }
+
+  /* 구분선 */
+  .rules{ height:3px; border-radius:2px; background:linear-gradient(90deg,var(--navy),rgba(254,229,0,0)); }
+  .rule-thin{ height:0; border-top:1px solid var(--line); }
+
+  /* ── 배지 — 카카오 tag-subtle 패턴: 옅은 톤 배경 + 짙은 글자 ── */
   .badge{
-    display:inline-block; border-radius:999px; padding:.2rem .6rem;
-    font-size:12px; font-weight:600; border:1px solid;
+    display:inline-block; border-radius:999px; padding:.2rem .65rem;
+    font-size:11.5px; font-weight:700; border:1px solid; letter-spacing:.01em;
   }
-  .b-wait{ color:var(--warn); border-color:#e8dcb8; background:#fdf9ee; }
-  .b-ok  { color:var(--ok);   border-color:#c4ddcf; background:#f1f8f4; }
-  .b-no  { color:var(--err);  border-color:#e8c9c6; background:#fdf3f2; }
-  .b-in  { color:var(--ok);   border-color:#c4ddcf; background:#f1f8f4; }
-  .b-out { color:var(--accent);border-color:#ccd8e5; background:#f2f6fb; }
+  .b-wait{ color:#5C5300; border-color:#F0E486; background:#FFF8B8; }
+  .b-ok  { color:var(--ok); border-color:#B9E9CC; background:#DCF7E5; }
+  .b-no  { color:#C22323;   border-color:#F7BABA; background:#FFE5E5; }
+  .b-in  { color:var(--ok); border-color:#B9E9CC; background:#DCF7E5; }
+  .b-out { color:#1D4FC4;   border-color:#BBD8FA; background:#E0F0FE; }
 
-  /* 테이블 */
+  /* ── 표 ── */
   table.tbl{ width:100%; border-collapse:separate; border-spacing:0; }
   table.tbl th{
-    position:sticky; top:0; z-index:1; background:#fbfaf8;
-    font-size:11px; font-weight:600; letter-spacing:.09em; text-transform:uppercase;
-    color:var(--muted); padding:.85rem 1rem; border-bottom:1px solid var(--line);
+    position:sticky; top:0; z-index:1; background:var(--surface-2); color:var(--ink-2);
+    font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    padding:.75rem 1rem; white-space:nowrap; border-bottom:1px solid var(--line);
+  }
+  table.tbl td{
+    padding:.85rem 1rem; border-bottom:1px solid var(--line); vertical-align:middle;
+  }
+  table.tbl tbody tr{ transition:background .15s; }
+  table.tbl tbody tr:hover{ background:var(--gold); }
+  table.tbl tbody tr:last-child td{ border-bottom:0; }
+
+  /* 정렬 헤더 */
+  th.sortable{ padding:0 !important; }
+  th.sortable > button{
+    width:100%; display:flex; align-items:center; gap:.4rem;
+    padding:.75rem 1rem; font:inherit; color:inherit; letter-spacing:inherit;
+    text-transform:inherit; background:none; border:0; cursor:pointer;
+    transition:background .15s, color .15s;
+  }
+  th.sortable > button:hover{ background:var(--gold); color:var(--ink); }
+  th.sortable.num > button{ justify-content:flex-end; }
+  .sort-ind{ font-size:9px; line-height:1; opacity:0; transition:opacity .15s; }
+  th.sortable > button:hover .sort-ind{ opacity:.55; }
+  th.sorted{ background:#FFF3B0; }
+  th.sorted > button{ color:#191919; }
+  th.sorted .sort-ind{ opacity:1; }
+
+  /* ── 내비 ── */
+  .navlink{
+    position:relative; font-size:14px; font-weight:700; color:var(--ink-2);
+    padding:.4rem .1rem; transition:color .15s; letter-spacing:-.005em;
+  }
+  .navlink:hover{ color:var(--ink); }
+  .navlink-on{ color:#191919; }
+  .navlink-on::after{
+    content:''; position:absolute; left:-2px; right:-2px; bottom:-3px; height:3px; border-radius:2px; background:var(--navy);
+  }
+  .tabbtn{
+    position:relative; font-size:14px; font-weight:700; color:var(--ink-2);
+    padding:.7rem .9rem; margin-right:.35rem; transition:background .15s, color .15s;
+    border:1px solid transparent; border-bottom:0; border-radius:10px 10px 0 0; letter-spacing:-.005em;
+  }
+  .tabbtn:hover{ color:var(--ink); background:var(--surface-2); }
+  .tabbtn-on{
+    color:#191919; background:var(--navy); border-color:var(--navy);
+  }
+  .tabbtn-on:hover{ color:#191919; background:var(--navy); }
+
+  /* ── 차트 — 시리즈색은 로고 브라운(가장 진하게 보이는 브랜드색) ── */
+  .viz{
+    --series-1:#4A2D17;
+    --grid:#F0EFEA;
+    --s0:#FBF0DE; --s1:#F5DFB0; --s2:#EBC57A; --s3:#DCA84B; --s4:#C4842C; --s5:#9C5F1E; --s6:#5C3813;
+  }
+  .bar-row{ display:grid; grid-template-columns:var(--labw,150px) 1fr 62px; align-items:center; gap:.7rem; padding:.3rem 0; }
+  .bar-track{ position:relative; height:18px; background:var(--grid); border-radius:999px; overflow:hidden; }
+  .bar-fill{
+    position:absolute; inset:0 auto 0 0; background:var(--series-1); border-radius:999px;
+    transition:width .5s cubic-bezier(.2,.7,.3,1), filter .15s;
+  }
+  .bar-row:hover .bar-fill{ filter:brightness(1.15); }
+  .bar-lab{ font-size:12.5px; font-weight:600; color:var(--ink-2); text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .bar-val{ font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--ink); font-weight:600; text-align:right; }
+
+  .col-chart{ display:flex; align-items:flex-end; gap:5px; height:160px; }
+  .col-wrap{ flex:1; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:7px; min-width:0; }
+  .col-fill{ width:100%; max-width:52px; background:var(--series-1); border-radius:6px 6px 0 0; min-height:3px; transition:filter .15s; }
+  .col-wrap:hover .col-fill{ filter:brightness(1.15); }
+  .col-lab{ font-size:10.5px; font-weight:600; color:var(--muted); white-space:nowrap; }
+
+  table.heat{ border-collapse:separate; border-spacing:2px; }
+  table.heat th{ position:static; background:transparent; color:var(--ink); border:0; padding:.3rem .45rem; }
+  table.heat td{ border:0; padding:0; }
+  .heat-cell{
+    text-align:center; font-family:'IBM Plex Mono',monospace; font-size:12px;
+    padding:.5rem .35rem; min-width:42px; border-radius:6px;
+  }
+  .heat-0{ background:var(--surface-2); color:var(--faint); }
+  .heat-1{ background:var(--s0); color:#191919; }
+  .heat-2{ background:var(--s1); color:#191919; }
+  .heat-3{ background:var(--s2); color:#191919; }
+  .heat-4{ background:var(--s3); color:#191919; }
+  .heat-5{ background:var(--s4); color:#fff; }
+  .heat-6{ background:var(--s5); color:#fff; }
+  .heat-7{ background:var(--s6); color:#fff; }
+  .heat-rowh{ font-size:12.5px; font-weight:700; color:var(--ink); white-space:nowrap; text-align:right; padding-right:.6rem !important; }
+  .heat-colh{
+    font-size:11px; font-weight:600; color:var(--ink-2); white-space:nowrap;
+    writing-mode:vertical-rl; transform:rotate(180deg); height:96px; vertical-align:bottom;
+  }
+  .legend-step{ width:24px; height:10px; border-radius:3px; }
+
+  /* 툴팁 — 말풍선처럼 꼬리를 달았습니다 */
+  #vizTip{
+    position:fixed; z-index:80; pointer-events:none; opacity:0; transform:translateY(4px);
+    transition:opacity .12s, transform .12s;
+    background:#191919; color:#fff; font-size:12px; line-height:1.6;
+    padding:.5rem .7rem; border-radius:10px 10px 10px 3px; box-shadow:var(--shadow-lg);
     white-space:nowrap;
   }
-  table.tbl td{ padding:.9rem 1rem; border-bottom:1px solid var(--line-2); vertical-align:middle; }
-  table.tbl tbody tr:last-child td{ border-bottom:0; }
-  table.tbl tbody tr:hover{ background:#fbfaf8; }
+  #vizTip.on{ opacity:1; transform:none; }
+  #vizTip .dim{ color:#A0A0A0; }
 
   /* 스크롤바 */
-  .scroll-y::-webkit-scrollbar{ width:10px; height:10px; }
-  .scroll-y::-webkit-scrollbar-track{ background:transparent; }
-  .scroll-y::-webkit-scrollbar-thumb{ background:#dcd9d2; border-radius:20px; border:3px solid #fff; }
-  .scroll-y::-webkit-scrollbar-thumb:hover{ background:#c9c5bc; }
+  .scroll-y::-webkit-scrollbar{ width:12px; height:12px; }
+  .scroll-y::-webkit-scrollbar-track{ background:var(--surface-2); }
+  .scroll-y::-webkit-scrollbar-thumb{ background:#D9D9D9; border:3px solid var(--surface-2); border-radius:8px; }
 
   /* 모션 */
-  .fade-up{ animation:fadeUp .45s cubic-bezier(.2,.7,.3,1) both; }
-  @keyframes fadeUp{ from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none} }
-  .pop{ animation:pop .22s cubic-bezier(.2,.8,.3,1.05) both; }
-  @keyframes pop{ from{opacity:0; transform:translateY(12px) scale(.99)} to{opacity:1; transform:none} }
+  .fade-up{ animation:fadeUp .5s cubic-bezier(.2,.7,.3,1) both; }
+  @keyframes fadeUp{ from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:none} }
+  .pop{ animation:pop .2s cubic-bezier(.2,.8,.3,1.05) both; }
+  @keyframes pop{ from{opacity:0; transform:scale(.97) translateY(4px)} to{opacity:1; transform:none} }
   .spin{ animation:spin .9s linear infinite; }
   @keyframes spin{ to{ transform:rotate(360deg) } }
 
-  /* 내비 링크 */
-  .navlink{
-    position:relative; font-size:14px; font-weight:600; color:var(--muted);
-    padding:.4rem 0; transition:color .16s;
+  /* 카드/표 전환 세그먼트 */
+  .seg{ display:inline-flex; border:1px solid var(--line-2); border-radius:12px; overflow:hidden; }
+  .seg > button{
+    padding:.42rem .95rem; font-size:12.5px; font-weight:700; background:#fff;
+    color:var(--ink-2); cursor:pointer; border:0; transition:background .15s, color .15s;
+    display:inline-flex; align-items:center; gap:.35rem;
   }
-  .navlink:hover{ color:var(--ink); }
-  .navlink-on{ color:var(--ink); }
-  .navlink-on::after{
-    content:''; position:absolute; left:0; right:0; bottom:-21px; height:2px; background:var(--navy);
-  }
-  .tabbtn{
-    position:relative; font-size:14.5px; font-weight:600; color:var(--muted);
-    padding:.75rem .25rem; margin-right:1.75rem; transition:color .16s;
-  }
-  .tabbtn:hover{ color:var(--ink); }
-  .tabbtn-on{ color:var(--ink); }
-  .tabbtn-on::after{
-    content:''; position:absolute; left:0; right:0; bottom:-1px; height:2px; background:var(--navy);
-  }
+  .seg > button + button{ border-left:1px solid var(--line-2); }
+  .seg > button:hover{ background:var(--gold); color:var(--ink); }
+  .seg > button[aria-pressed="true"]{ background:var(--navy); color:#191919; }
 </style>
 </head>
 <body class="overflow-x-hidden">
@@ -180,57 +308,71 @@
 
   <!-- 브랜드 패널 -->
   <div class="lg:col-span-5 relative overflow-hidden flex flex-col justify-between px-8 sm:px-12 py-12 lg:py-14"
-       style="background:linear-gradient(160deg,#16233a 0%,#1d2f4a 55%,#22334f 100%)">
-    <svg class="absolute inset-0 w-full h-full opacity-[.07] pointer-events-none" aria-hidden="true">
+       style="background:var(--surface-2); border-right:1px solid var(--line)">
+    <svg class="absolute inset-0 w-full h-full opacity-[.05] pointer-events-none" aria-hidden="true">
       <defs>
-        <pattern id="gridpat" width="34" height="34" patternUnits="userSpaceOnUse">
-          <path d="M34 0H0V34" fill="none" stroke="#fff" stroke-width="1"/>
+        <pattern id="dotpat" width="14" height="14" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="1.4" fill="#4A2D17"/>
         </pattern>
       </defs>
-      <rect width="100%" height="100%" fill="url(#gridpat)"/>
+      <rect width="100%" height="100%" fill="url(#dotpat)"/>
     </svg>
-    <div class="absolute -right-24 -top-24 w-[380px] h-[380px] rounded-full pointer-events-none"
-         style="background:radial-gradient(circle,rgba(168,131,74,.28) 0%,rgba(168,131,74,0) 68%)"></div>
+    <div class="absolute -right-20 -top-20 w-[420px] h-[420px] rounded-full pointer-events-none"
+         style="background:radial-gradient(circle,rgba(254,229,0,.55),transparent 70%)"></div>
+    <div class="absolute -left-24 -bottom-24 w-[360px] h-[360px] rounded-full pointer-events-none"
+         style="background:radial-gradient(circle,rgba(254,229,0,.30),transparent 70%)"></div>
 
     <div class="relative">
-      <p class="text-[11px] font-bold tracking-[.22em] uppercase text-white/45">Korean Bar Association</p>
-      <p class="mt-3 text-white/85 text-[15px] font-semibold tracking-tight">대한변호사협회 사무국</p>
+      <p class="text-[11px] font-bold tracking-[.28em] uppercase" style="color:var(--gold-ink)">Korean Bar Association</p>
+      <div class="mt-4 flex items-center gap-2.5">
+        <span class="w-9 h-9 flex items-center justify-center flex-none rounded-[12px]" style="background:#191919">
+          <svg aria-hidden="true" viewBox="0 0 24 24" style="width:19px;height:19px" fill="var(--navy)"><path d="M12 3C7 3 3 6.4 3 10.6c0 2.7 1.7 5.1 4.3 6.5l-1 3.7 4.1-2.4c.5.07 1 .1 1.6.1 5 0 9-3.4 9-7.6S17 3 12 3Z"/></svg>
+        </span>
+        <p class="text-[19px] font-black tracking-[-.02em]" style="color:var(--ink)">KBA톡</p>
+      </div>
     </div>
 
     <div class="relative py-14 lg:py-0">
-      <h1 class="serif text-white text-[34px] sm:text-[42px] leading-[1.28] tracking-[-.01em] kr">
-        기념품 신청<br>시스템
+      <h1 class="serif text-[38px] sm:text-[48px] kr" style="color:var(--ink)">
+        기념품을<br>간편하게 신청하세요
       </h1>
-      <div class="mt-7 w-12 h-px bg-[var(--gold)]"></div>
-      <p class="mt-7 text-white/55 text-[14.5px] leading-[1.75] kr max-w-[340px]">
+      <div class="mt-8 flex gap-1.5" aria-hidden="true">
+        <span class="h-1.5 w-14 rounded-full" style="background:var(--navy)"></span>
+        <span class="h-1.5 w-7 rounded-full" style="background:rgba(25,25,25,.14)"></span>
+        <span class="h-1.5 w-3 rounded-full" style="background:rgba(25,25,25,.07)"></span>
+      </div>
+      <p class="mt-7 text-[14.5px] leading-[1.8] kr max-w-[340px]" style="color:var(--ink-2)">
         협회 대내외 행사·예방·의전에 사용할 기념품을 신청하고, 재고를 한곳에서 관리합니다.
       </p>
     </div>
 
-    <p class="relative text-white/30 text-[11.5px] tracking-wide">© 대한변호사협회 사무국</p>
+    <p class="relative text-[11.5px] tracking-wide" style="color:var(--muted)">© 대한변호사협회 사무국</p>
   </div>
 
   <!-- 로그인 폼 -->
-  <div class="lg:col-span-7 flex items-center justify-center px-6 py-16 lg:py-0 bg-[var(--bg)]">
-    <div class="w-full max-w-[360px] fade-up">
-      <p class="eyebrow">Access</p>
-      <h2 class="serif text-[26px] mt-2.5 tracking-[-.01em]">접속 암호를 입력하세요</h2>
-      <p class="text-[14px] text-[var(--muted)] mt-2.5 kr leading-relaxed">
-        사무국에서 안내받은 공용 암호를 입력하면 신청 화면으로 이동합니다.
-      </p>
+  <div class="lg:col-span-7 flex items-center justify-center px-6 py-16 lg:py-0">
+    <div class="w-full max-w-[380px] fade-up">
+      <div class="panel p-8">
+        <p class="eyebrow">Access</p>
+        <h2 class="serif text-[27px] mt-3 kr">접속 암호를<br>입력하세요</h2>
+        <div class="rules my-5"></div>
+        <p class="text-[13.5px] text-[var(--ink-2)] kr leading-relaxed">
+          사무국에서 안내받은 공용 암호를 입력하면 신청 화면으로 이동합니다.
+        </p>
 
-      <form id="gateForm" class="mt-9">
-        <label class="label" for="gatePw">접속 암호</label>
-        <input id="gatePw" type="password" placeholder="••••" autocomplete="current-password"
-               class="field text-center text-[22px] tracking-[.45em] py-3.5">
-        <p id="gateErr" class="text-[13px] text-[var(--err)] mt-2.5 h-5 kr"></p>
-        <button type="submit" id="gateBtn" class="btn btn-primary w-full py-3.5 mt-2">
-          확인
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </button>
-      </form>
-
-      <p class="mt-8 text-[12.5px] text-[var(--faint)] kr leading-relaxed">
+        <form id="gateForm" class="mt-7">
+          <label class="label" for="gatePw">접속 암호</label>
+          <input id="gatePw" type="password" placeholder="••••" autocomplete="current-password"
+                 class="field text-center text-[24px] tracking-[.45em] py-3.5"
+                 style="font-family:'IBM Plex Mono',monospace">
+          <p id="gateErr" class="text-[13px] text-[var(--err)] mt-2.5 h-5 kr font-semibold"></p>
+          <button type="submit" id="gateBtn" class="btn btn-primary w-full py-3.5 mt-1">
+            확인
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+        </form>
+      </div>
+      <p class="mt-6 text-[12.5px] text-[var(--muted)] kr leading-relaxed text-center">
         암호를 모르시면 사무국 총무팀으로 문의해 주세요.
       </p>
     </div>
@@ -240,15 +382,26 @@
 <!-- ══════════════════════════ 본 화면 ══════════════════════════ -->
 <div id="app" class="hidden min-h-screen flex-col">
 
+  <!-- 정합성 경보 띠 -->
+  <div id="auditBanner" class="hidden" style="background:var(--err); box-shadow:0 2px 12px rgba(217,54,54,.35)">
+    <div class="max-w-[1200px] mx-auto px-5 sm:px-8 py-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+      <span class="text-[13px] font-bold kr" style="color:#fff">
+        ⚠ 재고현황과 재고로그가 어긋납니다 — <span id="auditBannerCount">0</span>건
+      </span>
+      <button id="auditBannerBtn" class="btn px-3 py-1.5 text-[12px] ml-auto">자세히 보기</button>
+    </div>
+  </div>
+
   <!-- 헤더 -->
-  <header class="sticky top-0 z-40 bg-white/92 backdrop-blur-md border-b border-[var(--line)]">
+  <header class="sticky top-0 z-40 backdrop-blur-md" style="background:rgba(255,255,255,.85); border-bottom:1px solid var(--line)">
     <div class="max-w-[1200px] mx-auto px-5 sm:px-8 h-[64px] flex items-center justify-between gap-6">
       <button id="brandBtn" class="flex items-center gap-3 min-w-0 text-left">
-        <span class="w-8 h-8 rounded-md flex items-center justify-center serif text-white text-[13px] flex-none"
-              style="background:var(--navy)">KBA</span>
+        <span class="w-9 h-9 flex items-center justify-center flex-none rounded-[11px]" style="background:#191919">
+          <svg aria-hidden="true" viewBox="0 0 24 24" style="width:17px;height:17px" fill="var(--navy)"><path d="M12 3C7 3 3 6.4 3 10.6c0 2.7 1.7 5.1 4.3 6.5l-1 3.7 4.1-2.4c.5.07 1 .1 1.6.1 5 0 9-3.4 9-7.6S17 3 12 3Z"/></svg>
+        </span>
         <span class="min-w-0">
-          <span class="block text-[13.5px] font-semibold leading-tight truncate">기념품 신청 시스템</span>
-          <span class="block text-[11px] text-[var(--muted)] leading-tight truncate">대한변호사협회 사무국</span>
+          <span class="block text-[14px] font-black tracking-[-.01em] leading-tight truncate">KBA톡</span>
+          <span class="block text-[11px] text-[var(--muted)] leading-tight truncate">기념품 신청 · 대한변호사협회 사무국</span>
         </span>
       </button>
 
@@ -259,6 +412,10 @@
           <span id="syncDot" class="w-1.5 h-1.5 rounded-full bg-[var(--ok)]"></span>
           <span id="syncText">연동됨</span>
         </span>
+        <button id="refreshBtn" class="btn btn-quiet px-2.5 py-1.5 text-[13px]" title="시트에서 최신 자료를 다시 불러옵니다">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+          새로고침
+        </button>
         <button id="logoutBtn" class="btn btn-quiet px-2.5 py-1.5 text-[13px]">로그아웃</button>
       </nav>
     </div>
@@ -280,22 +437,53 @@
 
     <section class="max-w-[1200px] mx-auto px-5 sm:px-8 pt-14 pb-24">
       <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
-        <h2 class="serif text-[22px] tracking-[-.01em]">기념품 목록 <span id="countLabel" class="text-[var(--muted)] text-[15px] font-sans ml-1">0</span></h2>
+        <h2 class="serif text-[24px]">기념품 목록 <span id="countLabel" class="text-[var(--muted)] text-[15px] ml-1" style="font-family:'IBM Plex Mono',monospace">0</span></h2>
         <div class="flex flex-col sm:flex-row gap-3 sm:items-center">
-          <div class="relative">
-            <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--faint)]" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
-            <input id="search" class="field pl-10 sm:w-[270px]" placeholder="기념품명으로 검색">
+          <div class="seg" role="group" aria-label="보기 방식">
+            <button type="button" data-catview="card" aria-pressed="true">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              카드
+            </button>
+            <button type="button" data-catview="table" aria-pressed="false">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M3 5h18M3 12h18M3 19h18"/></svg>
+              표
+            </button>
           </div>
-          <label class="flex items-center gap-2.5 text-[13.5px] text-[var(--ink-2)] cursor-pointer select-none whitespace-nowrap">
+          <div class="relative">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
+            <input id="search" class="field pl-9 sm:w-[250px]" placeholder="기념품명으로 검색">
+          </div>
+          <label class="flex items-center gap-2.5 text-[13.5px] font-semibold text-[var(--ink-2)] cursor-pointer select-none whitespace-nowrap">
             <input id="showSoldout" type="checkbox"> 품절 포함
           </label>
         </div>
       </div>
 
       <div id="cats" class="flex flex-wrap gap-2 mb-8"></div>
+
+      <!-- 카드 보기 -->
       <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+
+      <!-- 표 보기 -->
+      <div id="catTableWrap" class="hidden panel overflow-hidden">
+        <div class="overflow-auto scroll-y max-h-[70vh]">
+          <table class="tbl text-[14px]">
+            <thead>
+              <tr data-sorthead="catalog">
+                <th class="sortable" data-key="name"     data-type="str"><button type="button">품목<span class="sort-ind"></span></button></th>
+                <th class="sortable" data-key="category" data-type="str"><button type="button">구분<span class="sort-ind"></span></button></th>
+                <th class="sortable num" data-key="stock" data-type="num"><button type="button">잔여 재고<span class="sort-ind"></span></button></th>
+                <th class="sortable" data-key="note"     data-type="str"><button type="button">비고<span class="sort-ind"></span></button></th>
+                <th class="text-right">신청</th>
+              </tr>
+            </thead>
+            <tbody id="catBody"></tbody>
+          </table>
+        </div>
+      </div>
+
       <div id="empty" class="hidden text-center py-28">
-        <p class="serif text-[19px] text-[var(--ink-2)] kr">일치하는 기념품이 없습니다</p>
+        <p class="serif text-[21px] text-[var(--ink-2)] kr">일치하는 기념품이 없습니다</p>
         <p class="text-[13.5px] text-[var(--muted)] mt-2 kr">검색어나 분류를 바꿔 보세요.</p>
       </div>
     </section>
@@ -310,6 +498,7 @@
         <button data-tab="requests" class="tabbtn">신청내역</button>
         <button data-tab="stock" class="tabbtn">재고현황</button>
         <button data-tab="logs" class="tabbtn">재고로그</button>
+        <button data-tab="stats" class="tabbtn">통계</button>
       </div>
     </section>
 
@@ -326,14 +515,14 @@
         <div class="overflow-auto scroll-y max-h-[66vh]">
           <table class="tbl text-[14px]">
             <thead>
-              <tr>
-                <th class="text-left">신청일</th>
-                <th class="text-left">기념품</th>
-                <th class="text-left">신청자</th>
-                <th class="text-left">부서</th>
-                <th class="text-left min-w-[240px]">용도</th>
-                <th class="text-right">수량</th>
-                <th class="text-left">상태</th>
+              <tr data-sorthead="requests">
+                <th class="sortable" data-key="ts"        data-type="ts"><button type="button">신청일<span class="sort-ind"></span></button></th>
+                <th class="sortable" data-key="itemName"  data-type="str"><button type="button">기념품<span class="sort-ind"></span></button></th>
+                <th class="sortable" data-key="applicant" data-type="str"><button type="button">신청자<span class="sort-ind"></span></button></th>
+                <th class="sortable" data-key="dept"      data-type="str"><button type="button">부서<span class="sort-ind"></span></button></th>
+                <th class="sortable min-w-[240px]" data-key="purpose" data-type="str"><button type="button">용도<span class="sort-ind"></span></button></th>
+                <th class="sortable num" data-key="qty"   data-type="num"><button type="button">수량<span class="sort-ind"></span></button></th>
+                <th class="sortable" data-key="status"    data-type="str"><button type="button">상태<span class="sort-ind"></span></button></th>
                 <th class="text-right">처리</th>
               </tr>
             </thead>
@@ -348,6 +537,10 @@
       <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
         <input id="stockSearch" class="field sm:w-[290px]" placeholder="품목 검색">
         <div class="flex flex-wrap gap-2">
+          <button id="exportStock" class="btn px-3.5 py-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 21h16"/></svg>
+            CSV 내보내기
+          </button>
           <button id="bulkBtn" class="btn px-3.5 py-2">대량 CSV 등록</button>
           <button id="newItemBtn" class="btn btn-primary px-3.5 py-2">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
@@ -359,12 +552,12 @@
         <div class="overflow-auto scroll-y max-h-[66vh]">
           <table class="tbl text-[14px]">
             <thead>
-              <tr>
-                <th class="text-left">품목</th>
-                <th class="text-left">구분</th>
-                <th class="text-right">재고</th>
-                <th class="text-left min-w-[220px]">설명</th>
-                <th class="text-left">비고</th>
+              <tr data-sorthead="stock">
+                <th class="sortable" data-key="name"     data-type="str"><button type="button">품목<span class="sort-ind"></span></button></th>
+                <th class="sortable" data-key="category" data-type="str"><button type="button">구분<span class="sort-ind"></span></button></th>
+                <th class="sortable num" data-key="stock" data-type="num"><button type="button">재고<span class="sort-ind"></span></button></th>
+                <th class="sortable min-w-[220px]" data-key="desc" data-type="str"><button type="button">설명<span class="sort-ind"></span></button></th>
+                <th class="sortable" data-key="note"     data-type="str"><button type="button">비고<span class="sort-ind"></span></button></th>
                 <th class="text-right">처리</th>
               </tr>
             </thead>
@@ -376,21 +569,31 @@
 
     <!-- 재고로그 -->
     <section id="tabLogs" class="hidden max-w-[1200px] mx-auto px-5 sm:px-8 pt-7 pb-24">
+      <!-- 정합성 검사 -->
+      <div id="auditPanel" class="panel p-5 mb-5"></div>
+
       <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
         <input id="logSearch" class="field sm:w-[290px]" placeholder="품목·비고 검색">
-        <p class="text-[13px] text-[var(--muted)]"><span id="logCount">0</span>건</p>
+        <div class="flex items-center gap-3">
+          <p class="text-[13px] text-[var(--muted)]"><span id="logCount">0</span>건</p>
+          <button id="exportLogs" class="btn px-3.5 py-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 21h16"/></svg>
+            CSV 내보내기
+          </button>
+        </div>
       </div>
       <div class="panel overflow-hidden">
         <div class="overflow-auto scroll-y max-h-[66vh]">
           <table class="tbl text-[14px]">
             <thead>
-              <tr>
-                <th class="text-left">일시</th>
-                <th class="text-left">기념품</th>
-                <th class="text-left">구분</th>
-                <th class="text-right">변동</th>
+              <tr data-sorthead="logs">
+                <th class="sortable" data-key="ts"       data-type="ts"><button type="button">일시<span class="sort-ind"></span></button></th>
+                <th class="sortable" data-key="itemName" data-type="str"><button type="button">기념품<span class="sort-ind"></span></button></th>
+                <th class="sortable" data-key="type"     data-type="str"><button type="button">구분<span class="sort-ind"></span></button></th>
+                <th class="sortable num" data-key="delta" data-type="num"><button type="button">변동<span class="sort-ind"></span></button></th>
                 <th class="text-right">이전 → 이후</th>
-                <th class="text-left min-w-[240px]">비고</th>
+                <th class="sortable min-w-[240px]" data-key="note" data-type="str"><button type="button">비고<span class="sort-ind"></span></button></th>
+                <th class="text-right">처리</th>
               </tr>
             </thead>
             <tbody id="logBody"></tbody>
@@ -400,19 +603,105 @@
     </section>
   </main>
 
-  <footer class="border-t border-[var(--line)] bg-white mt-auto">
+    <!-- 통계 -->
+    <section id="tabStats" class="hidden viz max-w-[1200px] mx-auto px-5 sm:px-8 pt-7 pb-24">
+
+      <!-- 필터 -->
+      <div class="panel p-5 mb-6 flex flex-wrap items-end gap-x-7 gap-y-4">
+        <div>
+          <span class="label">기간</span>
+          <div id="stPeriod" class="flex flex-wrap gap-2"></div>
+        </div>
+        <div>
+          <span class="label">대상</span>
+          <div id="stStatus" class="flex flex-wrap gap-2"></div>
+        </div>
+        <label class="flex items-center gap-2.5 text-[13.5px] text-[var(--ink-2)] cursor-pointer select-none pb-1">
+          <input id="stDedup" type="checkbox" checked> 중복 의심 건 제외
+          <span class="text-[var(--faint)] text-[12px]">(부서 = ‘신청부서’)</span>
+        </label>
+        <button id="stExport" class="btn px-3.5 py-2 ml-auto">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 21h16"/></svg>
+          교차표 CSV
+        </button>
+      </div>
+
+      <!-- KPI -->
+      <div id="stKpi" class="grid grid-cols-2 lg:grid-cols-4 border-t border-[var(--line)] mb-10"></div>
+
+      <!-- 부서별 · 품목별 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+        <div class="panel p-6">
+          <h3 class="serif text-[18px]">부서별 수령 수량</h3>
+          <p class="text-[12.5px] text-[var(--muted)] mt-1 mb-5">막대 길이 = 수량 합계</p>
+          <div id="stDept"></div>
+        </div>
+        <div class="panel p-6">
+          <h3 class="serif text-[18px]">품목별 수령 수량 <span class="text-[13px] font-sans text-[var(--muted)]">상위 12</span></h3>
+          <p class="text-[12.5px] text-[var(--muted)] mt-1 mb-5">막대 길이 = 수량 합계</p>
+          <div id="stItem"></div>
+        </div>
+      </div>
+
+      <!-- 교차표 -->
+      <div class="panel p-6 mb-5">
+        <div class="flex flex-wrap items-start justify-between gap-3 mb-1">
+          <div>
+            <h3 class="serif text-[18px]">부서 × 품목 교차표</h3>
+            <p class="text-[12.5px] text-[var(--muted)] mt-1">어느 팀이 무슨 품목을 몇 개 가져갔는지. 색이 진할수록 많습니다.</p>
+          </div>
+          <div class="flex items-center gap-2 text-[11px] text-[var(--muted)]">
+            <span>적음</span>
+            <span class="legend-step" style="background:var(--s0)"></span>
+            <span class="legend-step" style="background:var(--s1)"></span>
+            <span class="legend-step" style="background:var(--s2)"></span>
+            <span class="legend-step" style="background:var(--s3)"></span>
+            <span class="legend-step" style="background:var(--s4)"></span>
+            <span class="legend-step" style="background:var(--s5)"></span>
+            <span class="legend-step" style="background:var(--s6)"></span>
+            <span>많음</span>
+          </div>
+        </div>
+        <div class="overflow-auto scroll-y max-h-[62vh] -mx-2 px-2 pt-4">
+          <table id="stHeat" class="heat"></table>
+        </div>
+      </div>
+
+      <!-- 월별 · 신청자 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div class="panel p-6">
+          <h3 class="serif text-[18px]">월별 수령 수량</h3>
+          <p class="text-[12.5px] text-[var(--muted)] mt-1 mb-6">막대 높이 = 그 달의 수량 합계</p>
+          <div id="stMonth" class="col-chart"></div>
+        </div>
+        <div class="panel p-6">
+          <h3 class="serif text-[18px]">신청자별 <span class="text-[13px] font-sans text-[var(--muted)]">상위 10</span></h3>
+          <p class="text-[12.5px] text-[var(--muted)] mt-1 mb-5">막대 길이 = 수량 합계</p>
+          <div id="stUser"></div>
+        </div>
+      </div>
+
+      <p class="text-[12px] text-[var(--faint)] mt-6 kr leading-relaxed" id="stNote"></p>
+    </section>
+
+  <footer class="border-t border-[var(--line)] mt-auto" style="background:var(--surface-2)">
     <div class="max-w-[1200px] mx-auto px-5 sm:px-8 py-9 flex flex-col sm:flex-row items-center justify-between gap-3">
       <p class="text-[12.5px] text-[var(--muted)]">© 대한변호사협회 사무국</p>
-      <p class="text-[12.5px] text-[var(--muted)] kr">문의 · 사무국 총무팀</p>
+      <p class="text-[12.5px] text-[var(--muted)] kr">
+        문의 · 사무국 총무팀
+        <span class="ml-3 px-2 py-0.5" style="font-family:'IBM Plex Mono',monospace; font-size:11px; border:1px solid var(--line); color:var(--muted)">
+          화면 <span id="buildTag">—</span>
+        </span>
+      </p>
     </div>
   </footer>
 </div>
 
 <!-- ══════════════════════════ 신청 모달 ══════════════════════════ -->
-<div id="reqModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-[#15181d]/45 backdrop-blur-[3px]">
-  <div class="pop w-full max-w-[520px] bg-white rounded-[16px] shadow-[0_30px_70px_rgba(21,24,29,.28)] max-h-[92vh] overflow-auto scroll-y">
+<div id="reqModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-black/60 backdrop-blur-[3px]">
+  <div class="pop w-full max-w-[520px] bg-[var(--surface)] border border-[var(--line)] rounded-[16px] shadow-[0_30px_70px_rgba(0,0,0,.55)] max-h-[92vh] overflow-auto scroll-y">
     <div class="flex items-start gap-4 p-6 border-b border-[var(--line)]">
-      <div id="rmArt" class="w-[84px] h-[63px] rounded-lg overflow-hidden flex-none border border-[var(--line)]"></div>
+      <div id="rmArt" class="w-[84px] h-[63px] overflow-hidden flex-none" style="border:1px solid var(--line)"></div>
       <div class="min-w-0 flex-1">
         <p class="eyebrow">기념품 수령 신청</p>
         <h3 class="serif text-[20px] mt-1.5 kr leading-snug" id="rmName">—</h3>
@@ -457,8 +746,8 @@
 </div>
 
 <!-- ══════════════════════════ 관리자 인증 ══════════════════════════ -->
-<div id="adminModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-[#15181d]/45 backdrop-blur-[3px]">
-  <form id="adminForm" class="pop w-full max-w-[400px] bg-white rounded-[16px] p-7 shadow-[0_30px_70px_rgba(21,24,29,.28)]">
+<div id="adminModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-black/60 backdrop-blur-[3px]">
+  <form id="adminForm" class="pop w-full max-w-[400px] bg-[var(--surface)] border border-[var(--line)] rounded-[16px] p-7 shadow-[0_30px_70px_rgba(0,0,0,.55)]">
     <p class="eyebrow">Administration</p>
     <h3 class="serif text-[21px] mt-2">관리자 콘솔</h3>
     <p class="text-[13.5px] text-[var(--muted)] mt-2 kr leading-relaxed">재고 관리를 위해 관리자 비밀번호를 입력해 주세요.</p>
@@ -472,8 +761,8 @@
 </div>
 
 <!-- ══════════════════════════ 품목 편집 ══════════════════════════ -->
-<div id="itemModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-[#15181d]/45 backdrop-blur-[3px]">
-  <form id="itemForm" class="pop w-full max-w-[620px] bg-white rounded-[16px] shadow-[0_30px_70px_rgba(21,24,29,.28)] max-h-[92vh] overflow-auto scroll-y">
+<div id="itemModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-black/60 backdrop-blur-[3px]">
+  <form id="itemForm" class="pop w-full max-w-[620px] bg-[var(--surface)] border border-[var(--line)] rounded-[16px] shadow-[0_30px_70px_rgba(0,0,0,.55)] max-h-[92vh] overflow-auto scroll-y">
     <div class="px-7 pt-7 pb-5 border-b border-[var(--line)]">
       <h3 id="imTitle" class="serif text-[21px]">품목 등록</h3>
       <p class="text-[13px] text-[var(--muted)] mt-1.5 kr">품목명을 입력하면 대표 이미지가 자동으로 만들어집니다.</p>
@@ -481,7 +770,7 @@
     <div class="p-7 grid grid-cols-1 sm:grid-cols-[150px_1fr] gap-6">
       <div>
         <span class="label">대표 이미지</span>
-        <div id="iPreview" class="w-full rounded-xl overflow-hidden border border-[var(--line)]"></div>
+        <div id="iPreview" class="w-full overflow-hidden" style="border:1px solid var(--line)"></div>
         <p class="text-[11.5px] text-[var(--muted)] mt-2 leading-relaxed kr">품목명에 따라 자동 생성됩니다.</p>
       </div>
       <div class="space-y-5">
@@ -505,8 +794,12 @@
           <textarea id="iDesc" rows="2" class="field resize-none" placeholder="품목 설명"></textarea>
         </div>
         <div>
-          <label class="label" for="iImg">실제 사진 URL <span class="normal-case tracking-normal font-normal text-[var(--faint)]">(선택 · 비우면 자동 이미지 사용)</span></label>
-          <input id="iImg" class="field" placeholder="https://…">
+          <label class="label" for="iImg">실제 사진 <span class="normal-case tracking-normal font-normal text-[var(--muted)]">(선택 · 비우면 자동 이미지)</span></label>
+          <input id="iImg" class="field" placeholder="https://lh3.googleusercontent.com/d/파일ID">
+          <p class="text-[11.5px] text-[var(--muted)] mt-1.5 kr leading-relaxed">
+            구글 드라이브 사진을 <b class="text-[var(--ink-2)]">「링크가 있는 모든 사용자」</b>로 공유한 뒤
+            공유 링크를 그대로 붙여넣으세요. 주소는 자동으로 변환됩니다.
+          </p>
         </div>
         <div>
           <label class="label" for="iNote">비고</label>
@@ -521,9 +814,131 @@
   </form>
 </div>
 
+<!-- ══════════════════════════ 품목 이력 · 재고 실사 ══════════════════════════ -->
+<div id="histModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-black/60 backdrop-blur-[3px]">
+  <div class="pop w-full max-w-[900px] max-h-[92vh] overflow-auto scroll-y bg-[var(--surface)]"
+       style="border:1px solid var(--line); box-shadow:var(--shadow-lg)">
+    <div class="px-7 pt-7 pb-5" style="border-bottom:1px solid var(--line)">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p class="eyebrow">Stocktake</p>
+          <h3 class="serif text-[22px] mt-2 kr" id="histName">—</h3>
+          <p class="text-[13px] text-[var(--muted)] mt-1.5">
+            장부 재고 <b class="text-[var(--ink)]" id="histStock">0</b>개
+            · 로그 누적 <b class="text-[var(--ink)]" id="histCalc">0</b>개
+            <span id="histGap"></span>
+          </p>
+        </div>
+        <button type="button" data-close="histModal" class="btn btn-quiet w-8 h-8 p-0 flex-none">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- 실사 입력 -->
+      <form id="countForm" class="mt-5 p-4 flex flex-wrap items-end gap-3"
+            style="background:var(--surface-2); border:1px solid var(--line)">
+        <div>
+          <label class="label" for="countQty">직접 세어 본 수량</label>
+          <input id="countQty" type="number" min="0" class="field w-28 text-center font-bold"
+                 style="font-family:'IBM Plex Mono',monospace">
+        </div>
+        <div class="flex-1 min-w-[180px]">
+          <label class="label" for="countReason">사유 <span class="normal-case tracking-normal font-normal text-[var(--muted)]">(선택)</span></label>
+          <input id="countReason" class="field" placeholder="예) 2026년 7월 정기 실사">
+        </div>
+        <button type="submit" id="countSubmit" class="btn btn-primary px-4 py-2.5">실사 반영</button>
+        <p class="text-[11.5px] text-[var(--muted)] kr basis-full leading-relaxed">
+          장부와 다르면 차이만큼 <b>입고(실사)</b> 또는 <b>출고(실사)</b> 로그를 남기고 재고를 맞춥니다.
+          숫자를 그냥 덮어쓰지 않으므로 정합성이 깨지지 않습니다.
+        </p>
+        <p id="countErr" class="text-[13px] text-[var(--err)] basis-full kr font-semibold"></p>
+      </form>
+    </div>
+
+    <div class="p-7">
+      <h4 class="text-[13px] font-bold kr mb-1">이력 — 시간순</h4>
+      <p class="text-[12px] text-[var(--muted)] kr mb-4">
+        「계산 잔량」은 변동을 처음부터 더한 값입니다. 「기록 잔량」과 어긋나는 줄이 문제가 시작된 지점입니다.
+      </p>
+      <div class="overflow-auto scroll-y max-h-[46vh]" style="border:1px solid var(--line)">
+        <table class="tbl text-[13px]">
+          <thead>
+            <tr>
+              <th class="text-left">일시</th>
+              <th class="text-left">구분</th>
+              <th class="text-right">변동</th>
+              <th class="text-right">기록 잔량</th>
+              <th class="text-right">계산 잔량</th>
+              <th class="text-left min-w-[220px]">비고</th>
+            </tr>
+          </thead>
+          <tbody id="histBody"></tbody>
+        </table>
+      </div>
+
+      <h4 class="text-[13px] font-bold kr mt-7 mb-3">이 품목의 신청 내역</h4>
+      <div class="overflow-auto scroll-y max-h-[30vh]" style="border:1px solid var(--line)">
+        <table class="tbl text-[13px]">
+          <thead>
+            <tr>
+              <th class="text-left">신청일</th>
+              <th class="text-left">신청자</th>
+              <th class="text-left">부서</th>
+              <th class="text-right">수량</th>
+              <th class="text-left">상태</th>
+              <th class="text-left">출고 로그</th>
+            </tr>
+          </thead>
+          <tbody id="histReqBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ 신청 수량 변경 ══════════════════════════ -->
+<div id="qtyModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-black/60 backdrop-blur-[3px]">
+  <form id="qtyForm" class="pop w-full max-w-[460px] bg-[var(--surface)] p-7"
+        style="border:1px solid var(--line); box-shadow:var(--shadow-lg)">
+    <p class="eyebrow">Adjust</p>
+    <h3 class="serif text-[22px] mt-2">신청 수량 변경</h3>
+    <p class="text-[13px] text-[var(--ink-2)] mt-2 kr leading-relaxed">
+      일부를 돌려받았을 때 쓰세요. 줄이면 그만큼 <b>재고가 돌아오고</b>, 늘리면 그만큼 더 나갑니다.
+      변동은 재고로그에 남습니다.
+    </p>
+
+    <div class="mt-5 p-4" style="background:var(--surface-2); border:1px solid var(--line)">
+      <p class="text-[14px] font-bold kr" id="qtyItem">—</p>
+      <p class="text-[12.5px] text-[var(--muted)] mt-1" id="qtyWho">—</p>
+      <p class="text-[12.5px] text-[var(--muted)] mt-1">현재 잔여 재고 <b class="text-[var(--ink)]" id="qtyStock">0</b>개</p>
+    </div>
+
+    <div class="mt-5">
+      <label class="label" for="qtyNew">변경할 수량 <span class="normal-case tracking-normal font-normal text-[var(--muted)]">(기존 <span id="qtyPrev">0</span>개)</span></label>
+      <div class="flex items-center gap-2.5">
+        <button type="button" data-qadj="-1" class="btn w-10 h-10 p-0 text-[17px]">−</button>
+        <input id="qtyNew" type="number" min="1" class="field text-center font-bold w-24" style="font-family:'IBM Plex Mono',monospace">
+        <button type="button" data-qadj="1" class="btn w-10 h-10 p-0 text-[17px]">+</button>
+        <span class="text-[13px] kr ml-1" id="qtyDelta"></span>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <label class="label" for="qtyReason">사유 <span class="normal-case tracking-normal font-normal text-[var(--muted)]">(선택)</span></label>
+      <input id="qtyReason" class="field" placeholder="예) 행사 취소로 2개 반납">
+    </div>
+
+    <p id="qtyErr" class="text-[13px] text-[var(--err)] mt-3 h-5 kr font-semibold"></p>
+    <div class="flex gap-2.5 mt-1">
+      <button type="button" data-close="qtyModal" class="btn flex-1 py-3">취소</button>
+      <button type="submit" id="qtySubmit" class="btn btn-primary flex-[2] py-3">변경 저장</button>
+    </div>
+  </form>
+</div>
+
 <!-- ══════════════════════════ CSV 대량등록 ══════════════════════════ -->
-<div id="bulkModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-[#15181d]/45 backdrop-blur-[3px]">
-  <form id="bulkForm" class="pop w-full max-w-[620px] bg-white rounded-[16px] p-7 shadow-[0_30px_70px_rgba(21,24,29,.28)]">
+<div id="bulkModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-black/60 backdrop-blur-[3px]">
+  <form id="bulkForm" class="pop w-full max-w-[620px] bg-[var(--surface)] border border-[var(--line)] rounded-[16px] p-7 shadow-[0_30px_70px_rgba(0,0,0,.55)]">
     <h3 class="serif text-[21px]">대량 CSV 등록</h3>
     <p class="text-[13.5px] text-[var(--muted)] mt-2 kr leading-relaxed">
       한 줄에 한 품목씩 붙여넣으세요. 순서는 <b class="text-[var(--ink)]">명칭, 구분, 재고량, 설명, 사진URL, 비고</b> 이며
@@ -538,14 +953,18 @@
   </form>
 </div>
 
+<!-- 차트 툴팁 -->
+<div id="vizTip" role="status" aria-live="polite"></div>
+
 <!-- 토스트 -->
 <div id="toasts" class="fixed bottom-6 right-6 z-[60] flex flex-col gap-2.5 items-end"></div>
 
 <!-- 로딩 -->
-<div id="loading" class="hidden fixed inset-0 z-[70] bg-[#f7f6f3]/70 backdrop-blur-[2px] items-center justify-center">
+<div id="loading" class="hidden fixed inset-0 z-[70] bg-[#191919]/50 backdrop-blur-[2px] items-center justify-center">
   <div class="flex flex-col items-center gap-3.5">
     <svg class="spin text-[var(--navy)]" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-    <p class="text-[12.5px] text-[var(--muted)] font-medium">처리 중…</p>
+    <p class="text-[12.5px] text-[var(--muted)] font-medium">처리 중… <span id="busySec" style="font-family:'IBM Plex Mono',monospace"></span></p>
+    <p id="busyHint" class="text-[11.5px] text-[var(--faint)] kr text-center max-w-[260px] leading-relaxed"></p>
   </div>
 </div>
 
@@ -554,6 +973,10 @@
    ① 설정 — Apps Script 웹앱 URL. 비우면 브라우저 저장 «데모 모드».
    ═══════════════════════════════════════════════════════════════ */
 const API_URL = 'https://script.google.com/macros/s/AKfycbyGbQccUmbOHtQXTuGTQgWOx4CT0IT4d07CgMHtOkAo1owOtEGtg3cMM7d9PbQ5jHi1/exec';
+
+/* 화면 버전 — 붙여넣기가 제대로 됐는지 화면 맨 아래에서 확인할 수 있습니다.
+   기능을 고칠 때마다 이 값을 올립니다. */
+const BUILD = '0731-kbatalk';
 
 /* ── 초기 품목 시드 (데모 모드 전용 / 서버 연동 시 미사용) ── */
 const SEED_ITEMS = [
@@ -646,18 +1069,18 @@ const ICON_RULES = [
   [/필통|명함통|케이스|파우치|함$|박스/, 'box']
 ];
 
-/* 차분한 색 조합 — [배경 시작, 배경 끝, 원형 장식, 아이콘 선] */
+/* 카카오 톤 파스텔 색 조합 — [배경 시작, 배경 끝, 원형 장식, 아이콘 선] · 흰 카드 위 아이콘 대비 5.2~8.9 검증됨 */
 const PALETTES = [
-  ['#eef1ee','#dee6e0','#c5d4c8','#3d5546'],
-  ['#f3f0ea','#e7e0d2','#d8ccb7','#5a4c38'],
-  ['#edf0f4','#dce3ed','#c8d3e4','#38455e'],
-  ['#f3efee','#e9dddc','#dcc8c7','#5d3f3f'],
-  ['#eef0f2','#e0e4e8','#ccd3d9','#3b4650'],
-  ['#f0eef3','#e4dfe9','#d3cbdd','#4a4160'],
-  ['#edf2f1','#dce9e6','#c7dcd7','#32534d'],
-  ['#f3f2ea','#e9e5d6','#dbd4bd','#534d38'],
-  ['#f2efec','#e8dfda','#dacbc4','#59453f'],
-  ['#eaeef0','#d9e1e5','#c2d0d6','#344750']
+  ['#FFF9D6','#FFF1A8','#FFE04D','#6B5300'],  /* 옐로(브랜드) */
+  ['#FBF0E4','#F0D9BC','#D9B27E','#5C3B18'],  /* 브라운(라이언) */
+  ['#FDECEC','#FAD3D3','#F2A6A6','#8A2F2F'],  /* 핑크(어피치) */
+  ['#E9F0F6','#D3E1EC','#AFC6DC','#2F4D6B'],  /* 블루그레이(챗bg) */
+  ['#E7F7EE','#C9EEDA','#93DCB8','#1F6B45'],  /* 민트 */
+  ['#F2EEFB','#E1D8F5','#C2ABEA','#4E2E8A'],  /* 라벤더 */
+  ['#FDF0E4','#FBDDBE','#F3B87E','#7A4A12'],  /* 피치 */
+  ['#E6F3FC','#C9E6F9','#8FCBF0','#1B5A8A'],  /* 스카이블루 */
+  ['#F6F1E6','#E9DCC0','#CDB682','#5A481B'],  /* 샌드 */
+  ['#FDEAEE','#F9CFD9','#F095AC','#8A1F41']   /* 로즈 */
 ];
 
 function hashStr(s){
@@ -685,18 +1108,44 @@ function itemArt(name, uid){
       <stop offset="0" stop-color="${p[0]}"/><stop offset="1" stop-color="${p[1]}"/>
     </linearGradient></defs>
     <rect width="400" height="300" fill="url(#${gid})"/>
-    <circle cx="${cx1}" cy="${cy1}" r="${r1}" fill="${p[2]}" opacity=".5"/>
-    <circle cx="${cx2}" cy="${cy2}" r="${r2}" fill="${p[2]}" opacity=".35"/>
+    <circle cx="${cx1}" cy="${cy1}" r="${r1}" fill="${p[2]}" opacity=".34"/>
+    <circle cx="${cx2}" cy="${cy2}" r="${r2}" fill="${p[2]}" opacity=".22"/>
     <g transform="translate(200 150) rotate(${rot}) scale(3.5) translate(-12 -12)"
-       fill="none" stroke="${p[3]}" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" opacity=".92">
+       fill="none" stroke="${p[3]}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
       ${icon}
     </g>
   </svg>`;
 }
-/** 사진 URL이 있으면 사진, 없으면 자동 생성 이미지 */
-function artFor(item, uid){
-  if(item.img) return `<img class="art object-cover" src="${escAttr(item.img)}" alt="${escAttr(item.name)}" loading="lazy">`;
-  return itemArt(item.name, uid);
+/* 구글 드라이브 사진의 표준 주소 — 품목 등록 칸의 기본값으로 들어갑니다 */
+const DRIVE_PREFIX = 'https://lh3.googleusercontent.com/d/';
+
+/**
+ * 붙여넣은 주소를 카드에 바로 쓸 수 있는 형태로 바꿉니다.
+ * 드라이브 공유 링크, 파일 ID, 이미 변환된 주소를 모두 받아들입니다.
+ */
+function normalizeImgUrl(raw){
+  const s = String(raw || '').trim();
+  if(!s || s === DRIVE_PREFIX) return '';
+  const m = s.match(/\/file\/d\/([A-Za-z0-9_-]{10,})/)        // .../file/d/ID/view
+         || s.match(/[?&]id=([A-Za-z0-9_-]{10,})/)            // ...?id=ID
+         || s.match(/googleusercontent\.com\/d\/([A-Za-z0-9_-]{10,})/);
+  if(m) return DRIVE_PREFIX + m[1];
+  if(/^[A-Za-z0-9_-]{20,}$/.test(s)) return DRIVE_PREFIX + s;  // 파일 ID만 넣은 경우
+  return s;                                                    // 그 밖의 주소는 그대로
+}
+
+/**
+ * 사진 URL이 있으면 그 사진, 없으면 자동 생성 이미지.
+ * 사진은 잘리지 않게 상자 안에 맞춰 넣고, 못 불러오면 «사진 없음»으로 바뀝니다.
+ * opts.sm : 표 안의 작은 썸네일용 (여백·무늬 축소)
+ */
+function artFor(item, uid, opts){
+  const fill = opts && opts.fill ? ' fill' : '';
+  const inner = item.img
+    ? `<img class="art-photo" src="${escAttr(item.img)}" alt="${escAttr(item.name)}" loading="lazy"` +
+      ` onerror="this.style.display='none';this.closest('.art-wrap').classList.add('art-fail')">`
+    : itemArt(item.name, uid);
+  return `<div class="art-wrap${fill}">${inner}</div>`;
 }
 
 /* ═══════════════════════════ 상태 ═══════════════════════════ */
@@ -706,7 +1155,12 @@ const state = {
   cat:'전체', q:'', soldout:false,
   reqStatus:'전체', stockQ:'', logQ:'',
   view:'catalog', tab:'requests',
-  editingId:null, targetId:null
+  editingId:null, targetId:null,
+  catView:'card',
+  /* type 을 반드시 함께 지정해야 합니다 — 없으면 날짜가 글자순으로 정렬됩니다 */
+  sort:{ requests:{key:'ts',dir:'desc',type:'ts'}, stock:{key:null,dir:'asc',type:'str'},
+         logs:{key:'ts',dir:'desc',type:'ts'}, catalog:{key:'stock',dir:'desc',type:'num'} },
+  stPeriod:'all', stStatus:'승인', stDedup:true
 };
 
 /* ═══════════════════════════ 유틸 ═══════════════════════════ */
@@ -718,20 +1172,79 @@ const nf = n => Number(n||0).toLocaleString('ko-KR');
 const nowStr = () => new Date().toLocaleString('ko-KR');
 const uid = p => p + '-' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
 
+/** "2026. 1. 22. 오전 9:02:10" → epoch(ms). 못 읽으면 0. */
+function parseTs(s){
+  const m = String(s||'').match(/(\d{4})\s*\.\s*(\d{1,2})\s*\.\s*(\d{1,2})\s*\.?\s*(오전|오후)?\s*(\d{1,2}):(\d{2})(?::(\d{2}))?/);
+  if(!m) return 0;
+  let h = Number(m[5]);
+  if(m[4]==='오후' && h < 12) h += 12;
+  if(m[4]==='오전' && h === 12) h = 0;
+  return new Date(+m[1], +m[2]-1, +m[3], h, +m[6], +(m[7]||0)).getTime();
+}
+/** 품목 설명에 적힌 "단가: 42,000원" 을 숫자로. 없으면 0. */
+function priceOf(item){
+  const m = String(item && item.desc || '').match(/단가[:\s]*([\d,]+)\s*원/);
+  return m ? Number(m[1].replace(/,/g,'')) : 0;
+}
+/* 과거 시스템에서 넘어온 부서명 표기 흔들림을 하나로 모읍니다 */
+const DEPT_ALIAS = { '법조신문':'법조신문팀', '국제':'국제팀' };
+const normDept = d => DEPT_ALIAS[String(d||'').trim()] || String(d||'').trim() || '미지정';
+
+/** 정렬 — 타입별 비교 */
+function sortRows(rows, cfg){
+  if(!cfg || !cfg.key) return rows;
+  const mul = cfg.dir === 'asc' ? 1 : -1;
+  const k = cfg.key, t = cfg.type || 'str';
+  return rows.slice().sort((a,b)=>{
+    if(t === 'num') return ((Number(a[k])||0) - (Number(b[k])||0)) * mul;
+    if(t === 'ts')  return (parseTs(a[k]) - parseTs(b[k])) * mul;
+    return String(a[k] ?? '').localeCompare(String(b[k] ?? ''), 'ko') * mul;
+  });
+}
+/** 헤더의 정렬 표시 갱신 */
+function paintSortHead(which){
+  const head = document.querySelector(`[data-sorthead="${which}"]`);
+  if(!head) return;
+  const cfg = state.sort[which];
+  head.querySelectorAll('th.sortable').forEach(th=>{
+    const on = cfg.key === th.dataset.key;
+    th.classList.toggle('sorted', on);
+    const ind = th.querySelector('.sort-ind');
+    if(ind) ind.textContent = on ? (cfg.dir === 'asc' ? '▲' : '▼') : '▼';
+    const btn = th.querySelector('button');
+    if(btn) btn.setAttribute('aria-sort', on ? (cfg.dir === 'asc' ? 'ascending' : 'descending') : 'none');
+  });
+}
+
 function toast(msg, kind='ok'){
   const bar = kind==='err' ? 'var(--err)' : kind==='warn' ? 'var(--warn)' : 'var(--ok)';
   const el = document.createElement('div');
-  el.className = 'pop flex items-start gap-3 pl-4 pr-5 py-3.5 bg-white rounded-xl border border-[var(--line)] text-[13.5px] max-w-[340px] kr leading-relaxed';
-  el.style.boxShadow = '0 12px 34px rgba(21,24,29,.14)';
+  el.className = 'pop flex items-start gap-3 pl-4 pr-5 py-3.5 bg-[var(--surface)] text-[var(--ink)] rounded-xl border border-[var(--line-2)] text-[13.5px] max-w-[340px] kr leading-relaxed';
+  el.style.boxShadow = '0 12px 34px rgba(0,0,0,.5)';
   el.innerHTML = `<span style="width:3px;align-self:stretch;border-radius:3px;background:${bar};flex:none"></span><span>${esc(msg)}</span>`;
   $('#toasts').appendChild(el);
   setTimeout(()=>{ el.style.transition='opacity .3s,transform .3s'; el.style.opacity='0'; el.style.transform='translateY(6px)';
     setTimeout(()=>el.remove(), 320); }, 3400);
 }
+let busyTimer = null;
 function busy(on){
   const el = $('#loading');
   el.classList.toggle('hidden', !on);
   el.classList.toggle('flex', on);
+
+  clearInterval(busyTimer);
+  const sec = $('#busySec'), hint = $('#busyHint');
+  if(!on){ if(sec) sec.textContent=''; if(hint) hint.textContent=''; return; }
+
+  // 구글 서버 왕복이 몇 초 걸립니다. 멈춘 것처럼 보이지 않도록 경과 시간을 보여 줍니다.
+  const t0 = Date.now();
+  busyTimer = setInterval(()=>{
+    const s = Math.floor((Date.now()-t0)/1000);
+    if(sec) sec.textContent = s + '초';
+    if(hint) hint.textContent = s >= 6
+      ? '구글 서버 응답이 늦습니다. 창을 닫지 마세요 — 처리는 진행 중입니다.'
+      : (s >= 3 ? '구글 스프레드시트에 기록하는 중입니다.' : '');
+  }, 250);
 }
 function sync(ok, text){
   $('#syncDot').style.background = ok ? 'var(--ok)' : 'var(--err)';
@@ -877,7 +1390,8 @@ async function demoApi(action, p){
 
 /* ═══════════════════════ 렌더링 ═══════════════════════ */
 function renderStats(){
-  const items = state.items;
+  // 신청 화면의 숫자는 «신청 가능한 품목» 기준이라야 목록과 맞습니다
+  const items = state.items.filter(i=>!isHiddenItem(i));
   const totalStock = items.reduce((a,i)=>a+Number(i.stock||0),0);
   const soldout = items.filter(i=>Number(i.stock||0)<=0).length;
   const pending = state.requests.filter(r=>r.status==='대기').length;
@@ -895,14 +1409,23 @@ function renderStats(){
 }
 
 function renderCats(){
-  const cats = ['전체', ...new Set(state.items.map(i=>i.category||'기타'))];
+  const cats = ['전체', ...new Set(state.items.filter(i=>!isHiddenItem(i)).map(i=>i.category||'기타'))];
   $('#cats').innerHTML = cats.map(c=>`
     <button data-cat="${escAttr(c)}" class="catbtn px-4 py-2 chip ${state.cat===c?'chip-on':''}">${esc(c)}</button>`).join('');
+}
+
+/** 신청 차단된 품목 — 빈 값은 «허용» */
+function isHiddenItem(i){
+  const v = i && i.hidden;
+  if(v === true) return true;
+  const s = String(v == null ? '' : v).trim().toLowerCase();
+  return s==='true' || s==='1' || s==='y' || s==='yes' || s==='숨김';
 }
 
 function visibleItems(){
   const q = state.q.trim().toLowerCase();
   return state.items.filter(i=>{
+    if(isHiddenItem(i)) return false;            // 신청 차단 품목은 목록에서 제외
     if(state.cat!=='전체' && (i.category||'기타')!==state.cat) return false;
     if(!state.soldout && Number(i.stock||0)<=0) return false;
     if(q && !(`${i.name} ${i.desc||''} ${i.note||''}`.toLowerCase().includes(q))) return false;
@@ -910,18 +1433,55 @@ function visibleItems(){
   });
 }
 
+/** 표 보기 — 정렬 기준을 그대로 따릅니다 */
+function renderCatTable(list){
+  paintSortHead('catalog');
+  $('#catBody').innerHTML = list.map(i=>{
+    const stock = Number(i.stock||0), out = stock<=0;
+    return `
+    <tr>
+      <td>
+        <div class="flex items-center gap-3 min-w-[240px]">
+          <div class="w-14 h-11 overflow-hidden flex-none ${out?'art-out':''}" style="border:1px solid var(--line)">${artFor(i,'t'+i.id,{fill:true})}</div>
+          <div class="min-w-0">
+            <p class="font-semibold kr leading-snug">${esc(i.name)}</p>
+            <p class="text-[12px] text-[var(--muted)] kr leading-snug">${esc(i.desc||'')}</p>
+          </div>
+        </div>
+      </td>
+      <td class="text-[var(--ink-2)] whitespace-nowrap">${esc(i.category||'기타')}</td>
+      <td class="text-right whitespace-nowrap" style="font-family:'IBM Plex Mono',monospace">
+        <span class="${out?'text-[var(--err)]':'font-semibold'}">${nf(stock)}</span><span class="text-[var(--muted)] text-[12px]">개</span>
+      </td>
+      <td class="text-[var(--muted)] whitespace-nowrap">${esc(i.note||'')}</td>
+      <td class="text-right">
+        <button data-req="${escAttr(i.id)}" ${out?'disabled':''} class="btn ${out?'':'btn-primary'} px-3.5 py-2">
+          ${out?'품절':'신청'}
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
 function renderGrid(){
-  const list = visibleItems();
+  let list = visibleItems();
+  if(state.catView === 'table') list = sortRows(list, state.sort.catalog);
+
   $('#countLabel').textContent = nf(list.length);
   $('#empty').classList.toggle('hidden', list.length>0);
+  $('#grid').classList.toggle('hidden', state.catView!=='card' || !list.length);
+  $('#catTableWrap').classList.toggle('hidden', state.catView!=='table' || !list.length);
+
+  if(state.catView === 'table'){ renderCatTable(list); return; }
+
   $('#grid').innerHTML = list.map(i=>{
     const stock = Number(i.stock||0), out = stock<=0;
     return `
     <article class="card flex flex-col">
       <div class="relative ${out?'art-out':''}">
         ${artFor(i, 'c'+i.id)}
-        ${i.note ? `<span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-sm text-[11px] font-semibold text-[var(--ink-2)] shadow-sm">${esc(i.note)}</span>`:''}
-        ${out ? `<span class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-[var(--ink)] text-white text-[11px] font-semibold">품절</span>`:''}
+        ${i.note ? `<span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-sm border border-white/10 text-[11px] font-semibold text-white">${esc(i.note)}</span>`:''}
+        ${out ? `<span class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-[var(--err)] text-white text-[11px] font-semibold">품절</span>`:''}
       </div>
       <div class="p-5 flex flex-col flex-1 border-t border-[var(--line-2)]">
         <p class="eyebrow">${esc(i.category||'기타')}</p>
@@ -948,7 +1508,10 @@ function renderRequests(){
     return `<button data-rf="${t}" class="rfbtn px-3.5 py-1.5 chip ${state.reqStatus===t?'chip-on':''}">${t} <span class="opacity-55 ml-0.5">${n}</span></button>`;
   }).join('');
 
-  const rows = state.requests.filter(r=>state.reqStatus==='전체'||r.status===state.reqStatus);
+  const rows = sortRows(
+    state.requests.filter(r=>state.reqStatus==='전체'||r.status===state.reqStatus),
+    state.sort.requests);
+  paintSortHead('requests');
   $('#reqBody').innerHTML = rows.length ? rows.map(r=>`
     <tr>
       <td class="text-[13px] text-[var(--muted)] whitespace-nowrap">${esc(r.ts)}</td>
@@ -960,6 +1523,7 @@ function renderRequests(){
       <td><span class="badge ${STATUS_STYLE[r.status]||''}">${esc(r.status)}</span></td>
       <td class="text-right">
         <div class="inline-flex gap-1.5">
+          <button data-act="editQty" data-id="${escAttr(r.id)}" class="btn px-2.5 py-1.5 text-[12.5px]">수량</button>
           ${r.status!=='승인'?`<button data-act="approve" data-id="${escAttr(r.id)}" class="btn px-2.5 py-1.5 text-[12.5px]">승인</button>`:''}
           ${r.status!=='반려'?`<button data-act="reject" data-id="${escAttr(r.id)}" class="btn px-2.5 py-1.5 text-[12.5px]">반려</button>`:''}
           <button data-act="deleteRequest" data-id="${escAttr(r.id)}" class="btn btn-danger px-2.5 py-1.5 text-[12.5px]">삭제</button>
@@ -971,14 +1535,20 @@ function renderRequests(){
 
 function renderStock(){
   const q = state.stockQ.trim().toLowerCase();
-  const rows = state.items.filter(i=>!q || `${i.id} ${i.name} ${i.category||''} ${i.note||''}`.toLowerCase().includes(q));
-  $('#stockBody').innerHTML = rows.length ? rows.map(i=>`
-    <tr>
+  const rows = sortRows(
+    state.items.filter(i=>!q || `${i.id} ${i.name} ${i.category||''} ${i.note||''}`.toLowerCase().includes(q)),
+    state.sort.stock);
+  paintSortHead('stock');
+  $('#stockBody').innerHTML = rows.length ? rows.map(i=>{
+    const hid = isHiddenItem(i);
+    return `
+    <tr ${hid?'style="opacity:.62"':''}>
       <td>
         <div class="flex items-center gap-3 min-w-[220px]">
-          <div class="w-12 h-9 rounded-md overflow-hidden border border-[var(--line)] flex-none">${artFor(i,'s'+i.id)}</div>
+          <div class="w-12 h-9 overflow-hidden flex-none" style="border:1px solid var(--line)">${artFor(i,'s'+i.id,{fill:true})}</div>
           <div class="min-w-0">
-            <p class="font-medium kr leading-snug">${esc(i.name)}</p>
+            <p class="font-medium kr leading-snug">${esc(i.name)}
+              ${hid?'<span class="badge b-no ml-1" style="font-size:10px">신청 차단</span>':''}</p>
             <p class="text-[11.5px] text-[var(--faint)]">${esc(i.id)}</p>
           </div>
         </div>
@@ -989,17 +1559,25 @@ function renderStock(){
       <td class="text-[var(--muted)] whitespace-nowrap">${esc(i.note||'')}</td>
       <td class="text-right">
         <div class="inline-flex gap-1.5">
+          <button data-act="toggleHidden" data-id="${escAttr(i.id)}" class="btn px-2.5 py-1.5 text-[12.5px]" title="${hid?'신청 화면에 다시 표시합니다':'신청 화면에서 숨겨 신청을 막습니다'}">
+            ${hid?'신청 허용':'신청 차단'}
+          </button>
+          <button data-act="history" data-id="${escAttr(i.id)}" class="btn px-2.5 py-1.5 text-[12.5px]">이력·실사</button>
           <button data-act="editItem" data-id="${escAttr(i.id)}" class="btn px-2.5 py-1.5 text-[12.5px]">수정</button>
           <button data-act="deleteItem" data-id="${escAttr(i.id)}" class="btn btn-danger px-2.5 py-1.5 text-[12.5px]">삭제</button>
         </div>
       </td>
-    </tr>`).join('')
+    </tr>`;
+  }).join('')
     : `<tr><td colspan="6" class="py-20 text-center text-[14px] text-[var(--muted)] kr">품목이 없습니다</td></tr>`;
 }
 
 function renderLogs(){
   const q = state.logQ.trim().toLowerCase();
-  const rows = state.logs.filter(l=>!q || `${l.itemName} ${l.note||''} ${l.type}`.toLowerCase().includes(q));
+  const rows = sortRows(
+    state.logs.filter(l=>!q || `${l.itemName} ${l.note||''} ${l.type}`.toLowerCase().includes(q)),
+    state.sort.logs);
+  paintSortHead('logs');
   $('#logCount').textContent = nf(rows.length);
   $('#logBody').innerHTML = rows.length ? rows.slice(0,500).map(l=>{
     const inbound = String(l.type).startsWith('입고') || l.type==='신규등록';
@@ -1009,26 +1587,544 @@ function renderLogs(){
       <td class="font-medium kr">${esc(l.itemName)}</td>
       <td><span class="badge ${inbound?'b-in':'b-out'}">${esc(l.type)}</span></td>
       <td class="text-right font-semibold ${Number(l.delta)>0?'text-[var(--ok)]':Number(l.delta)<0?'text-[var(--err)]':'text-[var(--muted)]'}">${Number(l.delta)>0?'+':''}${nf(l.delta)}</td>
-      <td class="text-right text-[var(--muted)] whitespace-nowrap">${nf(l.before)} → <span class="text-[var(--ink)] font-semibold">${nf(l.after)}</span></td>
+      <td class="text-right text-[var(--muted)] whitespace-nowrap">${l.before===''&&l.after===''?'—':nf(l.before)+' → '}<span class="text-[var(--ink)] font-semibold">${l.before===''&&l.after===''?'':nf(l.after)}</span></td>
       <td class="text-[var(--ink-2)] kr">${esc(l.note||'')}</td>
+      <td class="text-right">
+        <button data-act="deleteLog" data-id="${escAttr(l.id)}" class="btn btn-danger px-2.5 py-1.5 text-[12.5px]">삭제</button>
+      </td>
     </tr>`;
   }).join('')
-    : `<tr><td colspan="6" class="py-20 text-center text-[14px] text-[var(--muted)] kr">로그가 없습니다</td></tr>`;
+    : `<tr><td colspan="7" class="py-20 text-center text-[14px] text-[var(--muted)] kr">로그가 없습니다</td></tr>`;
 }
+
+/* ═══════════════════════ 통계 ═══════════════════════ */
+const PERIODS = [
+  ['all','전체'], ['12m','최근 12개월'], ['6m','최근 6개월'], ['3m','최근 3개월'], ['ytd','올해']
+];
+const ST_STATUS = [['승인','승인 건만'], ['전체','승인+반려']];
+
+/** 필터를 적용한 신청 목록 + 파생값(단가·정규화 부서·시각) */
+function statRows(){
+  const now = Date.now(), DAY = 864e5;
+  let from = 0;
+  if(state.stPeriod === '12m') from = now - 365*DAY;
+  else if(state.stPeriod === '6m') from = now - 182*DAY;
+  else if(state.stPeriod === '3m') from = now - 91*DAY;
+  else if(state.stPeriod === 'ytd') from = new Date(new Date().getFullYear(), 0, 1).getTime();
+
+  const priceByName = {};
+  state.items.forEach(i => { priceByName[i.name] = priceOf(i); });
+
+  return state.requests.filter(r=>{
+    if(state.stStatus === '승인' && r.status !== '승인') return false;
+    if(state.stDedup && String(r.dept||'').trim() === '신청부서') return false;
+    if(from){ const t = parseTs(r.ts); if(!t || t < from) return false; }
+    return true;
+  }).map(r=>({
+    ...r,
+    _dept: normDept(r.dept),
+    _qty: Number(r.qty) || 0,
+    _t: parseTs(r.ts),
+    _amt: (Number(r.qty)||0) * (priceByName[r.itemName] || 0)
+  }));
+}
+
+/** key 별로 건수/수량/금액 합산 후 수량 내림차순 */
+function groupBy(rows, keyFn){
+  const m = new Map();
+  rows.forEach(r=>{
+    const k = keyFn(r);
+    const g = m.get(k) || { key:k, n:0, qty:0, amt:0 };
+    g.n++; g.qty += r._qty; g.amt += r._amt;
+    m.set(k, g);
+  });
+  return [...m.values()].sort((a,b)=> b.qty - a.qty);
+}
+
+const won = n => Number(n||0).toLocaleString('ko-KR') + '원';
+
+function barList(el, groups, opts={}){
+  const max = Math.max(1, ...groups.map(g=>g.qty));
+  const labw = opts.labw || 150;
+  el.innerHTML = groups.length ? groups.map(g=>`
+    <div class="bar-row" style="--labw:${labw}px"
+         data-tip="${escAttr(g.key)}&#10;수량 ${nf(g.qty)}개 · ${nf(g.n)}건&#10;${won(g.amt)}">
+      <span class="bar-lab" title="${escAttr(g.key)}">${esc(g.key)}</span>
+      <span class="bar-track"><span class="bar-fill" style="width:${(g.qty/max*100).toFixed(1)}%"></span></span>
+      <span class="bar-val">${nf(g.qty)}</span>
+    </div>`).join('')
+    : `<p class="text-[13px] text-[var(--muted)] py-6 text-center">해당 기간에 자료가 없습니다</p>`;
+}
+
+/** 값 → 히트맵 단계(0~7). 0은 '없음', 나머지는 최대값 기준 구간 */
+function heatStep(v, max){
+  if(!v) return 0;
+  const r = v / max;
+  return r > .75 ? 7 : r > .55 ? 6 : r > .40 ? 5 : r > .27 ? 4 : r > .16 ? 3 : r > .07 ? 2 : 1;
+}
+
+function renderStatsTab(){
+  const rows = statRows();
+
+  // 필터 칩
+  $('#stPeriod').innerHTML = PERIODS.map(([v,l])=>
+    `<button data-per="${v}" class="perbtn px-3.5 py-1.5 chip ${state.stPeriod===v?'chip-on':''}">${l}</button>`).join('');
+  $('#stStatus').innerHTML = ST_STATUS.map(([v,l])=>
+    `<button data-sts="${v}" class="stsbtn px-3.5 py-1.5 chip ${state.stStatus===v?'chip-on':''}">${l}</button>`).join('');
+
+  // KPI
+  const totQty = rows.reduce((a,r)=>a+r._qty,0);
+  const totAmt = rows.reduce((a,r)=>a+r._amt,0);
+  const depts  = new Set(rows.map(r=>r._dept));
+  const kpis = [
+    ['신청 건수', nf(rows.length), '건'],
+    ['수령 수량', nf(totQty), '개'],
+    ['추정 금액', Number(totAmt).toLocaleString('ko-KR'), '원'],
+    ['참여 부서', nf(depts.size), '곳']
+  ];
+  $('#stKpi').innerHTML = kpis.map(([l,v,u],i)=>`
+    <div class="py-7 pr-6 ${i<3?'md:border-r':''} border-[var(--line)] ${i%2===1?'pl-6 md:pl-6':''} ${i>=2?'border-t md:border-t-0':''}">
+      <p class="text-[12.5px] text-[var(--muted)]">${l}</p>
+      <p class="serif text-[30px] leading-none mt-2.5 tracking-[-.02em]">${v}<span class="text-[14px] text-[var(--muted)] font-sans ml-1">${u}</span></p>
+    </div>`).join('');
+
+  // 부서별 / 품목별 / 신청자별
+  const byDept = groupBy(rows, r=>r._dept);
+  const byItem = groupBy(rows, r=>r.itemName);
+  const byUser = groupBy(rows, r=>r.applicant || '미상');
+  barList($('#stDept'), byDept, {labw:110});
+  barList($('#stItem'), byItem.slice(0,12), {labw:170});
+  barList($('#stUser'), byUser.slice(0,10), {labw:80});
+
+  // 월별
+  const byMonth = new Map();
+  rows.forEach(r=>{
+    if(!r._t) return;
+    const d = new Date(r._t);
+    const k = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+    const g = byMonth.get(k) || { key:k, n:0, qty:0, amt:0 };
+    g.n++; g.qty += r._qty; g.amt += r._amt;
+    byMonth.set(k, g);
+  });
+  const months = [...byMonth.values()].sort((a,b)=> a.key.localeCompare(b.key));
+  const mMax = Math.max(1, ...months.map(m=>m.qty));
+  $('#stMonth').innerHTML = months.length ? months.map(m=>`
+    <div class="col-wrap" data-tip="${m.key.replace('-','년 ')}월&#10;수량 ${nf(m.qty)}개 · ${nf(m.n)}건&#10;${won(m.amt)}">
+      <span class="col-fill" style="height:${Math.max(2, m.qty/mMax*118)}px"></span>
+      <span class="col-lab">${Number(m.key.slice(5))}월</span>
+    </div>`).join('')
+    : `<p class="text-[13px] text-[var(--muted)] py-6 text-center w-full">해당 기간에 자료가 없습니다</p>`;
+
+  // 교차표 (부서 × 품목)
+  const topItems = byItem.slice(0, 14).map(g=>g.key);
+  const cell = new Map();                       // "부서||품목" → {qty,n,amt}
+  rows.forEach(r=>{
+    const k = r._dept + '||' + r.itemName;
+    const c = cell.get(k) || { qty:0, n:0, amt:0 };
+    c.qty += r._qty; c.n++; c.amt += r._amt;
+    cell.set(k, c);
+  });
+  const cellMax = Math.max(1, ...[...cell.values()].map(c=>c.qty));
+  const deptRows = byDept.map(g=>g.key);
+
+  $('#stHeat').innerHTML = deptRows.length ? `
+    <thead><tr>
+      <th></th>
+      ${topItems.map(n=>`<th class="heat-colh" title="${escAttr(n)}">${esc(n.length>16?n.slice(0,15)+'…':n)}</th>`).join('')}
+      <th class="heat-colh" style="color:var(--ink-2)">합계</th>
+    </tr></thead>
+    <tbody>
+      ${deptRows.map(d=>{
+        const tot = byDept.find(g=>g.key===d);
+        return `<tr>
+          <th class="heat-rowh">${esc(d)}</th>
+          ${topItems.map(n=>{
+            const c = cell.get(d+'||'+n);
+            const q = c ? c.qty : 0;
+            return `<td><div class="heat-cell heat-${heatStep(q, cellMax)}"
+              ${c?`data-tip="${escAttr(d)} · ${escAttr(n)}&#10;수량 ${nf(q)}개 · ${nf(c.n)}건&#10;${won(c.amt)}"`:''}
+              >${q ? nf(q) : '·'}</div></td>`;
+          }).join('')}
+          <td><div class="heat-cell" style="background:var(--surface-2);color:var(--ink);font-weight:600;border:1px solid var(--line-2)">${nf(tot.qty)}</div></td>
+        </tr>`;
+      }).join('')}
+    </tbody>`
+    : `<tbody><tr><td class="py-14 text-center text-[13px] text-[var(--muted)]">해당 기간에 자료가 없습니다</td></tr></tbody>`;
+
+  // 각주
+  const dropped = state.requests.filter(r=>String(r.dept||'').trim()==='신청부서').length;
+  const aliased = state.requests.filter(r=>DEPT_ALIAS[String(r.dept||'').trim()]).length;
+  const noPrice = state.items.filter(i=>!priceOf(i)).length;
+  const notes = [];
+  if(state.stDedup && dropped) notes.push(`부서가 ‘신청부서’로 기록된 ${dropped}건은 과거 시스템의 중복 기록으로 보여 제외했습니다.`);
+  if(aliased) notes.push(`‘법조신문 → 법조신문팀’, ‘국제 → 국제팀’으로 표기를 통일했습니다(${aliased}건).`);
+  if(noPrice) notes.push(`단가가 없는 품목 ${noPrice}개는 금액 합계에서 0원으로 계산됩니다.`);
+  notes.push('교차표는 수량 상위 14개 품목만 열로 표시하며, 합계 열은 전체 품목 기준입니다.');
+  $('#stNote').innerHTML = notes.map(n=>'· '+esc(n)).join('<br>');
+
+  // 내보내기용 보관
+  state._pivot = { deptRows, topItems, cell, byDept };
+}
+
+/* 차트 툴팁 — data-tip 을 가진 요소에 위임 */
+(function(){
+  const tip = () => $('#vizTip');
+  document.addEventListener('mouseover', e=>{
+    const el = e.target.closest('[data-tip]'); if(!el) return;
+    const t = tip();
+    t.innerHTML = String(el.dataset.tip).split('\n')
+      .map((s,i)=> i===0 ? `<b>${esc(s)}</b>` : `<span class="dim">${esc(s)}</span>`).join('<br>');
+    t.classList.add('on');
+  });
+  document.addEventListener('mouseout', e=>{
+    if(e.target.closest('[data-tip]')) tip().classList.remove('on');
+  });
+  document.addEventListener('mousemove', e=>{
+    const t = tip();
+    if(!t.classList.contains('on')) return;
+    const r = t.getBoundingClientRect();
+    let x = e.clientX + 14, y = e.clientY + 16;
+    if(x + r.width  > innerWidth  - 8) x = e.clientX - r.width  - 14;
+    if(y + r.height > innerHeight - 8) y = e.clientY - r.height - 14;
+    t.style.left = Math.max(8,x) + 'px';
+    t.style.top  = Math.max(8,y) + 'px';
+  });
+})();
 
 function renderAll(){
   renderStats(); renderCats(); renderGrid();
   renderRequests(); renderStock(); renderLogs();
+  if(state.view === 'admin' && state.tab === 'stats') renderStatsTab();
   $('#deptList').innerHTML = DEPTS.map(d=>`<option value="${escAttr(d)}">`).join('');
   $('#catList').innerHTML = [...new Set(state.items.map(i=>i.category||'기타'))].map(c=>`<option value="${escAttr(c)}">`).join('');
 }
 
+/* ═══════════════════ 재고 정합성 감시 ═══════════════════
+   재고현황(Items)과 재고로그(Logs)가 서로 맞는지 확인합니다.
+   자료가 바뀔 때마다 자동으로 돌고, 어긋나면 띠와 메일로 알립니다.
+   ══════════════════════════════════════════════════════ */
+const numOrNull = v => (v==='' || v==null || isNaN(Number(v))) ? null : Number(v);
+
+/* 신청과 직접 연결된 재고 이동 — 관리자 조정·신규등록 등은 제외합니다 */
+const REQ_LOG_TYPES = ['출고(신청)','출고(추가)','출고(승인)','입고(반납)','입고(반려)','입고(신청삭제)'];
+
+/* 신청 기록과 출고 로그의 시각이 1~2초 어긋나 저장된 경우가 있어 여유를 둡니다 */
+const PAIR_TOL_MS = 5000;
+
+/**
+ * 신청 ↔ 출고(신청) 로그를 짝지어 줍니다.
+ * 같은 품목이면서 시각 차이가 가장 작은 것끼리 «한 번씩만» 연결합니다.
+ * 반환: { reqLog: Map(신청id → 로그), logReq: Map(로그id → 신청) }
+ */
+function pairRequestsWithLogs(){
+  const byItem = new Map();
+  state.logs.forEach(l=>{
+    if(l.type !== '출고(신청)') return;
+    if(!byItem.has(l.itemName)) byItem.set(l.itemName, []);
+    byItem.get(l.itemName).push({ t: parseTs(l.ts), l, used:false });
+  });
+
+  const reqLog = new Map(), logReq = new Map();
+  // 시각이 가까운 순으로 확실한 짝부터 연결합니다
+  const cands = [];
+  state.requests.forEach(r=>{
+    const arr = byItem.get(r.itemName); if(!arr) return;
+    const rt = parseTs(r.ts);
+    arr.forEach(e=>{
+      const d = Math.abs(e.t - rt);
+      if(d <= PAIR_TOL_MS) cands.push({ d, r, e });
+    });
+  });
+  cands.sort((a,b)=> a.d - b.d);
+  cands.forEach(({r,e})=>{
+    if(e.used || reqLog.has(r.id)) return;
+    e.used = true;
+    reqLog.set(r.id, e.l);
+    logReq.set(e.l.id, r);
+  });
+  return { reqLog, logReq };
+}
+
+function auditStock(){
+  const alerts = [], notes = [];
+  const byName = {};
+  state.items.forEach(i => { byName[i.name] = i; });
+
+  // ① 재고가 음수
+  state.items.forEach(i=>{
+    if(Number(i.stock) < 0)
+      alerts.push({ kind:'음수 재고', item:i.name, detail:`현재 재고가 ${nf(i.stock)}개입니다` });
+  });
+
+  // 품목별 로그 묶기
+  const g = new Map();
+  state.logs.forEach(l=>{
+    if(!g.has(l.itemName)) g.set(l.itemName, []);
+    g.get(l.itemName).push(l);
+  });
+
+  let 확인가능 = 0, 확인불가 = 0;
+
+  g.forEach((list, name)=>{
+    const it = byName[name];
+    if(!it){
+      notes.push(`${name} — 로그 ${nf(list.length)}건이 있으나 지금 품목 목록에 없습니다 (이름 변경 또는 삭제)`);
+      return;
+    }
+    const s = list.slice().sort((a,b)=> parseTs(a.ts) - parseTs(b.ts));
+
+    // ② 로그의 마지막 잔량과 현재 재고 대조
+    const last = [...s].reverse().find(l => numOrNull(l.after) !== null);
+    if(last){
+      확인가능++;
+      const expect = numOrNull(last.after), actual = Number(it.stock);
+      if(expect !== actual){
+        alerts.push({ kind:'재고 불일치', item:name,
+          detail:`로그 마지막 잔량 ${nf(expect)}개 ≠ 현재 재고 ${nf(actual)}개 (차이 ${actual-expect>0?'+':''}${nf(actual-expect)})`,
+          ts:last.ts });
+      }
+    } else 확인불가++;
+
+    // ③ 로그 사슬이 끊겼는지 (앞의 이후값 ≠ 뒤의 이전값)
+    for(let k=1;k<s.length;k++){
+      const pa = numOrNull(s[k-1].after), cb = numOrNull(s[k].before);
+      if(pa === null || cb === null) continue;
+      if(pa !== cb){
+        alerts.push({ kind:'로그 끊김', item:name,
+          detail:`${s[k-1].ts} 이후 ${nf(pa)}개였는데 ${s[k].ts} 기록은 ${nf(cb)}개에서 시작합니다`,
+          ts:s[k].ts });
+      }
+    }
+  });
+
+  // ④ 신청은 있는데 출고 로그가 없는 건
+  const { reqLog, logReq } = pairRequestsWithLogs();
+  let 중복행 = 0;
+  state.requests.forEach(r=>{
+    if(r.status === '반려') return;
+    if(reqLog.has(r.id)) return;
+    // 같은 시각·같은 품목·같은 수량의 다른 신청이 이미 로그와 짝지어졌다면
+    // 옛 시스템이 한 건을 두 줄로 기록한 «중복 행» 입니다 (경보 아님)
+    const twin = state.requests.find(x=>
+      x.id !== r.id && x.itemName === r.itemName &&
+      Number(x.qty) === Number(r.qty) &&
+      parseTs(x.ts) === parseTs(r.ts) && reqLog.has(x.id));
+    if(twin){ 중복행++; return; }
+    alerts.push({ kind:'출고 기록 없음', item:r.itemName,
+      detail:`${r.ts} ${r.applicant}님 신청 ${nf(r.qty)}개에 해당하는 출고 로그가 없습니다`, ts:r.ts });
+  });
+  if(중복행) notes.push(`신청 ${nf(중복행)}건은 같은 신청이 두 줄로 기록된 «중복 행» 입니다 (옛 시스템 흔적 · 출고는 한 번만 일어났습니다)`);
+
+  // ⑤ 출고 로그는 있는데 대응하는 신청이 없는 건 (재고로그 → 신청내역)
+  state.logs.forEach(l=>{
+    if(l.type !== '출고(신청)') return;
+    if(!logReq.has(l.id)){
+      alerts.push({ kind:'신청 없는 출고', item:l.itemName,
+        detail:`${l.ts} 출고 ${nf(Math.abs(Number(l.delta)||0))}개가 기록됐으나 해당 신청 내역이 없습니다`, ts:l.ts });
+    }
+  });
+
+  // ⑥ 반려된 신청인데 재고 복구 로그가 없는 건 (신청내역 ↔ 재고로그)
+  const backSet = new Set(state.logs.filter(l=>l.type==='입고(반려)')
+    .map(l=> l.itemName + '|' + Math.abs(Number(l.delta)||0)));
+  state.requests.forEach(r=>{
+    if(r.status !== '반려') return;
+    if(!backSet.has(r.itemName + '|' + (Number(r.qty)||0))){
+      alerts.push({ kind:'반려 복구 누락', item:r.itemName,
+        detail:`${r.ts} ${r.applicant}님 건이 반려됐는데 재고를 되돌린 로그가 없습니다`, ts:r.ts });
+    }
+  });
+
+  // ⑦ 건별 대조 — 신청 한 건의 수량 ↔ 그 건의 출고 로그 (+ 그 건에 달린 반납·추가)
+  //    시트에서 수량만 몰래 고치면 여기서 걸립니다. 기간 제한 없이 전부 봅니다.
+  // 수량 변경 로그는 비고의 «[신청건 …]» 으로 원래 신청에 연결합니다
+  const adjByReq = new Map();
+  state.logs.forEach(l=>{
+    if(l.type !== '출고(추가)' && l.type !== '입고(반납)') return;
+    const m = String(l.note||'').match(/\[신청건\s*(.+?)\]\s*$/);
+    if(!m) return;
+    const k = parseTs(m[1]) + '|' + l.itemName;
+    adjByReq.set(k, (adjByReq.get(k)||0) + (-(Number(l.delta)||0)));  // 출고는 +, 반납은 −
+  });
+  // 새 체계가 시작된 시점 — 잔량이 기록되기 시작한 첫 로그
+  const 잔량시각0 = state.logs
+    .filter(l => numOrNull(l.before)!==null && numOrNull(l.after)!==null)
+    .map(l => parseTs(l.ts)).filter(Boolean);
+  const NEW_FROM = 잔량시각0.length ? Math.min(...잔량시각0) : Infinity;
+
+  let perChecked = 0;
+  const 과거차이 = [];
+  state.requests.forEach(r=>{
+    if(r.status === '반려') return;
+    const lg = reqLog.get(r.id);
+    if(!lg) return;                                    // ④에서 이미 다룸
+    const k = parseTs(r.ts) + '|' + r.itemName;
+    const expect = Math.abs(Number(lg.delta)||0) + (adjByReq.get(k)||0);
+    const actual = Number(r.qty)||0;
+    perChecked++;
+    if(expect === actual) return;
+    const line = `${r.ts} ${r.applicant}님 · ${r.itemName} — 신청서 ${nf(actual)}개 / 로그 기준 ${nf(expect)}개 (차이 ${actual-expect>0?'+':''}${nf(actual-expect)})`;
+    if(parseTs(r.ts) >= NEW_FROM){
+      // 새 체계 이후 건은 반드시 맞아야 합니다 → 경보
+      alerts.push({ kind:'건별 수량 불일치', item:r.itemName,
+        detail:`${r.ts} ${r.applicant}님 건 — 신청서 ${nf(actual)}개인데 로그 기준 ${nf(expect)}개입니다 (차이 ${actual-expect>0?'+':''}${nf(actual-expect)})`,
+        ts:r.ts });
+    } else {
+      과거차이.push(line);                              // 옛 시스템 기록 → 참고
+    }
+  });
+  if(과거차이.length){
+    notes.push(`아래 ${nf(과거차이.length)}건은 새 체계 시작(${new Date(NEW_FROM).toLocaleString('ko-KR')}) 전의 기록으로, 옛 시스템에서 관리자가 수량을 고친 흔적입니다. 지금 시트를 고친 것이 아니라면 그대로 두셔도 됩니다.`);
+    과거차이.forEach(l=> notes.push(l));
+  }
+
+  // ⑧ 품목별 «미결 신청 수량 합계» ↔ «신청 관련 로그 순변동» (세 표 교차 대조)
+  //    옛 시스템 기록은 잔량이 없어 대조가 불가능하므로,
+  //    잔량이 남기 시작한 시점부터만 계산합니다. (기준 시각은 자료에서 자동으로 잡힙니다)
+  let sumChecked = 0;
+  if(NEW_FROM !== Infinity){
+    const cut = NEW_FROM;
+    const 신청합 = {}, 로그합 = {};
+    state.requests.forEach(r=>{
+      if((r.status==='대기'||r.status==='승인') && parseTs(r.ts) >= cut)
+        신청합[r.itemName] = (신청합[r.itemName]||0) + (Number(r.qty)||0);
+    });
+    state.logs.forEach(l=>{
+      if(REQ_LOG_TYPES.includes(l.type) && parseTs(l.ts) >= cut)
+        로그합[l.itemName] = (로그합[l.itemName]||0) + (Number(l.delta)||0);
+    });
+    const names = [...new Set([...Object.keys(신청합), ...Object.keys(로그합)])];
+    sumChecked = names.length;
+    names.forEach(n=>{
+      const a = 신청합[n]||0, b = -(로그합[n]||0);
+      if(a !== b){
+        alerts.push({ kind:'수량 합계 불일치', item:n,
+          detail:`신청 합계 ${nf(a)}개 ≠ 로그 순변동 ${nf(b)}개 (차이 ${a-b>0?'+':''}${nf(a-b)})` });
+      }
+    });
+    notes.push(`수량 합계 대조는 ${new Date(cut).toLocaleString('ko-KR')} 이후 기록 ${nf(sumChecked)}개 품목을 대상으로 합니다`);
+  }
+
+  if(확인불가) notes.push(`로그 ${nf(확인불가)}개 품목은 이전·이후 잔량이 비어 있어 잔량 대조를 할 수 없습니다 (옛 시스템에서 옮겨온 기록)`);
+
+  return { alerts, notes, checked:확인가능, unchecked:확인불가, sumChecked, perChecked };
+}
+
+function auditText(a){
+  const lines = ['[기념품 재고 점검]', ''];
+  if(a.alerts.length){
+    lines.push(`※ 확인이 필요한 항목 ${a.alerts.length}건`, '');
+    a.alerts.forEach((x,i)=> lines.push(`${i+1}. [${x.kind}] ${x.item}`, `   ${x.detail}`));
+  } else lines.push('확인이 필요한 항목이 없습니다.');
+  if(a.notes.length){
+    lines.push('', '--- 참고 ---');
+    a.notes.forEach(n=> lines.push('· ' + n));
+  }
+  lines.push('', `점검 시각: ${nowStr()}`, '본 메일은 기념품 관리 시스템에서 자동 발송되었습니다.');
+  return lines.join('\n');
+}
+
+function renderAudit(a){
+  const ok = a.alerts.length === 0;
+
+  $('#auditBanner').classList.toggle('hidden', ok);
+  $('#auditBannerCount').textContent = nf(a.alerts.length);
+
+  const panel = $('#auditPanel');
+  if(!panel) return;
+  panel.innerHTML = `
+    <div class="flex flex-wrap items-start justify-between gap-3">
+      <div class="flex items-start gap-3">
+        <span class="badge ${ok?'b-ok':'b-no'} mt-0.5">${ok?'이상 없음':'점검 필요'}</span>
+        <div>
+          <p class="text-[14px] font-bold kr">신청내역 ↔ 재고현황 ↔ 재고로그 정합성</p>
+          <p class="text-[12.5px] text-[var(--muted)] kr mt-1">
+            ${ok
+              ? `건별 대조 ${nf(a.perChecked||0)}건, 잔량 대조 ${nf(a.checked)}개 품목, 수량 합계 대조 ${nf(a.sumChecked||0)}개 품목이 모두 일치합니다. 자료가 바뀔 때마다 자동으로 다시 확인합니다.`
+              : `${nf(a.alerts.length)}건이 어긋납니다. 아래 내용을 확인해 주세요.`}
+          </p>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <button id="auditRecheck" class="btn px-3 py-1.5 text-[12px]">다시 검사</button>
+        ${a.alerts.length?`<button id="auditMail" class="btn btn-primary px-3 py-1.5 text-[12px]">메일로 보내기</button>`:''}
+      </div>
+    </div>
+    ${a.alerts.length?`
+      <div class="mt-4 pt-4" style="border-top:1px solid var(--line)">
+        <ul class="space-y-2.5">
+          ${a.alerts.map(x=>`
+            <li class="flex gap-2.5 items-start text-[13px] kr">
+              <span class="badge b-no flex-none" style="font-size:10.5px">${esc(x.kind)}</span>
+              <span><b>${esc(x.item)}</b> — <span class="text-[var(--ink-2)]">${esc(x.detail)}</span></span>
+            </li>`).join('')}
+        </ul>
+      </div>`:''}
+    ${a.notes.length?`
+      <details class="mt-4 pt-4" style="border-top:1px solid var(--line)">
+        <summary class="text-[12.5px] text-[var(--muted)] cursor-pointer">참고 사항 ${a.notes.length}건 — 경보는 아닙니다</summary>
+        <ul class="mt-2.5 space-y-1.5">
+          ${a.notes.map(n=>`<li class="text-[12.5px] text-[var(--muted)] kr">· ${esc(n)}</li>`).join('')}
+        </ul>
+      </details>`:''}
+  `;
+
+  const rc = $('#auditRecheck');
+  if(rc) rc.addEventListener('click', ()=>{ runAudit(true); toast('다시 검사했습니다.'); });
+  const mb = $('#auditMail');
+  if(mb) mb.addEventListener('click', ()=> sendAuditMail(a, true));
+}
+
+async function sendAuditMail(a, manual){
+  if(!a.alerts.length) return;
+  const sig = a.alerts.map(x=> x.kind+'|'+x.item+'|'+x.detail).join('\n');
+  try{
+    const r = await api('alertAudit', { signature:sig, count:a.alerts.length, body:auditText(a) });
+    if(manual) toast(r.sent ? '점검 결과를 메일로 보냈습니다.' : ('보내지 않았습니다 — ' + (r.reason||'')), r.sent?'ok':'warn');
+  }catch(err){ if(manual) toast(err.message, 'err'); }
+}
+
+function runAudit(manual){
+  const a = auditStock();
+  state._audit = a;
+  renderAudit(a);
+  // 메일은 «메일로 보내기» 를 누를 때만 나갑니다 (자동 발송하지 않습니다)
+  return a;
+}
+
+/**
+ * 서버 응답을 화면에 반영합니다.
+ * 전체 자료(bootstrap)와 «바뀐 것만»(light) 두 형태를 모두 받습니다.
+ * 자료가 쌓일수록 전체 전송이 느려져, 신청·승인 같은 작업은 바뀐 줄만 주고받습니다.
+ */
 function applyData(d){
   if(!d) return;
-  if(d.items) state.items = d.items;
-  if(d.requests) state.requests = d.requests;
-  if(d.logs) state.logs = d.logs;
+
+  if(d.light){
+    if(d.items) state.items = d.items;                 // 품목표는 항상 최신으로
+
+    (d.reqUpsert||[]).forEach(r=>{
+      const i = state.requests.findIndex(x=>x.id===r.id);
+      if(i >= 0) state.requests[i] = r;
+      else state.requests.unshift(r);
+    });
+    if(d.reqRemove && d.reqRemove.length){
+      const rm = new Set(d.reqRemove);
+      state.requests = state.requests.filter(r=>!rm.has(r.id));
+    }
+    (d.logs||[]).forEach(l=> state.logs.unshift(l));
+    if(d.logRemove && d.logRemove.length){
+      const rm = new Set(d.logRemove);
+      state.logs = state.logs.filter(l=>!rm.has(l.id));
+    }
+  } else {
+    if(d.items) state.items = d.items;
+    if(d.requests) state.requests = d.requests;
+    if(d.logs) state.logs = d.logs;
+  }
+
   renderAll();
+  runAudit(false);
 }
 
 /* ═══════════════════════ 화면 전환 ═══════════════════════ */
@@ -1046,7 +2142,9 @@ function setTab(t){
   $('#tabRequests').classList.toggle('hidden', t!=='requests');
   $('#tabStock').classList.toggle('hidden', t!=='stock');
   $('#tabLogs').classList.toggle('hidden', t!=='logs');
+  $('#tabStats').classList.toggle('hidden', t!=='stats');
   $$('.tabbtn').forEach(b=> b.classList.toggle('tabbtn-on', b.dataset.tab===t));
+  if(t === 'stats') renderStatsTab();
 }
 const openModal  = id => { const m=$('#'+id); m.classList.remove('hidden'); m.classList.add('flex'); };
 const closeModal = id => { const m=$('#'+id); m.classList.add('hidden'); m.classList.remove('flex'); };
@@ -1094,6 +2192,15 @@ $('#logoutBtn').addEventListener('click', ()=>{
 
 $('#brandBtn').addEventListener('click', ()=>setView('catalog'));
 
+/* 새로고침 — 시트를 직접 고친 뒤 화면에 반영할 때 */
+$('#refreshBtn').addEventListener('click', async ()=>{
+  busy(true);
+  try{
+    applyData(await api('bootstrap', { pw:state.pw }));
+    toast('최신 자료를 불러왔습니다.');
+  }catch(err){ toast(err.message,'err'); } finally{ busy(false); }
+});
+
 $$('.navlink').forEach(b=>b.addEventListener('click', ()=>{
   if(b.dataset.nav==='admin'){
     if(state.adminPw){ setView('admin'); }
@@ -1127,12 +2234,74 @@ $('#reqFilters').addEventListener('click', e=>{
   state.reqStatus = b.dataset.rf; renderRequests();
 });
 
-// 신청 모달
-$('#grid').addEventListener('click', e=>{
+/* 헤더 클릭 정렬 — 같은 열을 다시 누르면 방향이 바뀝니다 */
+document.addEventListener('click', e=>{
+  const th = e.target.closest('th.sortable'); if(!th) return;
+  const head = th.closest('[data-sorthead]'); if(!head) return;
+  const which = head.dataset.sorthead;
+  const cfg = state.sort[which];
+  if(!cfg) return;
+  const key = th.dataset.key;
+  if(cfg.key === key){
+    cfg.dir = cfg.dir === 'asc' ? 'desc' : 'asc';
+  } else {
+    cfg.key = key;
+    cfg.type = th.dataset.type || 'str';
+    // 숫자·날짜는 큰 값부터, 글자는 가나다순이 자연스럽습니다
+    cfg.dir = (cfg.type === 'str') ? 'asc' : 'desc';
+  }
+  cfg.type = th.dataset.type || 'str';
+  ({ requests:renderRequests, stock:renderStock, logs:renderLogs, catalog:renderGrid })[which]();
+});
+
+/* 카드 / 표 보기 전환 */
+$$('[data-catview]').forEach(b=>b.addEventListener('click', ()=>{
+  state.catView = b.dataset.catview;
+  $$('[data-catview]').forEach(x=> x.setAttribute('aria-pressed', String(x.dataset.catview===state.catView)));
+  renderGrid();
+}));
+
+/* 통계 필터 */
+$('#stPeriod').addEventListener('click', e=>{
+  const b = e.target.closest('.perbtn'); if(!b) return;
+  state.stPeriod = b.dataset.per; renderStatsTab();
+});
+$('#stStatus').addEventListener('click', e=>{
+  const b = e.target.closest('.stsbtn'); if(!b) return;
+  state.stStatus = b.dataset.sts; renderStatsTab();
+});
+$('#stDedup').addEventListener('change', e=>{
+  state.stDedup = e.target.checked; renderStatsTab();
+});
+
+/* 교차표 CSV 내보내기 */
+$('#stExport').addEventListener('click', ()=>{
+  const p = state._pivot;
+  if(!p || !p.deptRows.length){ toast('내보낼 자료가 없습니다.','warn'); return; }
+  const q = v => `"${String(v??'').replace(/"/g,'""')}"`;
+  const head = ['부서', ...p.topItems, '합계(전체 품목)'];
+  const lines = [head.map(q).join(',')];
+  p.deptRows.forEach(d=>{
+    const tot = p.byDept.find(g=>g.key===d);
+    lines.push([d, ...p.topItems.map(n=>{
+      const c = p.cell.get(d+'||'+n); return c ? c.qty : 0;
+    }), tot.qty].map(q).join(','));
+  });
+  const csv = '﻿' + lines.join('\n');
+  const url = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `기념품_부서별통계_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+  toast('교차표를 CSV로 내려받았습니다.');
+});
+
+// 신청 모달 — 카드 보기와 표 보기 양쪽에서 열립니다
+document.addEventListener('click', e=>{
   const b = e.target.closest('[data-req]'); if(!b || b.disabled) return;
   const it = state.items.find(i=>i.id===b.dataset.req); if(!it) return;
   state.targetId = it.id;
-  $('#rmArt').innerHTML = artFor(it, 'm'+it.id);
+  $('#rmArt').innerHTML = artFor(it, 'm'+it.id, {fill:true});
   $('#rmName').textContent = it.name;
   $('#rmStock').textContent = nf(it.stock);
   $('#rmMax').textContent = nf(it.stock);
@@ -1185,7 +2354,7 @@ document.addEventListener('click', async e=>{
     state.editingId = it.id;
     $('#imTitle').textContent = '품목 수정';
     $('#iName').value=it.name; $('#iCat').value=it.category||''; $('#iStock').value=it.stock;
-    $('#iDesc').value=it.desc||''; $('#iImg').value=it.img||''; $('#iNote').value=it.note||'';
+    $('#iDesc').value=it.desc||''; $('#iImg').value=it.img||DRIVE_PREFIX; $('#iNote').value=it.note||'';
     refreshPreview();
     openModal('itemModal'); return;
   }
@@ -1195,6 +2364,43 @@ document.addEventListener('click', async e=>{
     busy(true);
     try{ applyData(await api('deleteItem',{ id })); toast('품목을 삭제했습니다.'); }
     catch(err){ toast(err.message,'err'); } finally{ busy(false); }
+    return;
+  }
+  if(act==='history'){ openHistory(id); return; }
+  if(act==='toggleHidden'){
+    const it = state.items.find(x=>x.id===id); if(!it) return;
+    const willHide = !isHiddenItem(it);
+    if(willHide && !confirm(`「${it.name}」의 신청을 막을까요?\n\n신청 화면 목록에서 사라지고, 새 신청도 거부됩니다.\n재고와 지난 기록은 그대로 남습니다.`)) return;
+    busy(true);
+    try{
+      applyData(await api('toggleHidden',{ id, hidden:willHide }));
+      toast(willHide ? `「${it.name}」 신청을 막았습니다.` : `「${it.name}」 신청을 다시 받습니다.`);
+    }catch(err){ toast(err.message,'err'); } finally{ busy(false); }
+    return;
+  }
+  if(act==='deleteLog'){
+    const l = state.logs.find(x=>x.id===id);
+    if(!confirm(`이 로그를 지울까요?\n\n${l?l.ts+' · '+l.itemName+' · '+l.type:''}\n\n재고 숫자는 바뀌지 않고 이력만 지워집니다.\n잔량 사슬이 끊겨 정합성 경보가 뜰 수 있습니다.`)) return;
+    busy(true);
+    try{ applyData(await api('deleteLog',{ id })); toast('로그를 지웠습니다.'); }
+    catch(err){ toast(err.message,'err'); } finally{ busy(false); }
+    return;
+  }
+  if(act==='editQty'){
+    const rq = state.requests.find(r=>r.id===id); if(!rq) return;
+    const it = state.items.find(x=>x.id===rq.itemId) || state.items.find(x=>x.name===rq.itemName);
+    state.qtyTarget = { id:rq.id, prev:Number(rq.qty)||0, stock:it?Number(it.stock)||0:0, status:rq.status };
+    $('#qtyItem').textContent = rq.itemName;
+    $('#qtyWho').textContent  = `${rq.applicant} · ${rq.dept} · ${rq.ts} · ${rq.status}`;
+    $('#qtyStock').textContent = nf(state.qtyTarget.stock);
+    $('#qtyPrev').textContent  = nf(state.qtyTarget.prev);
+    $('#qtyNew').value = state.qtyTarget.prev;
+    $('#qtyNew').max = rq.status==='반려' ? 99999 : state.qtyTarget.prev + state.qtyTarget.stock;
+    $('#qtyReason').value = '';
+    $('#qtyErr').textContent = '';
+    paintQtyDelta();
+    openModal('qtyModal');
+    setTimeout(()=>{ $('#qtyNew').focus(); $('#qtyNew').select(); }, 60);
     return;
   }
   if(act==='deleteRequest'){
@@ -1212,16 +2418,23 @@ document.addEventListener('click', async e=>{
 // 품목 등록/수정 + 이미지 미리보기
 function refreshPreview(){
   const name = $('#iName').value.trim();
-  const img  = $('#iImg').value.trim();
+  const img  = normalizeImgUrl($('#iImg').value);
   $('#iPreview').innerHTML = artFor({ name: name || '기념품', img }, 'p' + hashStr(name || 'x'));
 }
 $('#iName').addEventListener('input', refreshPreview);
 $('#iImg').addEventListener('input', refreshPreview);
+// 칸을 벗어나면 붙여넣은 주소를 정리해 보여 줍니다
+$('#iImg').addEventListener('change', ()=>{
+  const v = normalizeImgUrl($('#iImg').value);
+  $('#iImg').value = v || DRIVE_PREFIX;
+  refreshPreview();
+});
 
 $('#newItemBtn').addEventListener('click', ()=>{
   state.editingId = null;
   $('#imTitle').textContent = '품목 등록';
   $('#itemForm').reset(); $('#iStock').value = 0;
+  $('#iImg').value = DRIVE_PREFIX;          // 뒤에 파일 ID만 붙이면 됩니다
   refreshPreview();
   openModal('itemModal'); setTimeout(()=>$('#iName').focus(),60);
 });
@@ -1233,7 +2446,7 @@ $('#itemForm').addEventListener('submit', async e=>{
     category: $('#iCat').value.trim() || '기타',
     stock: Number($('#iStock').value)||0,
     desc: $('#iDesc').value.trim(),
-    img: $('#iImg').value.trim(),
+    img: normalizeImgUrl($('#iImg').value),
     note: $('#iNote').value.trim()
   };
   busy(true);
@@ -1242,6 +2455,127 @@ $('#itemForm').addEventListener('submit', async e=>{
     closeModal('itemModal');
     toast(state.editingId?'품목을 수정했습니다.':'품목을 등록했습니다.');
   }catch(err){ toast(err.message,'err'); } finally{ busy(false); }
+});
+
+/* ═══════════════ 품목 이력 · 재고 실사 ═══════════════ */
+function openHistory(id){
+  const it = state.items.find(i=>i.id===id); if(!it) return;
+  state.histTarget = it.id;
+
+  const logs = state.logs.filter(l=>l.itemName===it.name)
+    .slice().sort((a,b)=> parseTs(a.ts) - parseTs(b.ts));
+  const reqs = state.requests.filter(r=>r.itemName===it.name)
+    .slice().sort((a,b)=> parseTs(a.ts) - parseTs(b.ts));
+
+  // 변동을 처음부터 더해 «계산 잔량» 을 만듭니다
+  let run = 0, firstGapAt = -1;
+  const rows = logs.map((l,idx)=>{
+    run += Number(l.delta)||0;
+    const rec = numOrNull(l.after);
+    const gap = rec !== null && rec !== run;
+    if(gap && firstGapAt < 0) firstGapAt = idx;
+    return { l, run, rec, gap };
+  });
+
+  $('#histName').textContent = it.name;
+  $('#histStock').textContent = nf(it.stock);
+  $('#histCalc').textContent = nf(run);
+  const diff = Number(it.stock) - run;
+  $('#histGap').innerHTML = diff === 0
+    ? ` · <span style="color:var(--ok)">일치</span>`
+    : ` · <span style="color:var(--err)">차이 ${diff>0?'+':''}${nf(diff)}개</span>`;
+
+  $('#countQty').value = it.stock;
+  $('#countReason').value = '';
+  $('#countErr').textContent = '';
+
+  $('#histBody').innerHTML = rows.length ? rows.map(({l,run,rec,gap})=>`
+    <tr ${gap?'style="background:#FFE5E5"':''}>
+      <td class="text-[var(--muted)] whitespace-nowrap">${esc(l.ts)}</td>
+      <td class="whitespace-nowrap"><span class="badge ${String(l.type).startsWith('입고')||l.type==='신규등록'||l.type==='대량등록'?'b-in':(String(l.type).startsWith('출고')?'b-out':'b-wait')}">${esc(l.type)}</span></td>
+      <td class="text-right font-semibold ${Number(l.delta)>0?'text-[var(--ok)]':Number(l.delta)<0?'text-[var(--err)]':'text-[var(--muted)]'}" style="font-family:'IBM Plex Mono',monospace">${Number(l.delta)>0?'+':''}${nf(l.delta)}</td>
+      <td class="text-right text-[var(--muted)]" style="font-family:'IBM Plex Mono',monospace">${rec===null?'—':nf(rec)}</td>
+      <td class="text-right font-semibold ${gap?'text-[var(--err)]':''}" style="font-family:'IBM Plex Mono',monospace">${nf(run)}</td>
+      <td class="text-[var(--ink-2)] kr">${esc(l.note||'')}${gap?' <b style="color:var(--err)">← 여기서 어긋납니다</b>':''}</td>
+    </tr>`).join('')
+    : `<tr><td colspan="6" class="py-12 text-center text-[13px] text-[var(--muted)] kr">로그가 없습니다</td></tr>`;
+
+  // 신청별로 대응하는 출고 로그가 있는지 표시
+  const { reqLog: histPair } = pairRequestsWithLogs();
+  $('#histReqBody').innerHTML = reqs.length ? reqs.map(r=>{
+    const has = histPair.has(r.id);
+    return `<tr>
+      <td class="text-[var(--muted)] whitespace-nowrap">${esc(r.ts)}</td>
+      <td class="whitespace-nowrap">${esc(r.applicant)}</td>
+      <td class="text-[var(--muted)] whitespace-nowrap">${esc(r.dept)}</td>
+      <td class="text-right font-semibold" style="font-family:'IBM Plex Mono',monospace">${nf(r.qty)}</td>
+      <td><span class="badge ${STATUS_STYLE[r.status]||''}">${esc(r.status)}</span></td>
+      <td>${has?'<span class="badge b-ok">있음</span>':'<span class="badge b-no">없음</span>'}</td>
+    </tr>`;
+  }).join('')
+    : `<tr><td colspan="6" class="py-12 text-center text-[13px] text-[var(--muted)] kr">신청 내역이 없습니다</td></tr>`;
+
+  openModal('histModal');
+}
+
+$('#countForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const id = state.histTarget; if(!id) return;
+  const counted = Number($('#countQty').value);
+  if(isNaN(counted) || counted < 0){ $('#countErr').textContent='실사 수량을 확인해 주세요.'; return; }
+  $('#countSubmit').disabled = true; busy(true);
+  try{
+    const d = await api('countStock', { id, counted, reason:$('#countReason').value.trim() });
+    applyData(d);
+    const diff = d.diff;
+    toast(diff === 0
+      ? `실사 결과 장부와 일치합니다 (${nf(counted)}개). 기록에 남겼습니다.`
+      : `실사 반영 완료 — 장부 ${nf(d.before)}개 → 실제 ${nf(counted)}개 (${diff>0?'+':''}${nf(diff)})`);
+    openHistory(id);          // 갱신된 이력으로 다시 그립니다
+  }catch(err){ $('#countErr').textContent = err.message; }
+  finally{ busy(false); $('#countSubmit').disabled = false; }
+});
+
+/* 신청 수량 변경 */
+function paintQtyDelta(){
+  const t = state.qtyTarget; if(!t) return;
+  const next = Number($('#qtyNew').value) || 0;
+  const d = next - t.prev;
+  const el = $('#qtyDelta');
+  if(!d){ el.textContent = ''; return; }
+  if(t.status === '반려'){
+    el.innerHTML = `<span class="text-[var(--muted)]">반려 건이라 재고는 그대로입니다</span>`;
+    return;
+  }
+  el.innerHTML = d < 0
+    ? `<span style="color:var(--ok)">반납 ${nf(-d)}개 · 재고 ${nf(t.stock)} → ${nf(t.stock - d)}</span>`
+    : `<span style="color:var(--err)">추가 ${nf(d)}개 · 재고 ${nf(t.stock)} → ${nf(t.stock - d)}</span>`;
+}
+$('#qtyNew').addEventListener('input', paintQtyDelta);
+$$('[data-qadj]').forEach(b=>b.addEventListener('click', ()=>{
+  const inp = $('#qtyNew');
+  const max = Number(inp.max) || 99999;
+  inp.value = Math.min(max, Math.max(1, (Number(inp.value)||1) + Number(b.dataset.qadj)));
+  paintQtyDelta();
+}));
+$('#qtyForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const t = state.qtyTarget; if(!t) return;
+  const next = Number($('#qtyNew').value) || 0;
+  if(next <= 0){ $('#qtyErr').textContent = '수량은 1개 이상이어야 합니다. 전부 반납이면 반려나 삭제를 쓰세요.'; return; }
+  if(next === t.prev){ $('#qtyErr').textContent = '수량이 이전과 같습니다.'; return; }
+  $('#qtySubmit').disabled = true; $('#qtySubmit').textContent = '처리 중…';
+  busy(true);
+  try{
+    const d = await api('updateQty', { id:t.id, qty:next, reason:$('#qtyReason').value.trim() });
+    applyData(d);
+    closeModal('qtyModal');
+    const diff = next - t.prev;
+    toast(diff < 0
+      ? `반납 ${nf(-diff)}개를 반영했습니다. 재고가 돌아왔습니다.`
+      : `추가 ${nf(diff)}개를 반영했습니다.`);
+  }catch(err){ $('#qtyErr').textContent = err.message; }
+  finally{ busy(false); $('#qtySubmit').disabled = false; $('#qtySubmit').textContent = '변경 저장'; }
 });
 
 // CSV 대량등록
@@ -1290,17 +2624,65 @@ $('#exportReq').addEventListener('click', ()=>{
   URL.revokeObjectURL(url);
 });
 
+// 재고현황 CSV 내보내기 — 화면에 보이는 정렬·검색 결과 그대로
+$('#exportStock').addEventListener('click', ()=>{
+  const q = state.stockQ.trim().toLowerCase();
+  const rows = sortRows(
+    state.items.filter(i=>!q || `${i.id} ${i.name} ${i.category||''} ${i.note||''}`.toLowerCase().includes(q)),
+    state.sort.stock);
+  if(!rows.length){ toast('내보낼 품목이 없습니다.','warn'); return; }
+  const head = ['품목ID','기념품명','구분','재고','설명','비고','신청상태'];
+  const q2 = v => `"${String(v??'').replace(/"/g,'""')}"`;
+  const csv = '﻿' + [head.join(','), ...rows.map(i=>
+    [i.id,i.name,i.category||'기타',i.stock,i.desc,i.note,isHiddenItem(i)?'차단':'허용'].map(q2).join(','))].join('\n');
+  const url = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  const a = document.createElement('a');
+  a.href=url; a.download=`기념품_재고현황_${new Date().toISOString().slice(0,10)}.csv`; a.click();
+  URL.revokeObjectURL(url);
+  toast(`재고현황 ${nf(rows.length)}건을 내려받았습니다.`);
+});
+
+// 재고로그 CSV 내보내기 — 화면에 보이는 정렬·검색 결과 그대로
+$('#exportLogs').addEventListener('click', ()=>{
+  const q = state.logQ.trim().toLowerCase();
+  const rows = sortRows(
+    state.logs.filter(l=>!q || `${l.itemName} ${l.note||''} ${l.type}`.toLowerCase().includes(q)),
+    state.sort.logs);
+  if(!rows.length){ toast('내보낼 로그가 없습니다.','warn'); return; }
+  const head = ['일시','품목ID','기념품명','구분','변동','이전','이후','비고'];
+  const q2 = v => `"${String(v??'').replace(/"/g,'""')}"`;
+  const csv = '﻿' + [head.join(','), ...rows.map(l=>
+    [l.ts,l.itemId,l.itemName,l.type,l.delta,l.before,l.after,l.note].map(q2).join(','))].join('\n');
+  const url = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  const a = document.createElement('a');
+  a.href=url; a.download=`기념품_재고로그_${new Date().toISOString().slice(0,10)}.csv`; a.click();
+  URL.revokeObjectURL(url);
+  toast(`재고로그 ${nf(rows.length)}건을 내려받았습니다.`);
+});
+
+// 경보 띠 → 재고로그 탭의 점검 결과로 이동
+$('#auditBannerBtn').addEventListener('click', ()=>{
+  if(!state.adminPw){
+    $('#adminErr').textContent=''; $('#adminPw').value='';
+    openModal('adminModal'); setTimeout(()=>$('#adminPw').focus(),60);
+    return;
+  }
+  setView('admin'); setTab('logs');
+  setTimeout(()=>{ const el=$('#auditPanel'); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); }, 220);
+});
+
 // 모달 닫기
 $$('[data-close]').forEach(b=>b.addEventListener('click', ()=>closeModal(b.dataset.close)));
-$$('#reqModal,#adminModal,#itemModal,#bulkModal').forEach(m=>m.addEventListener('mousedown', e=>{
+$$('#reqModal,#adminModal,#itemModal,#bulkModal,#qtyModal,#histModal').forEach(m=>m.addEventListener('mousedown', e=>{
   if(e.target===m) closeModal(m.id);
 }));
 document.addEventListener('keydown', e=>{
-  if(e.key==='Escape') ['reqModal','adminModal','itemModal','bulkModal'].forEach(closeModal);
+  if(e.key==='Escape') ['reqModal','adminModal','itemModal','bulkModal','qtyModal','histModal'].forEach(closeModal);
 });
 
 /* ═══════════════════════ 부팅 ═══════════════════════ */
 (async function boot(){
+  $('#buildTag').textContent = BUILD;
   const saved = sessionStorage.getItem('kba_pw');
   if(saved){
     try{
