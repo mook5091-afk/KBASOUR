@@ -2214,6 +2214,8 @@ $('#adminForm').addEventListener('submit', async e=>{
   try{
     await api('adminAuth', { adminPw:pw });
     state.adminPw = pw;
+    // [보안 개정] 신청 내역·재고 로그는 관리자 확인 후에만 서버가 보내 줍니다 → 여기서 다시 불러옴
+    applyData(await api('bootstrap', { pw:state.pw }));
     closeModal('adminModal'); setView('admin'); setTab(state.tab);
     toast('관리자 모드로 전환했습니다.');
   }catch(err){ $('#adminErr').textContent = err.message; }
