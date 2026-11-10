@@ -805,6 +805,13 @@
           <label class="label" for="iNote">비고</label>
           <input id="iNote" class="field" placeholder="예) 국제팀 전용">
         </div>
+        <label class="flex items-start gap-2.5 cursor-pointer select-none pt-1">
+          <input id="iAdminOnly" type="checkbox" class="mt-1">
+          <span class="kr text-[13.5px] leading-snug">
+            <span class="font-semibold">관리자 전용 품목</span>
+            <span class="block text-[12px] text-[var(--muted)]">일반 직원에게는 보이지 않고, 관리자만 보고 직접 신청합니다. 신청 내역·재고 로그는 그대로 보관됩니다.</span>
+          </span>
+        </label>
       </div>
     </div>
     <div class="px-7 pb-7 flex gap-2.5">
@@ -1254,7 +1261,7 @@ function sync(ok, text){
 /* ═══════════════════════ 통신 계층 ═══════════════════════ */
 async function api(action, payload={}){
   const body = { action, pw:state.pw, adminPw:state.adminPw, ...payload };
-  if(state.demo) return demoApi(action, body);
+  if(state.demo) return demoGate(action, body);
   const res = await fetch(API_URL, { method:'POST', body: JSON.stringify(body) });
   if(!res.ok) throw new Error('서버 응답 오류 (' + res.status + ')');
   const json = await res.json();
@@ -1388,10 +1395,45 @@ async function demoApi(action, p){
   throw new Error('알 수 없는 요청: ' + action);
 }
 
+/* 데모용 관리자 전용 처리 — GAS 의 adminOnly_wrapper.gs 와 같은 규칙 */
+async function demoGate(action, p){
+  const db = demoLoad();
+  const ids = new Set(db.adminOnlyIds || []);
+  const admin = !!p.adminPw && p.adminPw === db.adminPw;
+  if(action === 'setAdminOnly'){
+    if(!admin) throw new Error('관리자 인증이 필요합니다.');
+    if(!db.items.some(i=>i.id===p.id)) throw new Error('품목을 찾을 수 없습니다.');
+    p.on ? ids.add(p.id) : ids.delete(p.id);
+    db.adminOnlyIds = [...ids]; demoSave(db);
+    action = 'bootstrap';
+  }
+  if(action === 'submitRequest' && ids.has(p.itemId) && !admin)
+    throw new Error('품목을 찾을 수 없습니다.');
+  const res = await demoApi(action, p);
+  return adminOnlyFilter(res, ids, admin);
+}
+/** 관리자 → adminOnly 표시를 붙임 / 일반 → 관리자 전용 품목·관련 내역 제거 */
+function adminOnlyFilter(res, ids, admin){
+  if(!res || typeof res !== 'object' || !ids.size) {
+    if(res && Array.isArray(res.items)) res.items.forEach(i=>{ i.adminOnly = false; });
+    return res;
+  }
+  const names = new Set((res.items||[]).filter(i=>ids.has(i.id)).map(i=>i.name));
+  const hit = r => r && (ids.has(r.itemId) || names.has(r.itemName));
+  if(admin){
+    if(Array.isArray(res.items)) res.items = res.items.map(i=>({ ...i, adminOnly: ids.has(i.id) }));
+    return res;
+  }
+  ['items','requests','logs','reqUpsert'].forEach(k=>{
+    if(Array.isArray(res[k])) res[k] = res[k].filter(r=> k==='items' ? !ids.has(r.id) : !hit(r));
+  });
+  return res;
+}
+
 /* ═══════════════════════ 렌더링 ═══════════════════════ */
 function renderStats(){
   // 신청 화면의 숫자는 «신청 가능한 품목» 기준이라야 목록과 맞습니다
-  const items = state.items.filter(i=>!isHiddenItem(i));
+  const items = state.items.filter(i=>!isHiddenItem(i) && (!isAdminOnly(i) || isAdminMode()));
   const totalStock = items.reduce((a,i)=>a+Number(i.stock||0),0);
   const soldout = items.filter(i=>Number(i.stock||0)<=0).length;
   const pending = state.requests.filter(r=>r.status==='대기').length;
@@ -1409,10 +1451,16 @@ function renderStats(){
 }
 
 function renderCats(){
-  const cats = ['전체', ...new Set(state.items.filter(i=>!isHiddenItem(i)).map(i=>i.category||'기타'))];
+  const cats = ['전체', ...new Set(state.items.filter(i=>!isHiddenItem(i) && (!isAdminOnly(i) || isAdminMode())).map(i=>i.category||'기타'))];
   $('#cats').innerHTML = cats.map(c=>`
     <button data-cat="${escAttr(c)}" class="catbtn px-4 py-2 chip ${state.cat===c?'chip-on':''}">${esc(c)}</button>`).join('');
 }
+
+/** [관리자 전용] 서버가 관리자에게만 adminOnly:true 로 표시해 보내 줍니다.
+ *  일반 직원에게는 서버가 이 품목을 아예 보내지 않으므로, 아래 화면 필터는 2차 안전장치입니다. */
+function isAdminOnly(i){ return !!(i && i.adminOnly === true); }
+function isAdminMode(){ return !!state.adminPw; }
+const ADMIN_BADGE = '<span class="badge b-wait ml-1" style="font-size:10px">관리자 전용</span>';
 
 /** 신청 차단된 품목 — 빈 값은 «허용» */
 function isHiddenItem(i){
@@ -1426,6 +1474,7 @@ function visibleItems(){
   const q = state.q.trim().toLowerCase();
   return state.items.filter(i=>{
     if(isHiddenItem(i)) return false;            // 신청 차단 품목은 목록에서 제외
+    if(isAdminOnly(i) && !isAdminMode()) return false;   // 관리자 전용은 관리자에게만
     if(state.cat!=='전체' && (i.category||'기타')!==state.cat) return false;
     if(!state.soldout && Number(i.stock||0)<=0) return false;
     if(q && !(`${i.name} ${i.desc||''} ${i.note||''}`.toLowerCase().includes(q))) return false;
@@ -1444,7 +1493,7 @@ function renderCatTable(list){
         <div class="flex items-center gap-3 min-w-[240px]">
           <div class="w-14 h-11 overflow-hidden flex-none ${out?'art-out':''}" style="border:1px solid var(--line)">${artFor(i,'t'+i.id,{fill:true})}</div>
           <div class="min-w-0">
-            <p class="font-semibold kr leading-snug">${esc(i.name)}</p>
+            <p class="font-semibold kr leading-snug">${esc(i.name)}${isAdminOnly(i)?ADMIN_BADGE:''}</p>
             <p class="text-[12px] text-[var(--muted)] kr leading-snug">${esc(i.desc||'')}</p>
           </div>
         </div>
@@ -1485,7 +1534,7 @@ function renderGrid(){
       </div>
       <div class="p-5 flex flex-col flex-1 border-t border-[var(--line-2)]">
         <p class="eyebrow">${esc(i.category||'기타')}</p>
-        <h3 class="mt-2 text-[15px] font-semibold kr leading-snug">${esc(i.name)}</h3>
+        <h3 class="mt-2 text-[15px] font-semibold kr leading-snug">${esc(i.name)}${isAdminOnly(i)?ADMIN_BADGE:''}</h3>
         <p class="mt-1.5 text-[13px] text-[var(--muted)] kr leading-relaxed flex-1">${esc(i.desc||'')}</p>
         <div class="mt-4 pt-4 border-t border-[var(--line-2)] flex items-center justify-between gap-3">
           <p class="text-[13px] ${out?'text-[var(--faint)]':'text-[var(--ink-2)]'}">
@@ -1515,7 +1564,7 @@ function renderRequests(){
   $('#reqBody').innerHTML = rows.length ? rows.map(r=>`
     <tr>
       <td class="text-[13px] text-[var(--muted)] whitespace-nowrap">${esc(r.ts)}</td>
-      <td class="font-medium kr">${esc(r.itemName)}</td>
+      <td class="font-medium kr">${esc(r.itemName)}${state.items.some(i=>isAdminOnly(i) && (i.id===r.itemId || i.name===r.itemName))?ADMIN_BADGE:''}</td>
       <td class="whitespace-nowrap">${esc(r.applicant)}</td>
       <td class="text-[var(--muted)] whitespace-nowrap">${esc(r.dept)}</td>
       <td class="text-[var(--ink-2)] kr">${esc(r.purpose)}</td>
@@ -1548,7 +1597,7 @@ function renderStock(){
           <div class="w-12 h-9 overflow-hidden flex-none" style="border:1px solid var(--line)">${artFor(i,'s'+i.id,{fill:true})}</div>
           <div class="min-w-0">
             <p class="font-medium kr leading-snug">${esc(i.name)}
-              ${hid?'<span class="badge b-no ml-1" style="font-size:10px">신청 차단</span>':''}</p>
+              ${hid?'<span class="badge b-no ml-1" style="font-size:10px">신청 차단</span>':''}${isAdminOnly(i)?ADMIN_BADGE:''}</p>
             <p class="text-[11.5px] text-[var(--faint)]">${esc(i.id)}</p>
           </div>
         </div>
@@ -1561,6 +1610,9 @@ function renderStock(){
         <div class="inline-flex gap-1.5">
           <button data-act="toggleHidden" data-id="${escAttr(i.id)}" class="btn px-2.5 py-1.5 text-[12.5px]" title="${hid?'신청 화면에 다시 표시합니다':'신청 화면에서 숨겨 신청을 막습니다'}">
             ${hid?'신청 허용':'신청 차단'}
+          </button>
+          <button data-act="toggleAdminOnly" data-id="${escAttr(i.id)}" class="btn px-2.5 py-1.5 text-[12.5px]" title="${isAdminOnly(i)?'일반 직원 화면에도 보이게 합니다':'일반 직원에게 숨기고 관리자만 보고 신청합니다'}">
+            ${isAdminOnly(i)?'전용 해제':'관리자 전용'}
           </button>
           <button data-act="history" data-id="${escAttr(i.id)}" class="btn px-2.5 py-1.5 text-[12.5px]">이력·실사</button>
           <button data-act="editItem" data-id="${escAttr(i.id)}" class="btn px-2.5 py-1.5 text-[12.5px]">수정</button>
@@ -2357,6 +2409,7 @@ document.addEventListener('click', async e=>{
     $('#imTitle').textContent = '품목 수정';
     $('#iName').value=it.name; $('#iCat').value=it.category||''; $('#iStock').value=it.stock;
     $('#iDesc').value=it.desc||''; $('#iImg').value=it.img||DRIVE_PREFIX; $('#iNote').value=it.note||'';
+    $('#iAdminOnly').checked = isAdminOnly(it);
     refreshPreview();
     openModal('itemModal'); return;
   }
@@ -2369,6 +2422,17 @@ document.addEventListener('click', async e=>{
     return;
   }
   if(act==='history'){ openHistory(id); return; }
+  if(act==='toggleAdminOnly'){
+    const it = state.items.find(x=>x.id===id); if(!it) return;
+    const on = !isAdminOnly(it);
+    if(on && !confirm(`「${it.name}」을(를) 관리자 전용으로 바꿀까요?\n\n일반 직원 화면과 서버 응답에서 빠지고, 관리자만 보고 신청할 수 있습니다.\n재고·신청 내역·로그는 그대로 보관됩니다.`)) return;
+    busy(true);
+    try{
+      applyData(await api('setAdminOnly',{ id, on }));
+      toast(on ? `「${it.name}」을(를) 관리자 전용으로 지정했습니다.` : `「${it.name}」 관리자 전용을 해제했습니다.`);
+    }catch(err){ toast(err.message,'err'); } finally{ busy(false); }
+    return;
+  }
   if(act==='toggleHidden'){
     const it = state.items.find(x=>x.id===id); if(!it) return;
     const willHide = !isHiddenItem(it);
@@ -2435,7 +2499,7 @@ $('#iImg').addEventListener('change', ()=>{
 $('#newItemBtn').addEventListener('click', ()=>{
   state.editingId = null;
   $('#imTitle').textContent = '품목 등록';
-  $('#itemForm').reset(); $('#iStock').value = 0;
+  $('#itemForm').reset(); $('#iStock').value = 0; $('#iAdminOnly').checked = false;
   $('#iImg').value = DRIVE_PREFIX;          // 뒤에 파일 ID만 붙이면 됩니다
   refreshPreview();
   openModal('itemModal'); setTimeout(()=>$('#iName').focus(),60);
@@ -2451,11 +2515,20 @@ $('#itemForm').addEventListener('submit', async e=>{
     img: normalizeImgUrl($('#iImg').value),
     note: $('#iNote').value.trim()
   };
+  const wantAdminOnly = $('#iAdminOnly').checked;
+  const beforeIds = new Set(state.items.map(i=>i.id));
   busy(true);
   try{
     applyData(await api('saveItem', payload));
+    // 저장된 품목을 찾아 «관리자 전용» 설정을 맞춥니다 (신규는 새로 생긴 ID, 수정은 기존 ID)
+    const saved = state.editingId
+      ? state.items.find(i=>i.id===state.editingId)
+      : state.items.find(i=>!beforeIds.has(i.id) && i.name===payload.name) || state.items.find(i=>i.name===payload.name);
+    if(saved && isAdminOnly(saved) !== wantAdminOnly){
+      applyData(await api('setAdminOnly', { id:saved.id, on:wantAdminOnly }));
+    }
     closeModal('itemModal');
-    toast(state.editingId?'품목을 수정했습니다.':'품목을 등록했습니다.');
+    toast((state.editingId?'품목을 수정했습니다.':'품목을 등록했습니다.') + (wantAdminOnly?' (관리자 전용)':''));
   }catch(err){ toast(err.message,'err'); } finally{ busy(false); }
 });
 
@@ -2633,10 +2706,10 @@ $('#exportStock').addEventListener('click', ()=>{
     state.items.filter(i=>!q || `${i.id} ${i.name} ${i.category||''} ${i.note||''}`.toLowerCase().includes(q)),
     state.sort.stock);
   if(!rows.length){ toast('내보낼 품목이 없습니다.','warn'); return; }
-  const head = ['품목ID','기념품명','구분','재고','설명','비고','신청상태'];
+  const head = ['품목ID','기념품명','구분','재고','설명','비고','신청상태','공개범위'];
   const q2 = v => `"${String(v??'').replace(/"/g,'""')}"`;
   const csv = '﻿' + [head.join(','), ...rows.map(i=>
-    [i.id,i.name,i.category||'기타',i.stock,i.desc,i.note,isHiddenItem(i)?'차단':'허용'].map(q2).join(','))].join('\n');
+    [i.id,i.name,i.category||'기타',i.stock,i.desc,i.note,isHiddenItem(i)?'차단':'허용',isAdminOnly(i)?'관리자 전용':'전체'].map(q2).join(','))].join('\n');
   const url = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
   const a = document.createElement('a');
   a.href=url; a.download=`기념품_재고현황_${new Date().toISOString().slice(0,10)}.csv`; a.click();
